@@ -1,10 +1,104 @@
-footer{
-    background-color: chocolate;
-    margin: 1% 0.1% 1% 0.1%;
+/********************************************
+ *                                          *
+ *                  HEADER                  *
+ *                                          *
+ ********************************************/
+
+
+/********************************************
+ *                                          *
+ *                   BODY                   *
+ *                                          *
+ ********************************************/ 
+
+body{
+    margin: 1% 1% 1% 1%;
+    overflow: scroll;
+    background-color: gray;
+    background-image: url("resources/body/pizza_bkg.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:fit-content;
+    position: relative;
 }
 
-footer>div#studente{    /*Div con id=studente nel footer*/
+
+
+table#body_table{
     width: 100%;
-    text-align: left;
-    margin-left: 1%;
+}
+
+
+/********************************************
+ *                                          *
+ *                   STRISCIONE             *
+ *                                          *
+ ********************************************/ 
+
+td#td_img_striscione{
+    text-align: left; /*Funziona anche con le img se sono inline*/
+}
+
+
+@keyframes slideInFromRight{
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(0%);
+    }
+}
+img#img_striscisone{
+    /* durata-totale    tipo     delay     numero-animazioni      nome-animazione*/
+    animation: 1s ease-out 0s 1 slideInFromRight;
+    content: url("resources/body/head/striscione/striscione.png");
+    transform: rotate(180deg);
+    margin-left: 0px;
+}
+
+
+
+/* NAV */
+tr#tr_body_nav{
+    background-color: #888888;
+    border-color: white;
+    border-style: solid;
+    border-radius: 10%;
+    border-width: 100px;
+    padding: 1px 1px 1px 1px;
+}
+
+nav#nav{
+    width: 20%;
+    border-width: 10px;
+    margin-left: 0.5%;
+    margin-bottom: 0.1%;
+}
+
+a.nav_button{
+    font-style: normal;
+    font-family: Arial, Helvetica, sans-serif;
+    display: inline; /*Block in modo tale da disporre in verticale => si rimanda alla definizione di block/inline/list*/
+    color: white;
+    font-size: large;
+}
+
+
+
+/*     FRASI         */
+
+tr#tr_body_article_frasi{
+    left: 25%;
+    top: 25%;
+}
+
+ul.ul_frase{
+    list-style-type: circle;
+}
+
+div.frase{
+    font-size: large;
+    font-style: italic;
+    color: white;
 }
