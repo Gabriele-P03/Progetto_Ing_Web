@@ -1,0 +1,10 @@
+FE:
+
+Una pagina principale
+Una per la prenotazione
+Una per il menù e gli allergeni
+
+Cliccando su CONTATTI, con transizione dal basso, appare il footer
+
+
+Tutte le voci sopra citate sono raggiungibili mediante ancore nel nav dell'header

@@ -3,7 +3,7 @@
 
     <body>
 
-        <header>
+        <head>
             <meta name="author" content="Gabriele Pace">
             <meta name="description" content="Progetto Ingegneria del Web">
             <meta name="date" content="2024-11-12T16:51:12+00:00">
@@ -15,36 +15,24 @@
             <script src="main.js"></script>
 
             <link href="main.css" type="text/css" rel="stylesheet">
+        </head>
+
+        <header>
+            <nav id="header_nav">
+                <a href="pages/Home.html">HOME</a>
+                <a href="pages/menu.html">MENÙ</a>
+                <a href="pages/prenota.html">PRENOTA</a>
+            </nav>
         </header>
 
-        <table id="body_table">
-            
-            <tr id="tr_body_nav">
-                <td id="td_body_nav">
-                    <nav id="nav">
-                        <a href="" class="nav_button" id="nav_button_home">HOME</a>
-                        <a href="" class="nav_button" id="nav_button_menu">MENÙ</a>
-                        <a href="" class="nav_button" id="nav_button_contatti">CONTATTI</a>
-                    </nav>
-                </td>
-            </tr>
-
-            <tr id="tr_body_article_frasi">
-                <td>
-                    <div class="frase">
-                        <ul class="ul_frase">
-                            <li>Leggi gli allergeni</li>
-                            <li>Prenota il tavolo</li>
-                            <li>Enjoy you Meal!</li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-
-        </table>
-
-
-        
+        <aside id="aside_frasi">
+            <ul id="ul_aside_frasi">
+                <li class="li_aside_frasi" id="li_aside_frasi_1">Leggi il Menù e gli Allergeni</li>
+                <li class="li_aside_frasi" id="li_aside_frasi_2">Crea le tue pizze</li>
+                <li class="li_aside_frasi" id="li_aside_frasi_3">Effettua l'ordine</li>
+                <li class="li_aside_frasi" id="li_aside_frasi_4">Enjoy you Meal!</li>
+            </ul>
+        </aside>
 
     </body>
 
