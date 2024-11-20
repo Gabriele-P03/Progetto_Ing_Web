@@ -6,15 +6,15 @@
         <head>
             <meta name="author" content="Gabriele Pace">
             <meta name="description" content="Progetto Ingegneria del Web">
-            <meta name="date" content="2024-11-12T16:51:12+00:00">
+            <meta name="date" content="2024-11-20T16:51:12+00:00">
 
             <title>
                 Pizzeria da Gabbo
             </title>
 
-            <script src="main.js"></script>
+            <script src="prenota.js"></script>
 
-            <link href="main.css" type="text/css" rel="stylesheet">
+            <link href="prenota.css" type="text/css" rel="stylesheet">
         </head>
 
         <header>
@@ -25,15 +25,16 @@
             </nav>
         </header>
 
-        <aside id="aside_frasi">
-            <ul id="ul_aside_frasi">
-                <li class="li_aside_frasi" id="li_aside_frasi_1">1. Leggi il Menù e gli Allergeni</li>
-                <li class="li_aside_frasi" id="li_aside_frasi_2">2. Crea le tue pizze</li>
-                <li class="li_aside_frasi" id="li_aside_frasi_3">3. Effettua l'ordine</li>
-                <li class="li_aside_frasi" id="li_aside_frasi_4">4. Enjoy you Meal!</li>
-            </ul>
-        </aside>
-
+        <main>
+            <form id="form_prenotazione" action="http://pizzeriagabbo:8080/prenota" method="post">
+                <fieldset class="fs_base_pizza">
+                    <legend id="lg_fs_base_pizza">Scegli la base della tua pizza</legend>
+                    <select id="select_base_pizza">
+                        <!-- Automaticamente riempito -->
+                    </select>
+                </fieldset>
+            </form>
+        </main>
 
         <footer>
             <img id="footer_arrow" onclick="footer_up()" src="resources/body/footer/footer_up.png">

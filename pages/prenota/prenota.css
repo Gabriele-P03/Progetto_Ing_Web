@@ -12,12 +12,26 @@ body{
     margin: 0;
     padding: 0;
     background-color: gray;
-    background-image: url("resources/body/pizza_bkg.png");
+    background-image: url("../../resources/body/pizza_bkg.png");
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
     width: 100%;
     bottom: 0;
+}
+
+/********************************************
+ *                                          *
+ *                  FORM                    *
+ *                                          *
+ ********************************************/ 
+form#form_prenotazione{
+    width: fit-content;
+    margin: 2.5% 0% 0% 2.5%;
+}
+
+fieldset.fs_base_pizza>legend{
+    color: white;
 }
 
 
@@ -44,27 +58,6 @@ nav#header_nav>a{
     flex-grow: 1;           /*Leggere il commento in header>nav#header_nav*/
     margin: 1% 0.5% 1% 0.5%;
     border: 0.1em solid black;
-}
-
-
-/********************************************
- *                                          *
- *                  ASIDE                   *
- *                                          *
- ********************************************/
-aside#aside_frasi{
-    color: white;
-    width: fit-content;
-    width: 40%; /*Sfrutto questa proprietà nel main.js (1) */
-}
-aside>ul#ul_aside_frasi{
-    list-style-type: none;  /*Rimuove qualsiasi decorazione dei li*/
-}
-ul>li.li_aside_frasi{
-    margin-top: 10%;
-    font-size: xx-large;
-    font-style: italic;
-    font-family: Geneva, Verdana, sans-serif;
 }
 
 
