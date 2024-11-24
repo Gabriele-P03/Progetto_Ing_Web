@@ -1,4 +1,4 @@
-window.onload = function(){
+document.addEventListener("DOMContentLoaded", function(){
 
     let frasi_c = document.getElementsByTagName("li").length
 
@@ -38,7 +38,7 @@ window.onload = function(){
         }
 
     }
-}
+});
 
 
 let footer_arrow_state = true

@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html>
 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Gabriele Pace">
+        <meta name="description" content="Progetto Ingegneria del Web">
+        <meta name="date" content="2024-11-20T16:51:12+00:00">
+
+        <title>
+            Pizzeria da Gabbo
+        </title>
+
+        <script src="prenota.js"></script>
+
+        <link href="prenota.css" type="text/css" rel="stylesheet">
+    </head>
+
     <body>
-
-        <head>
-            <meta name="author" content="Gabriele Pace">
-            <meta name="description" content="Progetto Ingegneria del Web">
-            <meta name="date" content="2024-11-20T16:51:12+00:00">
-
-            <title>
-                Pizzeria da Gabbo
-            </title>
-
-            <script src="prenota.js"></script>
-
-            <link href="prenota.css" type="text/css" rel="stylesheet">
-        </head>
-
         <header>
             <nav id="header_nav">
-                <a href="main.html">HOME</a>
-                <a href="pages/menu.html">MENÙ</a>
-                <a href="pages/prenota/prenota.html">PRENOTA</a>
+                <a href="../../main.html">HOME</a>
+                <a href="../menu/menu.html">MENÙ</a>
+                <a href="prenota.html">PRENOTA</a>
             </nav>
         </header>
 
         <main>
             <form id="form_prenotazione" action="http://pizzeriagabbo:8080/prenota" method="post">
-                <fieldset class="fs_base_pizza">
-                    <legend id="lg_fs_base_pizza">Scegli la base della tua pizza</legend>
+
+                <!--Fieldset per gli allergeni-->
+                <fieldset class="fs_prenota" id="fs_prenota_allergeni">
+                    <legend class="lg_fs_prenota">Spunta le tue allergie!</legend>
+                </fieldset>
+
+                <fieldset class="fs_prenota">
+                    <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
                     <select id="select_base_pizza">
                         <!-- Automaticamente riempito -->
                     </select>
@@ -37,7 +43,7 @@
         </main>
 
         <footer>
-            <img id="footer_arrow" onclick="footer_up()" src="resources/body/footer/footer_up.png">
+            <img id="footer_arrow" onclick="footer_up()" src="../../resources/body/footer/footer_up.png">
             <div id="footer_info">
                 <div class="info">
                     E-mail: 

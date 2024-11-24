@@ -1,0 +1,15 @@
+<?php
+
+define("DB_HOST", "127.0.0.1");
+define("DB_USERNAME", "PIZZERIA");
+define("DB_PASSWORD", "tC)L27T@sUuYnw92");
+define("DB_DATABASE_NAME", "PIZZERIA");
+
+define("HTTP_V", "HTTP/1.1");
+
+/**DEFINIZIONE DELLE TABELLE*/
+define("DB_ALLERGENE", "ALLERGENE");
+define("DB_ALLERGENE_ETICHETTA", "ETICHETTA");
+
+/**DEFINIZIONE DEI MODULI**/
+define("MODULE_ALLERGENI", "allergeni");

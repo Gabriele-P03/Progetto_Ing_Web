@@ -30,7 +30,7 @@ form#form_prenotazione{
     margin: 2.5% 0% 0% 2.5%;
 }
 
-fieldset.fs_base_pizza>legend{
+fieldset.fs_prenota>legend{
     color: white;
 }
 
@@ -40,6 +40,10 @@ fieldset.fs_base_pizza>legend{
  *                  HEADER                  *
  *                                          *
  ********************************************/
+
+fieldset#fs_prenota_allergeni>label{
+    color: white;
+}
 
 header>nav#header_nav{
     background-color: #888888;
