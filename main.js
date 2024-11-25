@@ -48,7 +48,6 @@ function footer_up(){
     let footer = document.getElementById("footer_info");
 
     if(footer_arrow_state){
-        arrow.setAttribute
         arrow.setAttribute("src", 'resources/body/footer/footer_down.png');
         footer_arrow_state = false;
         footer.style.display = "block";
@@ -69,6 +68,4 @@ function footer_up(){
         footer_arrow_state = true;
         footer.style.display = "none";
     }
-    console.log(footer);
-    console.log(footer_arrow_state);
 }

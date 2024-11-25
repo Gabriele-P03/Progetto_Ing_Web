@@ -31,13 +31,23 @@
                 <!--Fieldset per gli allergeni-->
                 <fieldset class="fs_prenota" id="fs_prenota_allergeni">
                     <legend class="lg_fs_prenota">Spunta le tue allergie!</legend>
+                    <div id="fs_prenota_allergeni_div">
+                    <!-- Automaticamente riempito di checkbox dalla getAll degli allergeni -->
+                    </div>
+                    <input type="submit" id="bt_invia_allergeni" name="invia_allergeni" value="Invia Allergeni">
                 </fieldset>
 
                 <fieldset class="fs_prenota">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
                     <select id="select_base_pizza">
-                        <!-- Automaticamente riempito -->
+                        <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
                     </select>
+                </fieldset>
+
+                <fieldset class="fs_prenota" id="fs_prenota_aggiunta">
+                    <legend class="lg_fs_prenota">Aggiungi qualcosa sulla pizza e/o scegli altro</legend>
+                    <!-- Automaticamente Diviso in N sezioni quanti sono i TIPO_AGGIUNTA  -->
+                    <!-- Ogni sezione verrà popolata automaticamente-->
                 </fieldset>
             </form>
         </main>

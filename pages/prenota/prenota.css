@@ -27,9 +27,25 @@ body{
  ********************************************/ 
 form#form_prenotazione{
     width: fit-content;
+    height: fit-content;
     margin: 2.5% 0% 0% 2.5%;
+    overflow-y: scroll;
 }
 
+input#bt_invia_allergeni{
+    display: block;
+    margin-left: auto;
+    margin-right: 1%;
+}
+
+fieldset#fs_prenota_allergeni>div#fs_prenota_allergeni_div{
+    max-height: 10em;
+    width: 100%;
+    color: white;
+    overflow-y: scroll;
+}
+
+/* Tutti le legend dei fieldset*/
 fieldset.fs_prenota>legend{
     color: white;
 }
