@@ -45,10 +45,40 @@ fieldset#fs_prenota_allergeni>div#fs_prenota_allergeni_div{
     overflow-y: scroll;
 }
 
+/***********       BASE PIZZA        ************/
+
+div#select_base_pizza_div{
+    height: 100%;
+    vertical-align: middle;
+}
+
 /* Tutti le legend dei fieldset*/
 fieldset.fs_prenota>legend{
     color: white;
 }
+
+div#show_aggiunte_pizza_selected{
+    margin-left: 30%;
+    margin-right: auto;
+}
+ul#show_aggiunte_pizza_selected_ul{
+    color: white;
+}
+
+/*Estende inline-block a tutti gli elementi del fieldset con id fs_prenota_base_pizza, che sarebbe quello dove si sceglie la base della pizza*/
+fieldset#fs_prenota_base_pizza > *{
+    display: inline-block;
+    overflow-y: scroll;
+}
+
+fieldset#fs_prenota_base_pizza{
+    height: 10em;
+}
+
+fieldset#fs_prenota_base_pizza>select{
+    top: 0;
+}
+
 
 
 /********************************************

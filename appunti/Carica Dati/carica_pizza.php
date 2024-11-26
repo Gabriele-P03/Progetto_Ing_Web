@@ -18,29 +18,39 @@ if ($conn->connect_error) {
 
 $array = array(
     //Inserire qui altri allergeni a piacere
-    "Friggitoria",
-    "Ingredienti",
-    "Bevande",
-    "Salse"
+    array("Base Ciccio", 3.5),
+    array("Margherita", 4.0),
+    array("Capricciosa", 5.0),
+    array("Tonno e Cipolla", 4.5),	
+    array("4 Formaggi", 5.0),	
+    array("4 Stagioni", 5.0),	
+    array("Americana", 5.0),	
+    array("Crudaiola", 7.0),	
+    array("Valtellina", 6.0),	
+    array("Contadina", 6.0),	
+    array("Funghi e Salsiccia", 5.0),	
+    array("Bufala Speciale", 7.0),	
+    array("Calabrese", 6.0),	
+    array("Diavola", 4.5)
 );
 
-$ALLERGENE_TAB_NAME = "TIPO_AGGIUNTA";
-$COLONNA = "ETICHETTA";
+$PIZZA_TAB_NAME = "PIZZA";
+$COLONNA = array("NOME", "PREZZO");
 
 foreach($array as $key => $value) {
     
-    $sql = "INSERT INTO " .$ALLERGENE_TAB_NAME. " VALUE(NULL, NULL, '$value')";
-    print("Inserendo $value:  $sql\n");
+    $sql = "INSERT INTO " .$PIZZA_TAB_NAME. " VALUE(NULL, NULL, '$value[0]', '$value[1]')";
+    print("Inserendo $key:  $sql\n");
     $result = mysqli_query($conn, $sql);
     if($result){
         //Adesso salvo l'idHash
-        $sql = "SELECT ID FROM ".$ALLERGENE_TAB_NAME. " WHERE ".$COLONNA." = '".$value."'";
+        $sql = "SELECT ID FROM ".$PIZZA_TAB_NAME. " WHERE ".$COLONNA[0]." = '".$value[0]."'";
         $result = $conn->query($sql);
         if($result){
             $id = $result->fetch_assoc()["ID"];
             $id_hash = hash('sha256', strval($id), false);
-            $sql = "UPDATE ".$ALLERGENE_TAB_NAME." SET ID_HASH = '".$id_hash."' WHERE ID = '".$id."'";
-            print("Salvando il digest in sha256 di $value: $id -> $sql\n\n\n");
+            $sql = "UPDATE ".$PIZZA_TAB_NAME." SET ID_HASH = '".$id_hash."' WHERE ID = '".$id."'";
+            print("Salvando il digest in sha256 di $key: $id -> $sql\n\n\n");
             $result = $conn->query($sql);
             if(!$result){
                 die("". $conn->error);

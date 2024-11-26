@@ -1,20 +1,17 @@
 <?php
 
-// include the base controller file
 require_once PROJECT_ROOT_PATH . "/Controller/Api/BaseController.php";
-// include the base controller file
-require_once PROJECT_ROOT_PATH . "/Model/UserModel.php";
+require_once PROJECT_ROOT_PATH . "/Model/PizzaModel.php";
 
-class AllergeniController extends BaseController{
-
-    private UserModel $userModel;
+class PizzaController extends BaseController{
+    private PizzaModel $pizzaModel;
 
     public function __construct(){
-        $this->userModel = new UserModel();
+        $this->pizzaModel = new PizzaModel();
     }
 
-    /**
-     * End-point /allergene
+        /**
+     * End-point /pizza/all
      * @return void
      */
     public function all(): void{
@@ -28,7 +25,7 @@ class AllergeniController extends BaseController{
             exit;
         }
         try{
-            $res = $this->userModel->getAll();
+            $res = $this->pizzaModel->getAll();
             $res_xml = $this->res_to_xml($res);
             $this->inviaRispostaOK($res_xml);   
         }catch(Exception $e){
@@ -38,3 +35,5 @@ class AllergeniController extends BaseController{
         }
     }
 }
+
+?>

@@ -18,6 +18,7 @@ if ($conn->connect_error) {
 
 $array = array(
     //Inserire qui altri allergeni a piacere
+    /*
     array("Salsa di Pomodoro", 0.0, 1, 2),
     array("Mozzarella", 0.0, 1, 2),
     array("Prosciutto Cotto", 0.5, 1, 2),
@@ -71,6 +72,18 @@ $array = array(
     array("Beck's", 2.0, 1, 3),
     array("Corona", 2.0, 1, 3),
     array("Super Tennet's", 2.5, 1, 3),
+    
+    //Salse
+    array("Ketchup", 0.0, 1, 4),
+    array("Maionese", 0.0, 1, 4),
+    array("BBQ", 0.0, 1, 4),
+    array("Senape", 0.0, 1, 4),
+    array("Salsa Piccante", 0.0, 1, 4),
+    array("Salsa Yogurt", 0.0, 1, 4)
+    */
+
+    //array("Olio", 0.0, 1, 2),
+    array("Bufala", 0.5, 1, 2)
 );
 
 $ALLERGENE_TAB_NAME = "AGGIUNTA";

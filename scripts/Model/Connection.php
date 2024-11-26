@@ -36,7 +36,9 @@ class Connection{
                 throw new Exception("Non è stato possibile eseguire la query: " . $query);
             }
             if ($params) {
-                $stmt->bind_param($params[0], $params[1]);
+                if(!$stmt->bind_param($params[0], $params[1])){
+                    throw new Exception("Non è stato possibile eseguire il binding dei parametri: ". implode(", ", $params) ."". $query);
+                }
             }
             $stmt->execute();
             return $stmt;

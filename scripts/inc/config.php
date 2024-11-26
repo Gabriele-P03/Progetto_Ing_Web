@@ -7,9 +7,31 @@ define("DB_DATABASE_NAME", "PIZZERIA");
 
 define("HTTP_V", "HTTP/1.1");
 
+
+
 /**DEFINIZIONE DELLE TABELLE*/
+
+//ALLERGENE
 define("DB_ALLERGENE", "ALLERGENE");
 define("DB_ALLERGENE_ETICHETTA", "ETICHETTA");
 
+//AGGIUNTA
+define("DB_AGGIUNTA", "AGGIUNTA");
+define("DB_AGGIUNTA_NOME", "NOME");
+
+//PIZZA
+define("DB_PIZZA", "PIZZA");
+define("DB_PIZZA_IDHASH", "ID_HASH");
+define("DB_PIZZA_NOME", "NOME");
+define("DB_PIZZA_PREZZO", "PREZZO");
+
+//PIZZA_AGGIUNTA
+define("DB_PIZZAAGGIUNTA", "PIZZA_AGGIUNTA");
+define("DB_PIZZAAGGIUNTA_IDPIZZA", "ID_PIZZA");
+define("DB_PIZZAAGGIUNTA_IDAGGIUNTA", "ID_AGGIUNTA");
+
+
 /**DEFINIZIONE DEI MODULI**/
-define("MODULE_ALLERGENI", "allergeni");
+define("MODULE_ALLERGENE", "allergene");
+define("MODULE_PIZZA", "pizza");
+define("MODULE_AGGIUNTA", "aggiunta");

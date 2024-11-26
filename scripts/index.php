@@ -6,8 +6,6 @@ require_once __DIR__."/inc/config.php";
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/index.php', $uri);
 
-
-
 $module = "";
 
 if (isset($uri[1]) && $uri[1]){
@@ -34,9 +32,13 @@ if (isset($uri[1]) && $uri[1]){
 }
 
 require PROJECT_ROOT_PATH . "/Controller/Api/AllergeniController.php";
+require PROJECT_ROOT_PATH . "/Controller/Api/PizzaController.php";
+require PROJECT_ROOT_PATH . "/Controller/Api/AggiuntaController.php";
 
 try{
     $allergeniController = new AllergeniController(); 
+    $pizzaController = new PizzaController(); 
+    $aggiuntaController = new AggiuntaController(); 
 } catch ( Exception $e ){
     header(HTTP_V." 505 Internal Server Error");
     echo "\"".$e->getMessage()."\"";
@@ -45,9 +47,14 @@ try{
 
 switch ($module) {
 
-    case MODULE_ALLERGENI:
-
+    case MODULE_ALLERGENE:
         $allergeniController->{$uri}();
+    break;
+    case MODULE_PIZZA:
+        $pizzaController->{$uri}();
+    break;
+    case MODULE_AGGIUNTA:
+        $aggiuntaController->{$uri}();
     break;
 
     default:

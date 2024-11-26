@@ -37,11 +37,19 @@
                     <input type="submit" id="bt_invia_allergeni" name="invia_allergeni" value="Invia Allergeni">
                 </fieldset>
 
-                <fieldset class="fs_prenota">
+                <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
-                    <select id="select_base_pizza">
-                        <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
-                    </select>
+                    <!--Il seguente div mi serve solo gestire il vertical-align della select interna-->
+                    <div id="select_base_pizza_div">    
+                        <select id="select_base_pizza" onchange="carica_ingredienti(this)">
+                            <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
+                        </select>
+                    </div>
+                    <div id="show_aggiunte_pizza_selected">
+                        <ul id="show_aggiunte_pizza_selected_ul">
+
+                        </ul>
+                    </div>
                 </fieldset>
 
                 <fieldset class="fs_prenota" id="fs_prenota_aggiunta">
