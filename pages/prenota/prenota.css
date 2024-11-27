@@ -20,6 +20,10 @@ body{
     bottom: 0;
 }
 
+main{
+    overflow-y: scroll;
+}
+
 /********************************************
  *                                          *
  *                  FORM                    *
@@ -32,10 +36,18 @@ form#form_prenotazione{
     overflow-y: scroll;
 }
 
-input#bt_invia_allergeni{
+/* Tutti le legend dei fieldset*/
+fieldset.fs_prenota>legend{
+    color: white;
+}
+
+/***********       ALLERGENI        ************/
+
+button#bt_invia_allergeni{
     display: block;
     margin-left: auto;
     margin-right: 1%;
+    width: fit-content;
 }
 
 fieldset#fs_prenota_allergeni>div#fs_prenota_allergeni_div{
@@ -47,37 +59,37 @@ fieldset#fs_prenota_allergeni>div#fs_prenota_allergeni_div{
 
 /***********       BASE PIZZA        ************/
 
-div#select_base_pizza_div{
-    height: 100%;
-    vertical-align: middle;
+/* Tutto il fieldset */
+fieldset#fs_prenota_base_pizza{
+    height: 10em;
 }
 
-/* Tutti le legend dei fieldset*/
-fieldset.fs_prenota>legend{
-    color: white;
-}
+/* DIV che mostra le aggiunte incluse nella base pizza */
+div#show_aggiunte_pizza_selected{                       
+    margin-left: 30%;                                   
+    margin-right: auto;   
+    color: white;     
+    height: 100%;    /*Prendo il 100% del block padre, tanto c'è l'overflow-y a gestire lo scroll*/                      
+}                                                       
 
-div#show_aggiunte_pizza_selected{
-    margin-left: 30%;
-    margin-right: auto;
-}
-ul#show_aggiunte_pizza_selected_ul{
-    color: white;
+fieldset>select#select_base_pizza{
+    width: 30%;
 }
 
 /*Estende inline-block a tutti gli elementi del fieldset con id fs_prenota_base_pizza, che sarebbe quello dove si sceglie la base della pizza*/
 fieldset#fs_prenota_base_pizza > *{
     display: inline-block;
     overflow-y: scroll;
+    vertical-align: middle;
 }
 
-fieldset#fs_prenota_base_pizza{
-    height: 10em;
+/*Tutti i fieldset circa i Tipo Aggiunta generati automaticamente dopo la relativa getAll() */
+fieldset#fs_prenota_tipo_aggiunta > *{
+    color: white;
+    width: auto;
+    height: fit-content;
 }
 
-fieldset#fs_prenota_base_pizza>select{
-    top: 0;
-}
 
 
 

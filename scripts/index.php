@@ -34,11 +34,13 @@ if (isset($uri[1]) && $uri[1]){
 require PROJECT_ROOT_PATH . "/Controller/Api/AllergeniController.php";
 require PROJECT_ROOT_PATH . "/Controller/Api/PizzaController.php";
 require PROJECT_ROOT_PATH . "/Controller/Api/AggiuntaController.php";
+require PROJECT_ROOT_PATH . "/Controller/Api/TipoAggiuntaController.php";
 
 try{
     $allergeniController = new AllergeniController(); 
     $pizzaController = new PizzaController(); 
     $aggiuntaController = new AggiuntaController(); 
+    $tipoAggiuntaController = new TipoAggiuntaController();
 } catch ( Exception $e ){
     header(HTTP_V." 505 Internal Server Error");
     echo "\"".$e->getMessage()."\"";
@@ -55,6 +57,9 @@ switch ($module) {
     break;
     case MODULE_AGGIUNTA:
         $aggiuntaController->{$uri}();
+    break;
+    case MODULE_TIPOAGGIUNTA:
+        $tipoAggiuntaController->{$uri}();
     break;
 
     default:

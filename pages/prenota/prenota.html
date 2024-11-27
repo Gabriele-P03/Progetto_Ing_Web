@@ -26,7 +26,7 @@
         </header>
 
         <main>
-            <form id="form_prenotazione" action="http://pizzeriagabbo:8080/prenota" method="post">
+            <form id="form_prenotazione" >
 
                 <!--Fieldset per gli allergeni-->
                 <fieldset class="fs_prenota" id="fs_prenota_allergeni">
@@ -34,17 +34,14 @@
                     <div id="fs_prenota_allergeni_div">
                     <!-- Automaticamente riempito di checkbox dalla getAll degli allergeni -->
                     </div>
-                    <input type="submit" id="bt_invia_allergeni" name="invia_allergeni" value="Invia Allergeni">
+                    <button id="bt_invia_allergeni" type="button" onclick="filtraPizzeByAllergeni()">Invia Allergeni</button>
                 </fieldset>
 
                 <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
-                    <!--Il seguente div mi serve solo gestire il vertical-align della select interna-->
-                    <div id="select_base_pizza_div">    
-                        <select id="select_base_pizza" onchange="carica_ingredienti(this)">
-                            <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
-                        </select>
-                    </div>
+                    <select id="select_base_pizza" onchange="carica_ingredienti(this.value)">
+                        <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
+                    </select>
                     <div id="show_aggiunte_pizza_selected">
                         <ul id="show_aggiunte_pizza_selected_ul">
 
@@ -52,10 +49,11 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="fs_prenota" id="fs_prenota_aggiunta">
+                <fieldset class="fs_prenota" id="fs_prenota_tipo_aggiunta">
                     <legend class="lg_fs_prenota">Aggiungi qualcosa sulla pizza e/o scegli altro</legend>
                     <!-- Automaticamente Diviso in N sezioni quanti sono i TIPO_AGGIUNTA  -->
                     <!-- Ogni sezione verrà popolata automaticamente-->
+                    <!-- Ogni sezione è rappresentata da un fieldset il cui legend è il Tipo Aggiunta-->
                 </fieldset>
             </form>
         </main>

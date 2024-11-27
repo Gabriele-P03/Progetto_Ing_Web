@@ -77,9 +77,25 @@ class BaseController{
             }
             if($paramsOptional){
                 foreach($params as $param){
-                    if(!array_key_exists($param, $paramsOptional)){
+                    if(!array_key_exists($param, $paramsOptional) && !array_key_exists($param, $paramsExpected)) {
                         throw new RuntimeException("Il parametro ". $param ." è stato ricevuto ma non era atteso");
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Valida i parametri ricevuti, in quantitativo arbitrario, secondo un singolo regex
+     * @param string the regex pattern
+     * @return void
+     */
+    protected function validaParametriArbitrari($regex = string){
+        $params = $this->getQueryStringParams();
+        if($params){
+            foreach($params as $key => $value){
+                if( !preg_match($regex, $key) ){
+                    throw new RuntimeException("Parametro arbitrario non valido: ". $key);
                 }
             }
         }

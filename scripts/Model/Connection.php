@@ -19,8 +19,12 @@ class Connection{
     }
 
     public function select( $query = "", $params = []){
+        return $this->selectWithTypes( $query, str_repeat('s', count($params)), $params );
+    }
+
+    public function selectWithTypes( $query = "", $types = "", $params = []){
         try {
-            $stmt = $this->executeStatement($query, $params);
+            $stmt = $this->executeStatement($query, $types, $params);
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
             return $result;
@@ -29,18 +33,22 @@ class Connection{
         }
     }
 
-    private function executeStatement($query = "", $params = []){
+    private function executeStatement($query = "", $types = "", $params = []){
         try {
             $stmt = $this->connection->prepare($query);
             if ($stmt === false) {
                 throw new Exception("Non è stato possibile eseguire la query: " . $query);
             }
             if ($params) {
-                if(!$stmt->bind_param($params[0], $params[1])){
+                if(!$stmt->bind_param($types, ...$params)){
                     throw new Exception("Non è stato possibile eseguire il binding dei parametri: ". implode(", ", $params) ."". $query);
                 }
             }
-            $stmt->execute();
+
+
+            if(!$stmt->execute()){
+                throw new Exception("Errore nell'esecuzione della SQL: ". $stmt->error);
+            }
             return $stmt;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

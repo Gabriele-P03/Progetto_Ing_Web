@@ -7,12 +7,11 @@ function carica_allergeni(){
         var XMLParser = new DOMParser();
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml")
         let allergeni = document.getElementById("fs_prenota_allergeni_div");
-        xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
-            row.childNodes.forEach( function(colValue){ //Inside row there are column->value
-                let x = colValue.childNodes.item(0).textContent;
-                let html = "<input type=\"checkbox\" name=\""+x+"\" value=\"" + x + "\"><label for=\""+x+"\">"+x+"</label><br>";
+        xmlDoc.childNodes.item(0).childNodes.forEach( function(row){//Inside row there are column->value
+                let idHash = row.childNodes.item(0).textContent;
+                let name = row.childNodes.item(1).textContent;
+                let html = "<input type=\"checkbox\" name=\""+idHash+"\" value=\"" + idHash + "\"><label for=\""+idHash+"\">"+name+"</label><br>";
                 allergeni.innerHTML += html;
-            });
         });
         
     }
@@ -23,19 +22,7 @@ function carica_allergeni(){
 function carica_pizze(){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
-        var XMLParser = new DOMParser();
-        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml")
-        let pizze = document.getElementById("select_base_pizza");
-        xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
-            //row.childNodes.forEach( function(colValue){ //Inside row there are column->value
-                let idHash = row.childNodes.item(0).textContent;
-                let nome = row.childNodes.item(1).textContent;
-                let html = "<option value=\"" + idHash + "\" name=\"" + nome + "\"/>";
-                html += "<label for=\"" + nome + "\">" + nome + "<label/>";
-                pizze.innerHTML += html;
-            //});
-        });
-        
+        impostaSelettoreBasePizza(xhttp);
     }
     xhttp.open('GET', '../../scripts/index.php/pizza/all', true);
     xhttp.send();
@@ -55,7 +42,7 @@ function carica_ingredienti(pizzaSelezionata){
         });
         
     }
-    xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata.value, true);
+    xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
     xhttp.send();
 }
 
@@ -63,6 +50,7 @@ window.onload = function(){
 
     carica_allergeni();
     carica_pizze();
+    carica_tipo_aggiunta();
 }
 
 let footer_arrow_state = true
@@ -92,4 +80,71 @@ function footer_up(){
         footer_arrow_state = true;
         footer.style.display = "none";
     }
+}
+
+
+/**
+ * Funzione chiamata quando l'utente preme sul tasto Invia Allergeni
+ * Essa esegue la GET per prendere le pizze che non contengono allergeni tra quelli indicati
+ */
+function filtraPizzeByAllergeni(){
+    let allergeniParams = "";  //Conterrà i digest degli allergeni a mo' di query param
+    let div = document.getElementById("fs_prenota_allergeni_div");
+    let options = div.querySelectorAll("input");   //Prendo tutte le options
+    let i = 0;
+    options.forEach( (option) =>{ 
+        if(option.checked){
+            if(i > 0){
+                allergeniParams += "&";
+            }
+            let encodedAllergeneValue = encodeURIComponent(option.value);   //Si ricorda che un parametro deve essere prima passato all'encoding
+            allergeniParams += "allergene" + i++ + "=" + encodedAllergeneValue;
+        }
+    });
+    
+    if(allergeniParams !== ""){
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            impostaSelettoreBasePizza(xhttp);
+        }
+        xhttp.open('GET', '../../scripts/index.php/pizza/allergeni?'+allergeniParams, true);
+        xhttp.send();
+    }else{
+        carica_pizze(); //Nessun allergene selezionato, allora eseguo la getAll delle pizze
+    }
+}
+
+function impostaSelettoreBasePizza(pizzeInfoXHTTP){
+    var XMLParser = new DOMParser();
+    var xmlDoc = XMLParser.parseFromString(pizzeInfoXHTTP.responseText, "application/xml")
+    let pizze = document.getElementById("select_base_pizza");
+    pizze.innerHTML = "";
+    xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
+        let idHash = row.childNodes.item(0).textContent;
+        let nome = row.childNodes.item(1).textContent;
+        let prezzo = row.childNodes.item(2).textContent;
+        let html = "<option value=\"" + idHash + "\" name=\"" + nome + "\"/>";
+        html += "<label for=\"" + nome + "\">" + nome  + " - " + prezzo + " &euro; <label/>";
+        pizze.innerHTML += html;
+    });
+    carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
+
+}
+
+function carica_tipo_aggiunta(){
+    let fieldset = document.getElementById("fs_prenota_tipo_aggiunta");
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        var XMLParser = new DOMParser();
+        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+        xmlDoc.childNodes.item(0).childNodes.forEach( function(tipoAggiuntaRow){
+            let idHash = tipoAggiuntaRow.childNodes.item(0).textContent;
+            let etichetta = tipoAggiuntaRow.childNodes.item(1).textContent;
+
+            let html = "<fieldset class=\"fs_tipo_aggiunta\"><legend class=\"lg_fs_tipo_aggiunta\">" + etichetta + "</legend></fieldset>";
+            fieldset.innerHTML += html;
+        });
+    }
+    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', true);
+    xhttp.send();
 }
