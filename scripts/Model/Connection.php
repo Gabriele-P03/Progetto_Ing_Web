@@ -19,7 +19,11 @@ class Connection{
     }
 
     public function select( $query = "", $params = []){
-        return $this->selectWithTypes( $query, str_repeat('s', count($params)), $params );
+        try{
+            return $this->selectWithTypes( $query, str_repeat('s', count($params)), $params );
+        }catch(Exception $e){
+            throw new Exception($e->getMessage());
+        }
     }
 
     public function selectWithTypes( $query = "", $types = "", $params = []){

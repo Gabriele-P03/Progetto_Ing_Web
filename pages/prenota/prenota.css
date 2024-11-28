@@ -90,6 +90,9 @@ fieldset#fs_prenota_tipo_aggiunta > *{
     height: fit-content;
 }
 
+fieldset.fs_tipo_aggiunta>*{
+    display: block;
+}
 
 
 

@@ -44,6 +44,7 @@ function carica_ingredienti(pizzaSelezionata){
     }
     xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
     xhttp.send();
+    carica_tipo_aggiunta();
 }
 
 window.onload = function(){
@@ -128,11 +129,11 @@ function impostaSelettoreBasePizza(pizzeInfoXHTTP){
         pizze.innerHTML += html;
     });
     carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
-
 }
 
 function carica_tipo_aggiunta(){
     let fieldset = document.getElementById("fs_prenota_tipo_aggiunta");
+    fieldset.innerHTML = "<legend class=\"lg_fs_prenota\">Aggiungi qualcosa sulla pizza e/o scegli altro</legend>";
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
@@ -141,8 +142,38 @@ function carica_tipo_aggiunta(){
             let idHash = tipoAggiuntaRow.childNodes.item(0).textContent;
             let etichetta = tipoAggiuntaRow.childNodes.item(1).textContent;
 
-            let html = "<fieldset class=\"fs_tipo_aggiunta\"><legend class=\"lg_fs_tipo_aggiunta\">" + etichetta + "</legend></fieldset>";
-            fieldset.innerHTML += html;
+            params = "tipoaggiunta="+encodeURIComponent(idHash);
+            let pizzaSelector = document.getElementById("select_base_pizza");
+            let pizzaSelectedIdHash = pizzaSelector.childNodes.item(pizzaSelector.selectedIndex).value;
+            if(pizzaSelectedIdHash !== ""){
+                params += "&pizza="+encodeURIComponent(pizzaSelectedIdHash);
+            }
+
+            const xhttpAggiunta = new XMLHttpRequest();
+            var htmlAggiunta = "";
+            xhttpAggiunta.onload = function(){
+                var XMLParserAggiunta = new DOMParser();
+                var xmlDocAggiunta = XMLParserAggiunta.parseFromString(xhttpAggiunta.responseText, "application/xml");
+                xmlDocAggiunta.childNodes.item(0).childNodes.forEach( function(aggiunta){
+                    let idHashAggiunta = aggiunta.childNodes.item(0).textContent;
+                    let etichetta = aggiunta.childNodes.item(1).textContent;
+                    let prezzo = aggiunta.childNodes.item(2).textContent;
+                    htmlAggiunta += "<input type=\"checkbox\" name=\"aggiunta_" + idHashAggiunta + "\" value=\"" + idHash + "\"><label for=\"aggiunta_" + idHashAggiunta +"\">" + etichetta + " - " + prezzo + "&euro;</label>";
+                    console.log(htmlAggiunta);
+                });  
+                
+            };
+            //Di seguito verrà chiamata una GET sincrona...
+            //Si presti attenzione al fatto che essa è chiamata all'interno di una GET asincrona!!!
+            xhttpAggiunta.open('GET', '../../scripts/index.php/aggiunta/allfilter?' + params, false);
+            xhttpAggiunta.send();
+            console.log(htmlAggiunta);
+            if(htmlAggiunta !== ""){
+                let html = "<fieldset class=\"fs_tipo_aggiunta\"><legend class=\"lg_fs_tipo_aggiunta\">" + etichetta + "</legend>" + htmlAggiunta + "</fieldset>";
+                fieldset.innerHTML += html;
+            }
+
+
         });
     }
     xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', true);
