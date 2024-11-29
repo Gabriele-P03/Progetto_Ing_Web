@@ -22,7 +22,7 @@ body{
 }
 
 main{
-    width: 40%;
+    max-width: 40%;
     max-height: 80%;
 }
 
@@ -39,7 +39,7 @@ legend.lg_fs_prenota{
 
 form#form_prenotazione{
     width: fit-content;
-    width: 100%;
+    max-width: 100%;
     margin: 2.5% 0% 0% 2.5%;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -106,17 +106,14 @@ fieldset#fs_prenota_tipo_aggiunta{
     height: 35vh;
     overflow: hidden;
     color: white;
-    min-width: 0;   /*Senza questa prop, il fieldlist tenderà in overfitting width*/
 }
 /*div slide wrap del fieldset generale delle aggiunte*/
 div#fsprenota_tipoaggiunta_slidex_wrap_div{
     height: 100%;
     overflow-y: hidden;
+    width: 100%;
     overflow-x: scroll;
     white-space: nowrap;
-}
-div#fsprenota_tipoaggiunta_slidex_wrap_div_inner{
-    height: 100%;
 }
 /*Ogni sub-div del div interno al fieldset generale*/
 div.fs_tipoaggiunta_div_outer{
@@ -127,13 +124,15 @@ div.fs_tipoaggiunta_div_outer{
 }
 /*Il fieldset di ogni sub-div*/
 div.fs_tipoaggiunta_div_outer>fieldset{
-    height: 90%;
+    height: 100%;
     overflow: hidden;
     width: fit-content;
+    margin-bottom: 1%;
 }
 div.fs_tipoaggiunta_div_inner{
     height: 100%;
-    overflow-y: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 /*Div contentente checkbox, nome e prezzo di ogni aggiunta*/

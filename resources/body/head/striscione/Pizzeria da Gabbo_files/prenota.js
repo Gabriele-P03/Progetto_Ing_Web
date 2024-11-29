@@ -126,7 +126,6 @@ function carica_tipo_aggiunta(){
 
     //Siccome gli allergeni sono selezionati esternamente, li inserisco in un array prima di entrare nei vari forEach
     var idHashAllergeni = getAllergeniIdHashAsParameters();
-    console.log(idHashAllergeni);
 
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
@@ -143,7 +142,7 @@ function carica_tipo_aggiunta(){
                 params += "&pizza="+encodeURIComponent(pizzaSelectedIdHash);
             }
             if(idHashAllergeni !== ""){
-                params += "&" + idHashAllergeni;
+                params += idHashAllergeni;
             }
 
             const xhttpAggiunta = new XMLHttpRequest();
@@ -156,6 +155,7 @@ function carica_tipo_aggiunta(){
                     let etichetta = aggiunta.childNodes.item(1).textContent;
                     let prezzo = aggiunta.childNodes.item(2).textContent;
                     htmlAggiunta += "<div class=\"fs_tipoaggiunta_aggiunta_div>\"><input type=\"checkbox\" name=\"aggiunta_" + idHashAggiunta + "\" value=\"" + idHash + "\"><label for=\"aggiunta_" + idHashAggiunta +"\">" + etichetta + " - " + prezzo + "&euro;</label></div>";
+                    console.log(htmlAggiunta);
                 });  
                 htmlAggiunta += "</div>";
             };
@@ -163,6 +163,7 @@ function carica_tipo_aggiunta(){
             //Si presti attenzione al fatto che essa è chiamata all'interno di una GET asincrona!!!
             xhttpAggiunta.open('GET', '../../scripts/index.php/aggiunta/allfilter?' + params, false);
             xhttpAggiunta.send();
+            console.log(htmlAggiunta);
             if(htmlAggiunta !== ""){
                 let html = "<div class=\"fs_tipoaggiunta_div_outer\"><fieldset class=\"fs_tipo_aggiunta\"><legend class=\"lg_fs_tipo_aggiunta\">" + etichetta + "</legend>" + htmlAggiunta + "</fieldset></div>";
                 fieldset.innerHTML += html;

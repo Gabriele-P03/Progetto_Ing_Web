@@ -39,7 +39,7 @@
 
                 <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
-                    <select id="select_base_pizza" onchange="carica_ingredienti(this.value)">
+                    <select id="select_base_pizza" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1, carica_ingredienti(this.value)'>
                         <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
                     </select>
                     <div id="show_aggiunte_pizza_selected">
@@ -51,9 +51,11 @@
 
                 <fieldset class="fs_prenota" id="fs_prenota_tipo_aggiunta">
                     <legend class="lg_fs_prenota">Aggiungi qualcosa sulla pizza e/o scegli altro</legend>
-                    <!-- Automaticamente Diviso in N sezioni quanti sono i TIPO_AGGIUNTA  -->
-                    <!-- Ogni sezione verrà popolata automaticamente-->
-                    <!-- Ogni sezione è rappresentata da un fieldset il cui legend è il Tipo Aggiunta-->
+                    <div id="fsprenota_tipoaggiunta_slidex_wrap_div">
+                            <!-- Automaticamente Diviso in N sezioni quanti sono i TIPO_AGGIUNTA  -->
+                            <!-- Ogni sezione verrà popolata automaticamente-->
+                            <!-- Ogni sezione è rappresentata da un fieldset il cui legend è il Tipo Aggiunta-->
+                    </div>
                 </fieldset>
             </form>
         </main>
