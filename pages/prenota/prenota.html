@@ -14,6 +14,7 @@
         <script src="prenota.js"></script>
 
         <link href="prenota.css" type="text/css" rel="stylesheet">
+        <link href="prenotazione_corrente.css" type="text/css" rel="stylesheet">
     </head>
 
     <body>
@@ -39,7 +40,7 @@
 
                 <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
-                    <select id="select_base_pizza" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1, carica_ingredienti(this.value)'>
+                    <select id="select_base_pizza" onchange='carica_ingredienti(this.value)'>
                         <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
                     </select>
                     <div id="show_aggiunte_pizza_selected">
@@ -58,6 +59,22 @@
                     </div>
                 </fieldset>
             </form>
+
+            <article>
+                <div id="introduzione_article">
+                    Ecco il tuo ordine corrente!
+                </div>
+                <div id="info_ordine">
+                    
+                </div>
+                <div id="div_ordine_corrente">
+                    <table id="tabella_ordine_corrente">
+                        <th id="th_ordine_corrente">
+                        </th>
+                    </table>
+                </div>
+            </article>
+
         </main>
 
         <footer>
