@@ -1,6 +1,7 @@
 /*      Questo vuole essere il css che descrive solo l'aside della prenotazione corrente      */
 
 article{
+    background-color: #111111BB;
     border: 1px solid white;
     width: 55%;
     margin: 1% 0.5% 0.5% 2%;
@@ -8,10 +9,26 @@ article{
 }
 
 article>div#introduzione_article{
-    background-color: #111111BB;
     color: white;
     height: fit-content;
     text-align: center;
     font-size: medium;
     border-bottom: 1px solid white;
+}
+
+div.info_ordine_div{
+    display: inline-block;
+    color: white;
+    margin-left: 0.5%;
+    margin-top: 0.5%;
+    padding: 0.5% 0.5% 0.5% 0.5%;
+    border: 1px solid white;
+}
+
+div#info_ordine{
+    margin: 0.5% 0.5% 0% 0.5%;
+}
+
+input.cb_info_ordine_tipo{
+    display: inline-block;
 }

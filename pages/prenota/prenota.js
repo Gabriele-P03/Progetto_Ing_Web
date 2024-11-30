@@ -1,3 +1,5 @@
+var idHashPrenotazione = "";
+
 //Carica gli allergeni
 
 function carica_allergeni(){
@@ -29,28 +31,39 @@ function carica_pizze(){
 }
 
 function carica_ingredienti(pizzaSelezionata){
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function(){
-        var XMLParser = new DOMParser();
-        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml")
-        let pizze = document.getElementById("show_aggiunte_pizza_selected_ul");
-        pizze.innerHTML = "";   //Resetta le lista interna, non facendolo, si accodano gli ingredienti a quelli della pizza precedente
-        xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
-                let nomeAggiunta = row.childNodes.item(0).textContent;
-                let html = "<li>" + nomeAggiunta + "</li>";
-                pizze.innerHTML += html;
-        });
-        
+    if(pizzaSelezionata != ""){ //Controllo dovuto al selected value della lista delle pizze
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml")
+            let pizze = document.getElementById("show_aggiunte_pizza_selected_ul");
+            pizze.innerHTML = "";   //Resetta le lista interna, non facendolo, si accodano gli ingredienti a quelli della pizza precedente
+            xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
+                    let nomeAggiunta = row.childNodes.item(0).textContent;
+                    let html = "<li>" + nomeAggiunta + "</li>";
+                    pizze.innerHTML += html;
+            });
+            
+        }
+        xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
+        xhttp.send();
+    }else{
+        svuotaListaIngredienti();
     }
-    xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
-    xhttp.send();
     carica_tipo_aggiunta();
+}
+
+function svuotaListaIngredienti(){
+    document.getElementById("show_aggiunte_pizza_selected_ul").innerHTML = "";
 }
 
 window.onload = function(){
 
     carica_allergeni();
     carica_pizze();
+    cookie = getCookie("usrcok");
+    bloccaNumeroPersone();
+    impostaMinDataAvvenimento();
     //carica_tipo_aggiunta();
 }
 
@@ -107,7 +120,7 @@ function impostaSelettoreBasePizza(pizzeInfoXHTTP){
     var XMLParser = new DOMParser();
     var xmlDoc = XMLParser.parseFromString(pizzeInfoXHTTP.responseText, "application/xml")
     let pizze = document.getElementById("select_base_pizza");
-    pizze.innerHTML = "";
+    pizze.innerHTML = "<option selected value> Seleziona una pizza </option>";
     xmlDoc.childNodes.item(0).childNodes.forEach( function(row){
         let idHash = row.childNodes.item(0).textContent;
         let nome = row.childNodes.item(1).textContent;
@@ -116,7 +129,10 @@ function impostaSelettoreBasePizza(pizzeInfoXHTTP){
         html += "<label for=\"" + nome + "\">" + nome  + " - " + prezzo + " &euro; <label/>";
         pizze.innerHTML += html;
     });
-    carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
+    //Svuota la lista degli ingredienti siccome vi è l'opzione di default
+    svuotaListaIngredienti();
+    carica_tipo_aggiunta();
+    //carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
 }
 
 function carica_tipo_aggiunta(){
@@ -190,4 +206,86 @@ function getAllergeniIdHashAsParameters(){
         }
     });
     return allergeniParams;
+}
+
+function salva_nuovapizza(){
+    xml = creaXMLForm();
+    const putHTTP = XMLHttpRequest();
+    putHTTP.setRequestHeader("Content-Type", "text/xml");
+    putHTTP.open('PUT', '../../scripts/index.php?prenotazione=' + idHashPrenotazione, true);
+    putHTTP.send(xml);
+    return false;
+}
+
+function creaXMLForm(){
+
+    let pizzaSelected = document.getElementById("select_base_pizza");
+    let pizzaSelectedIdHash = pizzaSelected.value;
+
+    xml = document.implementation.createDocument(null, "root");
+
+    //Creo l'elemento pizza e ne aggiungo l'idHash
+    if(pizzaSelectedIdHash !== ""){
+        let pizza = xml.createElement("pizza");
+        pizza.setAttribute("hash", pizzaSelectedIdHash);
+        xml.appendChild(pizza);
+    }
+
+    //Prendo tutti i fieldset delle aggiunte
+    let fss = document.getElementsByClassName("fs_tipo_aggiunta");
+    for(let fs in fss){
+        let legend = fs.getElementsByClassName("lg_fs_tipo_aggiunta").innertText;
+        fsXML = xml.createElement(legend);
+        let divs = fs.getElementById("fs_tipoaggiunta_div_inner").getElementsByClassName("fs_tipoaggiunta_aggiunta_div");
+        let inputs = divs.querySelectorAll("input");
+        inputs.forEach( function(input){
+            if(input.checked){
+                aggiunta = fsXML.createElement("aggiunta");
+                aggiunta.setAttribute("hash", input.value);
+                fsXML.appendChild(aggiunta);
+            }
+        });
+        xml.appendChild(fsXML);
+    }
+    return xml;
+}
+
+/**
+ * Viene chiamata quando viene aggiunta la prima pizza/aggiunta a un ordine vuoto
+ */
+function create_nuova_prenotazione(){
+    var cookie = document.getCookie();  //usrcok concordato con backend PHP
+    const postHTTP = new XMLHttpRequest();
+    postHTTP.onload = function(){
+        
+    }
+    postHTTP.onerror = function(){
+        let errore = postHTTP.responseText;
+        alert("Non è stato possibile creare l'ordine: ");
+    }
+    postHTTP.open('POST', '../../scripts/index.php/prenotazione/create?'+cookie, true);
+    postHTTP.send();
+}
+
+function getCookie(){
+    //Prendo il cookie e ne eseguo il decoding al fine di bonificare da eventuali caratteri speciali
+    let decodedCookie = decodeURIComponent(document.cookie);    
+    //Stringa vuota vuol dire dunque che non vi è un cookie con quel nome
+    return decodedCookie;
+}
+
+function bloccaNumeroPersone(){
+    let cbAsporto = document.getElementById("cb_asporto");
+    let personeTextField = document.getElementById("tf_persone");
+    if(cbAsporto.checked){
+        personeTextField.innerText = "";    //Reset del numero
+        personeTextField.disabled = true;
+    }else{
+        personeTextField.disabled = false;
+    }
+}
+
+function impostaMinDataAvvenimento(){
+    let datePicker = document.getElementById("date_dataavvenimento");
+    datePicker.min = new Date().toISOString().split("T")[0];
 }

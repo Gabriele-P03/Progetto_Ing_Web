@@ -27,7 +27,7 @@
         </header>
 
         <main>
-            <form id="form_prenotazione" >
+            <form id="form_prenotazione" onsubmit="return salva_nuovapizza()">
 
                 <!--Fieldset per gli allergeni-->
                 <fieldset class="fs_prenota" id="fs_prenota_allergeni">
@@ -41,6 +41,7 @@
                 <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
                     <select id="select_base_pizza" onchange='carica_ingredienti(this.value)'>
+
                         <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
                     </select>
                     <div id="show_aggiunte_pizza_selected">
@@ -58,15 +59,34 @@
                             <!-- Ogni sezione è rappresentata da un fieldset il cui legend è il Tipo Aggiunta-->
                     </div>
                 </fieldset>
+
+                <input id="salva_button" type="submit" name="salva" value="Aggiungi all'ordine">
             </form>
 
             <article>
+
                 <div id="introduzione_article">
                     Ecco il tuo ordine corrente!
                 </div>
+
                 <div id="info_ordine">
-                    
+                    <div class="info_ordine_div" id="info_ordine_tipo">
+                        <div class="ordine_tipo">
+                            Asporto: <input class="cb_info_ordine_tipo" id="cb_asporto" type="checkbox" onclick="bloccaNumeroPersone()">
+                        </div>
+                        <div class="ordine_tipo">
+                            Persone: <input class="cb_info_ordine_tipo" id="tf_persone" name="numero_persone" type="number" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="info_ordine_div" id="info_ordine_telefono">
+                        Telefono:
+                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+                    </div>
+                    <div class="info_ordine_div" id="info_ordine_dataavvenimento">
+                        Per quando vuoi prenotare? <input type="date" id="date_dataavvenimento">
+                    </div>
                 </div>
+
                 <div id="div_ordine_corrente">
                     <table id="tabella_ordine_corrente">
                         <th id="th_ordine_corrente">

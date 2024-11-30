@@ -1,37 +1,38 @@
 <?php
 
 require_once PROJECT_ROOT_PATH . "/Controller/Api/BaseController.php";
-require_once PROJECT_ROOT_PATH . "/Model/AggiuntaModel.php";
+require_once PROJECT_ROOT_PATH . "/Model/PrenotazioneModel.php";
 
-class AggiuntaController extends BaseController{
-    private AggiuntaModel $aggiuntaModel;
+class PrenotazioneController extends BaseController{
+    private PrenotazioneModel $prenotazioneModel;
 
     public function __construct(){
-        $this->aggiuntaModel = new AggiuntaModel();
+        $this->prenotazioneModel = new PrenotazioneModel();
     }
 
     /**
-     * End-point /aggiunta?pizza=idhashpizza
+     * End-point /prenotazione/all
      * @return void
      */
     public function all(): void{
         $this->validaMetodi("GET");
 
         try{
-            $this->validaParametri(array("pizza"), null);
+            $this->validaParametri(null, null);
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
             exit;
         }
         try{
-            $idHashPizza = $_GET["pizza"];
-            if(!$idHashPizza){
+            $cookie = $_COOKIE["usrcok"];
+            if(!$cookie){
                 header(HTTP_V." 400 Bad Request");
                 echo "La pizza richiesta non esiste";
                 exit;
             }
-            $res = $this->aggiuntaModel->getAllByPizza($idHashPizza);
+            $userid = "";
+            $res = $this->prenotazioneModel->getAllByUserID($userid);
             $res_xml = $this->res_to_xml($res);
             $this->inviaRispostaOK($res_xml);   
         }catch(Exception $e){
@@ -59,14 +60,7 @@ class AggiuntaController extends BaseController{
                 echo "La pizza richiesta non esiste";
                 exit;
             }
-
-            //Controllo che sia stata selezionata una pizza. 
-            //getAllByTipoAggiuntaExceptByPizzaAndAllergeni sfrutterà !== ""
-            $idHashPizza = "";
-            if(filter_has_var(INPUT_GET, "pizza")){
-                $idHashPizza = $_GET["pizza"];
-            }
-
+            $idHashPizza = $_GET["pizza"];
             $idHashAllergeni = array();
             foreach($_GET as $key => $value){
                 if(preg_match("/allergene\d/", $key)){
