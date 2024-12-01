@@ -61,10 +61,10 @@ window.onload = function(){
 
     carica_allergeni();
     carica_pizze();
-    cookie = getCookie("usrcok");
+    cookie = getCookie();
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
-    //carica_tipo_aggiunta();
+    //caricaUltimaPrenotazioneBozza();
 }
 
 let footer_arrow_state = true
@@ -208,8 +208,8 @@ function getAllergeniIdHashAsParameters(){
     return allergeniParams;
 }
 
-function salva_nuovapizza(){
-    xml = creaXMLForm();
+function salvaNuovaPizza(){
+    xml = creaXMLFormOrdine();
     const putHTTP = XMLHttpRequest();
     putHTTP.setRequestHeader("Content-Type", "text/xml");
     putHTTP.open('PUT', '../../scripts/index.php?prenotazione=' + idHashPrenotazione, true);
@@ -217,7 +217,7 @@ function salva_nuovapizza(){
     return false;
 }
 
-function creaXMLForm(){
+function creaXMLFormOrdine(){
 
     let pizzaSelected = document.getElementById("select_base_pizza");
     let pizzaSelectedIdHash = pizzaSelected.value;
@@ -251,25 +251,34 @@ function creaXMLForm(){
 }
 
 /**
- * Viene chiamata quando viene aggiunta la prima pizza/aggiunta a un ordine vuoto
+ * Viene chiamata quando vengono salvate le informazioni di una prenotazione
+ * POST e PUT vengono discriminate in base al contenuto dell'hidden div  'id_prenotazione_hidden'
  */
-function create_nuova_prenotazione(){
-    var cookie = document.getCookie();  //usrcok concordato con backend PHP
-    const postHTTP = new XMLHttpRequest();
-    postHTTP.onload = function(){
-        
+function salvaPrenotazione(){
+    var cookie = getCookie();  //usrcok concordato con backend PHP
+    const xhttp = new XMLHttpRequest();
+    let idPrenotazione = document.getElementById("id_prenotazione_hidden").innerText;
+    xhttp.onload = function(){
+        console.log("Prenotazione salvata");
+        let cookie = xhttp.getResponseHeader("Cookie");
+        console.log("Cookie generato: " + cookie);
     }
-    postHTTP.onerror = function(){
-        let errore = postHTTP.responseText;
-        alert("Non è stato possibile creare l'ordine: ");
+    let method = 'POST';
+    if(idPrenotazione.length > 0){
+        method = 'PUT';
     }
-    postHTTP.open('POST', '../../scripts/index.php/prenotazione/create?'+cookie, true);
-    postHTTP.send();
+    xhttp.open(method, '../../scripts/index.php/prenotazione/save', true);
+    xhttp.setRequestHeader("Content-Type", 'application/xml; charset=utf-8');
+    let xml = infoPrenotazioneToXML();
+    if(xml !== ""){ //Ritorna stringa vuota a causa di return
+        xhttp.send(new XMLSerializer().serializeToString(xml));
+    }
 }
 
 function getCookie(){
     //Prendo il cookie e ne eseguo il decoding al fine di bonificare da eventuali caratteri speciali
-    let decodedCookie = decodeURIComponent(document.cookie);    
+    let decodedCookie = document.cookie;    
+    console.log("Cookie: " + decodedCookie);
     //Stringa vuota vuol dire dunque che non vi è un cookie con quel nome
     return decodedCookie;
 }
@@ -288,4 +297,58 @@ function bloccaNumeroPersone(){
 function impostaMinDataAvvenimento(){
     let datePicker = document.getElementById("date_dataavvenimento");
     datePicker.min = new Date().toISOString().split("T")[0];
+}
+
+function caricaUltimaPrenotazioneBozza(){
+    console.log("Caricando l'ultima prenotazione in bozza");
+    var cookie = getCookie();  //usrcok concordato con backend PHP
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        
+    }
+    xhttp.open('GET', '../../scripts/index.php/prenotazione/continua', true);
+    xhttp.send();
+}
+
+function infoPrenotazioneToXML(){
+
+    //Prendo le info di asporto e numero persone
+    let asportBool = document.getElementById("cb_asporto").checked;
+    let numeroPers = 0;
+    if(!asportBool){
+        numeroPers = document.getElementById("tf_persone").innerText; 
+        if(numeroPers == ""){
+            alert("Se la prenotazione non è da asporto, devi mettere il quantitativo di persone");
+            return "";
+        }
+    }
+
+    //Adesso prendo telefono e data avvenimento
+    let divTipo = document.getElementById('ordine_telefono_data_div');
+    let telefono = divTipo.querySelectorAll("input")[0].innerText;
+    let data = divTipo.querySelectorAll("input")[1].innerText;
+
+    xml = document.createElement("root");
+    
+    asportoXML = document.createElement("asporto");
+    asportoXML.setAttribute("value", asportBool);
+    xml.appendChild(asportoXML);
+
+    numeroXML = document.createElement("numero_persone");
+    numeroXML.setAttribute("value", numeroPers);
+    xml.appendChild(numeroXML);
+    
+    telefonoXML = document.createElement("telefono");
+    telefonoXML.setAttribute("value", telefono);
+    xml.appendChild(telefonoXML);
+
+    dataXML = document.createElement("data");
+    dataXML.setAttribute("value", data);
+    xml.appendChild(dataXML);
+
+    return xml;
+}
+
+function controllaCookieRitornato(){
+
 }

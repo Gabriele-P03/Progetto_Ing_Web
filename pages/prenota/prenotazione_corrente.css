@@ -32,3 +32,7 @@ div#info_ordine{
 input.cb_info_ordine_tipo{
     display: inline-block;
 }
+
+div.ordine_telefono_data{
+    display: inline-block;
+}

@@ -27,7 +27,7 @@
         </header>
 
         <main>
-            <form id="form_prenotazione" onsubmit="return salva_nuovapizza()">
+            <form id="form_prenotazione" onsubmit="return salvaNuovaPizza()">
 
                 <!--Fieldset per gli allergeni-->
                 <fieldset class="fs_prenota" id="fs_prenota_allergeni">
@@ -77,13 +77,23 @@
                         <div class="ordine_tipo">
                             Persone: <input class="cb_info_ordine_tipo" id="tf_persone" name="numero_persone" type="number" min="0" step="1">
                         </div>
+                        <div class="ordine_tipo" id="id_prenotazione_hidden" hidden></div>
                     </div>
-                    <div class="info_ordine_div" id="info_ordine_telefono">
-                        Telefono:
-                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+                    <div class="info_ordine_div" id="info_ordine_telefono_data">
+                        <div class="ordine_telefono_data">
+                            Telefono: <br>Data: 
+                        </div>
+                        <div class="ordine_telefono_data" id="ordine_telefono_data_div">
+                            <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+                            <br>
+                            <input type="date" id="date_dataavvenimento">
+                        </div>
                     </div>
-                    <div class="info_ordine_div" id="info_ordine_dataavvenimento">
-                        Per quando vuoi prenotare? <input type="date" id="date_dataavvenimento">
+
+                    <div class="info_ordine_div" id="info_ordine_bottoni">
+                        <div class="ordine_telefono_data">
+                            <input type="button" id="salva_info_prenotazione_bt" value="Salva Informazioni" onclick="salvaPrenotazione()">
+                        </div>
                     </div>
                 </div>
 
