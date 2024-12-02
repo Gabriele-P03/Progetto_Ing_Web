@@ -26,6 +26,22 @@ class Connection{
         }
     }
 
+    public function insert( $query = "", $types = "", $params = [], $tableName = ""): string{
+        try {
+            //echo $query . "\n" . $types ."\n" . implode(", ", $params);
+            //exit;
+            $stmt = $this->executeStatement($query, $types, $params);
+            $shaSQL = "UPDATE " . $tableName . " SET ID_HASH = SHA2(?, 256) WHERE ID = ?";
+            $inserted_id = $this->connection->insert_id;
+            $stmt = $this->executeStatement($shaSQL, "dd", array($inserted_id, $inserted_id));
+            $stmt->close();
+            $shaID = hash('sha256', $inserted_id);
+            return $shaID;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function selectWithTypes( $query = "", $types = "", $params = []){
         try {
             $stmt = $this->executeStatement($query, $types, $params);

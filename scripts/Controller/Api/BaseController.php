@@ -70,14 +70,16 @@ class BaseController{
             if(!$paramsExpected && !$paramsOptional){
                 throw new RuntimeException("La chiamta ha ricevuto ".count($params) ." parametri: " . implode(", ", $params) . " ma non so con quali controllarli");
             }
-            foreach($paramsExpected as $param){
-                if(!array_key_exists($param, $params)){
-                    throw new RuntimeException("Il parametro ". $param ." non è stato ricevuto. Ricevuti: " . implode(", ", $params));
+            if($paramsExpected){
+                foreach($paramsExpected as $param){
+                    if(!array_key_exists($param, $params)){
+                        throw new RuntimeException("Il parametro ". $param ." non è stato ricevuto. Ricevuti: " . implode(", ", $params));
+                    }
                 }
             }
             if($paramsOptional){
                 foreach($params as $param){
-                    if(!array_key_exists($param, $paramsOptional) && !array_key_exists($param, $paramsExpected)) {
+                    if(!array_key_exists($param, $paramsOptional) && ($paramsExpected && !array_key_exists($param, $paramsExpected))) {
                         throw new RuntimeException("Il parametro ". $param ." è stato ricevuto ma non era atteso");
                     }
                 }

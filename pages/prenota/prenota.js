@@ -7,7 +7,7 @@ function carica_allergeni(){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
-        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml")
+        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
         let allergeni = document.getElementById("fs_prenota_allergeni_div");
         xmlDoc.childNodes.item(0).childNodes.forEach( function(row){//Inside row there are column->value
                 let idHash = row.childNodes.item(0).textContent;
@@ -64,7 +64,7 @@ window.onload = function(){
     cookie = getCookie();
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
-    //caricaUltimaPrenotazioneBozza();
+    caricaUltimaPrenotazioneBozza();
 }
 
 let footer_arrow_state = true
@@ -218,15 +218,23 @@ function salvaNuovaPizza(){
 }
 
 function creaXMLFormOrdine(){
-
+    xml = document.createElement("root");
+    //Carico gli allergeni
+    let inputs = document.getElementById("fs_prenota_allergeni_div").querySelectorAll("checkbox");
+    let allergeniXML = document.createElement("allergeni");
+    inputs.forEach(element => {
+        if(element.checked){
+            let allergeneXML = document.createElement("allergene");
+            allergeneXML.setAttribute("hash", element.value);
+            allergeniXML.appendChild(allergeneXML);
+        }
+    });
+    xml.appendChild(allergeniXML);
     let pizzaSelected = document.getElementById("select_base_pizza");
     let pizzaSelectedIdHash = pizzaSelected.value;
-
-    xml = document.implementation.createDocument(null, "root");
-
     //Creo l'elemento pizza e ne aggiungo l'idHash
     if(pizzaSelectedIdHash !== ""){
-        let pizza = xml.createElement("pizza");
+        let pizza = document.createElement("pizza");
         pizza.setAttribute("hash", pizzaSelectedIdHash);
         xml.appendChild(pizza);
     }
@@ -235,12 +243,12 @@ function creaXMLFormOrdine(){
     let fss = document.getElementsByClassName("fs_tipo_aggiunta");
     for(let fs in fss){
         let legend = fs.getElementsByClassName("lg_fs_tipo_aggiunta").innertText;
-        fsXML = xml.createElement(legend);
+        fsXML = document.createElement(legend);
         let divs = fs.getElementById("fs_tipoaggiunta_div_inner").getElementsByClassName("fs_tipoaggiunta_aggiunta_div");
         let inputs = divs.querySelectorAll("input");
         inputs.forEach( function(input){
             if(input.checked){
-                aggiunta = fsXML.createElement("aggiunta");
+                aggiunta = document.createElement("aggiunta");
                 aggiunta.setAttribute("hash", input.value);
                 fsXML.appendChild(aggiunta);
             }
@@ -255,19 +263,27 @@ function creaXMLFormOrdine(){
  * POST e PUT vengono discriminate in base al contenuto dell'hidden div  'id_prenotazione_hidden'
  */
 function salvaPrenotazione(){
-    var cookie = getCookie();  //usrcok concordato con backend PHP
-    const xhttp = new XMLHttpRequest();
-    let idPrenotazione = document.getElementById("id_prenotazione_hidden").innerText;
-    xhttp.onload = function(){
-        console.log("Prenotazione salvata");
-        let cookie = xhttp.getResponseHeader("Cookie");
-        console.log("Cookie generato: " + cookie);
-    }
+    //Scelgo se fare una post o una put
     let method = 'POST';
-    if(idPrenotazione.length > 0){
+    if(idHashPrenotazione.length > 0){
         method = 'PUT';
     }
-    xhttp.open(method, '../../scripts/index.php/prenotazione/save', true);
+    var cookie = getCookie();  //usrcok concordato con backend PHP
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        console.log("Prenotazione salvata");
+        if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            idHashPrenotazione = xmlDoc.childNodes.item(0).childNodes.item(0).attributes[0].value;
+        }
+    }
+
+    let path = '../../scripts/index.php/prenotazione/save';
+    if(method === 'PUT'){
+        path += "?prenotazione="+encodeURIComponent(idHashPrenotazione);
+    }
+    xhttp.open(method, path, true);
     xhttp.setRequestHeader("Content-Type", 'application/xml; charset=utf-8');
     let xml = infoPrenotazioneToXML();
     if(xml !== ""){ //Ritorna stringa vuota a causa di return
@@ -304,7 +320,23 @@ function caricaUltimaPrenotazioneBozza(){
     var cookie = getCookie();  //usrcok concordato con backend PHP
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
-        
+        var XMLParser = new DOMParser();
+        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+        let row = xmlDoc.documentElement;
+        if(row.childNodes.item(0).childNodes.length === 10){
+            idHashPrenotazione = row.getElementsByTagName("ID_HASH")[0].textContent; //ID_HASH
+            document.getElementById("nominativo_input").value = row.getElementsByTagName("NOME")[0].textContent;//Nominativo
+            document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_PRENOTAZIONE")[0].textContent;//Data avventimento
+            document.getElementById("telefono_input").value = row.getElementsByTagName("TELEFONO")[0].textContent;  //Telefono
+
+            let cb_asporto_value = row.getElementsByTagName("TIPO")[0].textContent;
+            document.getElementById("cb_asporto").checked = cb_asporto_value;
+            if(!cb_asporto_value){
+                document.getElementById("tf_persone").value = row.getElementsByTagName("NUMERO_PERSONE")[0].textContent;
+            }else{
+                bloccaNumeroPersone();
+            }
+        }
     }
     xhttp.open('GET', '../../scripts/index.php/prenotazione/continua', true);
     xhttp.send();
@@ -316,8 +348,8 @@ function infoPrenotazioneToXML(){
     let asportBool = document.getElementById("cb_asporto").checked;
     let numeroPers = 0;
     if(!asportBool){
-        numeroPers = document.getElementById("tf_persone").innerText; 
-        if(numeroPers == ""){
+        numeroPers = document.getElementById("tf_persone").value; 
+        if(numeroPers === ""){
             alert("Se la prenotazione non è da asporto, devi mettere il quantitativo di persone");
             return "";
         }
@@ -325,8 +357,22 @@ function infoPrenotazioneToXML(){
 
     //Adesso prendo telefono e data avvenimento
     let divTipo = document.getElementById('ordine_telefono_data_div');
-    let telefono = divTipo.querySelectorAll("input")[0].innerText;
-    let data = divTipo.querySelectorAll("input")[1].innerText;
+    let telefono = divTipo.querySelectorAll("input")[0].value;
+    let data = divTipo.querySelectorAll("input")[1].value;
+    let nominativo = document.getElementById("info_ordine_nome_div").querySelector("input").value;
+
+    if(telefono === ""){
+        alert("Nessun numero di telefono inserito");
+        return ""; 
+    }
+    if(data === ""){
+        alert("Nessuna data inserita");
+        return ""; 
+    }
+    if(nominativo === ""){
+        alert("Nessun nominativo inserito");
+        return ""; 
+    }
 
     xml = document.createElement("root");
     
@@ -345,6 +391,10 @@ function infoPrenotazioneToXML(){
     dataXML = document.createElement("data");
     dataXML.setAttribute("value", data);
     xml.appendChild(dataXML);
+
+    nomeXML = document.createElement("nome");
+    nomeXML.setAttribute("value", nominativo);
+    xml.appendChild(nomeXML);
 
     return xml;
 }

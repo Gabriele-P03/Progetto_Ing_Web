@@ -65,7 +65,7 @@ class PrenotazioneController extends BaseController{
     public function save(){
         $this->validaMetodi(array("PUT", "POST"));
         try{
-            $this->validaParametri(null, null);
+            $this->validaParametri(null, array("prenotazione"));
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
@@ -80,12 +80,14 @@ class PrenotazioneController extends BaseController{
             $xml = new SimpleXMLElement($xmlString);
 
             $method = $_SERVER["REQUEST_METHOD"];
+            $res = "";
             if($method == 'POST'){
                 $res = $this->prenotazioneModel->save($xml, $userid);
             }else{
-                $res = $this->prenotazioneModel->update($xml, $userid);
+                $hash = $_GET['prenotazione'];
+                $this->prenotazioneModel->update($xml, $hash,  $userid);
             }
-            $this->inviaRispostaOK("");  
+            $this->inviaRispostaOK($res);  
         }catch(Exception $e){
             header(HTTP_V." 505 Internal Server Error");
             echo "\"".$e->getMessage()."\"";

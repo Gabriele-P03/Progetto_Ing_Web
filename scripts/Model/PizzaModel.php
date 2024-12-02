@@ -29,6 +29,10 @@ class PizzaModel extends Connection{
             throw new Exception("Nessun allergene passato");
         }
     }
+
+    public function getAllByPrenotazione($idHashPrenotazione = ""){
+
+    }
 }
 
 ?>

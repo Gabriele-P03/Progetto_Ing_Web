@@ -16,17 +16,23 @@ article>div#introduzione_article{
     border-bottom: 1px solid white;
 }
 
+div#info_ordine_outer_nome_bottone_div{
+    border: none;
+}
+
 div.info_ordine_div{
     display: inline-block;
     color: white;
     margin-left: 0.5%;
     margin-top: 0.5%;
+    margin-bottom: 0.5%;
     padding: 0.5% 0.5% 0.5% 0.5%;
     border: 1px solid white;
 }
 
 div#info_ordine{
-    margin: 0.5% 0.5% 0% 0.5%;
+    margin: 0.5% 0.5% 0.5% 0.5%;
+    border: 1px solid white;
 }
 
 input.cb_info_ordine_tipo{
@@ -35,4 +41,12 @@ input.cb_info_ordine_tipo{
 
 div.ordine_telefono_data{
     display: inline-block;
+}
+
+div#info_ordine_nome_bottone{
+    border: none;
+}
+
+div#info_ordine_bottone_div{
+    width: 100%;
 }
