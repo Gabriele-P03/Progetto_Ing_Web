@@ -51,19 +51,40 @@ div#info_ordine_bottone_div{
     width: 100%;
 }
 
+div#div_prenotazione{
+    max-height: 100%;
+}
+
 table#tabella_prenotazione{
-    border: 2px solid white;
+    border: 4px solid white;
     margin: 1%;
     width: 98%;
+
 }
+
 
 th.th_prenotazione{
     color: white;
     text-align: center;
     text-transform: uppercase;
+    border: 2px solid white;
+}
+
+ul.ul_prenotazione{
+    list-style-position: inside;
 }
 
 td.td_prenotazione{
     color: white;
-    text-align: center;
+    border: 1px solid white;
+}
+
+thead, tbody{
+}
+thead{
+
+}
+tbody{
+    overflow: auto;
+    max-height: 50%;
 }

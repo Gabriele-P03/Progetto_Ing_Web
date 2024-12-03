@@ -438,20 +438,33 @@ function caricaOrdiniPrenotazione(){
 
 function caricaDati(xmlDoc){
 
-    let table = document.getElementById("tabella_prenotazione");
-    xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
+    let table = document.getElementById("tabella_prenotazione").querySelector("tbody");
+    let ths = document.getElementById("tabella_prenotazione").querySelectorAll("th"); //Prendo tutti gli header
+
+    //item(0) per entrare nel root results
+    //row è l'ordine
+    xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
 
         let newTR = "<tr class=\"tr_prenotazione\">"
 
-        row.childNodes.forEach( col => {
-            if(col.childNodes.length > 0){
-                    let tr = caricaTDUL(col.childNodes);
-                    newTR += tr;
-            }else if(col.attributes.length > 0){
-                let tr = caricaTD(col);
-                newTR += tr;
+        ths.forEach( th => {
+            let nomeCol = th.innerHTML;
+
+            let parentElement = ordine.querySelector(nomeCol);
+
+            //Vuol dire che non vi è questa colonna nell'ordinazione corrente
+            if(parentElement === null){
+                newTR += "<td class=\"td_prenotazione\"></td>";
+            }else{
+                if(parentElement.hasAttribute("th") && !parentElement.hasAttribute("ul")){
+                    let res = caricaTD(parentElement);
+                    newTR += res;
+                }else{
+                    let res = caricaTDUL(parentElement.childNodes);
+                    newTR += res;
+                }
             }
-        });
+        })
 
         newTR += "</tr>";
         table.innerHTML += newTR;
@@ -462,8 +475,8 @@ function caricaTDUL(col){
     let newTD = "<td class=\"td_prenotazione\"><ul class=\"ul_prenotazione\">";
 
     col.forEach( value =>{
-        let idHash = value.attributes[0].value;
-        let nome = value.attributes[1].value;
+        let idHash = value.getAttribute("hash");
+        let nome = value.getAttribute("value");
         newTD += "<li class=\"li_prenotazione\">" + nome + "</li>";
     } );
     newTD += "</ul></td>";
@@ -480,10 +493,11 @@ function caricaTD(col){
 }
 
 function caricaTHs(xmlDoc){
+    //childNodes.item(0) per entrare nel results
     xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
-        row.childNodes.forEach( col => {
+        row.childNodes.forEach(col => {
             aggiungiTH(col.nodeName);
-        })
+        });
     });
 }
 
@@ -491,8 +505,9 @@ function aggiungiTH(nomeColonna){
     console.log("Provando ad aggiungere la colonna: " + nomeColonna);
     let trh = document.getElementById("table_row_header_prenotazione");
     let oldTHs = trh.getElementsByClassName("th_prenotazione");
-    for(var oldTH in oldTHs){
-        if(oldTH.innerText === nomeColonna){
+    for(let i = 0; i < oldTHs.length; i++){
+        let oldTH = oldTHs.item(i);
+        if(oldTH.innerHTML === nomeColonna){
             return;
         }
     }

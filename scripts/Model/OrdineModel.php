@@ -90,7 +90,7 @@ class OrdineModel extends Connection{
                 $resPizza = $this->select($sqlPizza, array($idPizza));
                 $xmlPizza->addAttribute("hash", $resPizza[0]["ID_HASH"]);
                 $xmlPizza->addAttribute("value", $resPizza[0][DB_PIZZA_NOME]);
-                $xmlPizza->addAttribute("ul", false);
+                $xmlPizza->addAttribute("th", true);
             }
 
             //Scrivo le allergie
@@ -103,8 +103,8 @@ class OrdineModel extends Connection{
                 $allergeneXML->addAttribute("value", $rowAllergie[DB_ALLERGENE_ETICHETTA]);
             }
             $allergieXML->addAttribute("ul", true);
+            $allergieXML->addAttribute("th", true);
 
-            $aggiunteXML = $ordineXML->addChild("aggiunte");
             $sqlAggiunte = "SELECT a.ID_HASH AS ID_HASH_AGGIUNTA, t.ID_HASH AS ID_HASH_TIPO_AGGIUNTA, " . DB_AGGIUNTA_NOME . ", " . DB_AGGIUNTA_PREZZO . ", " . DB_TIPOAGGIUNTA_ETICHETTA . " FROM " . DB_AGGIUNTA . " a, " . DB_TIPOAGGIUNTA . " t WHERE a.ID_TIPO_AGGIUNTA = t.ID AND a.ID IN (SELECT " . DB_ORDINEAGGIUNTA_IDAGGIUNTA . " FROM " . DB_ORDINEAGGIUNTA . " WHERE " . DB_ORDINEAGGIUNTA_IDORDINE . " = ?)";
             
             $resAggiunte = $this->select($sqlAggiunte, array($idOrdine));
@@ -113,12 +113,13 @@ class OrdineModel extends Connection{
                 //Prima controllo che il tipo aggiunta non sia stato già inserito, altrimenti lo creo
                 $nomeTipoAggiunta = $rowAggiunta[DB_TIPOAGGIUNTA_ETICHETTA];
                 $tipoaggiuntaXML = null;
-                if( !isset($aggiunteXML->$nomeTipoAggiunta) ){
-                    $tipoaggiuntaXML = $aggiunteXML->addChild($nomeTipoAggiunta);
+                if( !isset($ordineXML->$nomeTipoAggiunta) ){
+                    $tipoaggiuntaXML = $ordineXML->addChild($nomeTipoAggiunta);
                     $tipoaggiuntaXML->addAttribute("hash", $rowAggiunta['ID_HASH_TIPO_AGGIUNTA']);
                     $tipoaggiuntaXML->addAttribute('ul', true);
+                    $tipoaggiuntaXML->addAttribute('th', true);
                 }else{
-                    $tipoaggiuntaXML = $aggiunteXML->$nomeTipoAggiunta;
+                    $tipoaggiuntaXML = $ordineXML->$nomeTipoAggiunta;
                 }
                 $aggiuntaXML = $tipoaggiuntaXML->addChild("aggiunta");
                 $aggiuntaXML->addAttribute("hash", $rowAggiunta['ID_HASH_AGGIUNTA']);
