@@ -167,13 +167,18 @@ function carica_tipo_aggiunta(){
             xhttpAggiunta.onload = function(){
                 var XMLParserAggiunta = new DOMParser();
                 var xmlDocAggiunta = XMLParserAggiunta.parseFromString(xhttpAggiunta.responseText, "application/xml");
+                let tmp = "";
                 xmlDocAggiunta.childNodes.item(0).childNodes.forEach( function(aggiunta){
                     let idHashAggiunta = aggiunta.childNodes.item(0).textContent;
                     let etichetta = aggiunta.childNodes.item(1).textContent;
                     let prezzo = aggiunta.childNodes.item(2).textContent;
-                    htmlAggiunta += "<div class=\"fs_tipoaggiunta_aggiunta_div>\"><input type=\"checkbox\" name=\"aggiunta_" + idHashAggiunta + "\" value=\"" + idHash + "\"><label for=\"aggiunta_" + idHashAggiunta +"\">" + etichetta + " - " + prezzo + "&euro;</label></div>";
+                    tmp += "<div class=\"fs_tipoaggiunta_aggiunta_div\"><input type=\"checkbox\" name=\"aggiunta_" + idHashAggiunta + "\" value=\"" + idHashAggiunta + "\"><label for=\"aggiunta_" + idHashAggiunta +"\">" + etichetta + " - " + prezzo + "&euro;</label></div>";
                 });  
-                htmlAggiunta += "</div>";
+                if(tmp === ""){
+                    htmlAggiunta = "";
+                }else{
+                    htmlAggiunta += tmp + "</div>";
+                }
             };
             //Di seguito verrà chiamata una GET sincrona...
             //Si presti attenzione al fatto che essa è chiamata all'interno di una GET asincrona!!!
@@ -210,17 +215,22 @@ function getAllergeniIdHashAsParameters(){
 
 function salvaNuovaPizza(){
     xml = creaXMLFormOrdine();
-    const putHTTP = XMLHttpRequest();
+    //var cookie = getCookie();
+    const putHTTP = new XMLHttpRequest();
+    if(idHashPrenotazione.length == 0){
+        alert("Per poter salvare gli ordini devi prima inserire le informazioni della prenotazione");
+        return;
+    }
+    putHTTP.open('POST', '../../scripts/index.php/ordine/save?prenotazione=' + idHashPrenotazione, true);
     putHTTP.setRequestHeader("Content-Type", "text/xml");
-    putHTTP.open('PUT', '../../scripts/index.php?prenotazione=' + idHashPrenotazione, true);
-    putHTTP.send(xml);
+    putHTTP.send(new XMLSerializer().serializeToString(xml));
     return false;
 }
 
 function creaXMLFormOrdine(){
     xml = document.createElement("root");
     //Carico gli allergeni
-    let inputs = document.getElementById("fs_prenota_allergeni_div").querySelectorAll("checkbox");
+    let inputs = document.getElementById("fs_prenota_allergeni_div").querySelectorAll("input");
     let allergeniXML = document.createElement("allergeni");
     inputs.forEach(element => {
         if(element.checked){
@@ -241,11 +251,12 @@ function creaXMLFormOrdine(){
 
     //Prendo tutti i fieldset delle aggiunte
     let fss = document.getElementsByClassName("fs_tipo_aggiunta");
-    for(let fs in fss){
-        let legend = fs.getElementsByClassName("lg_fs_tipo_aggiunta").innertText;
+    let aggiunteXML = document.createElement("aggiunte");
+    for(var i = 0; i < fss.length; i++){
+        let fs = fss[i];
+        let legend = fs.getElementsByClassName("lg_fs_tipo_aggiunta")[0].innerText;
         fsXML = document.createElement(legend);
-        let divs = fs.getElementById("fs_tipoaggiunta_div_inner").getElementsByClassName("fs_tipoaggiunta_aggiunta_div");
-        let inputs = divs.querySelectorAll("input");
+        let inputs = fs.getElementsByClassName("fs_tipoaggiunta_div_inner")[0].querySelectorAll("input");
         inputs.forEach( function(input){
             if(input.checked){
                 aggiunta = document.createElement("aggiunta");
@@ -253,8 +264,9 @@ function creaXMLFormOrdine(){
                 fsXML.appendChild(aggiunta);
             }
         });
-        xml.appendChild(fsXML);
+        aggiunteXML.appendChild(fsXML);
     }
+    xml.appendChild(aggiunteXML);
     return xml;
 }
 
@@ -337,9 +349,12 @@ function caricaUltimaPrenotazioneBozza(){
                 bloccaNumeroPersone();
             }
         }
+
+        caricaOrdiniPrenotazione();
     }
     xhttp.open('GET', '../../scripts/index.php/prenotazione/continua', true);
     xhttp.send();
+
 }
 
 function infoPrenotazioneToXML(){
@@ -399,6 +414,88 @@ function infoPrenotazioneToXML(){
     return xml;
 }
 
-function controllaCookieRitornato(){
+/**
+ * 
+ * 
+ * INIZIA LA PERTE INERENTE LA TABELLA DEGLI ORDINI DI UNA PRENOTAZIONE
+ * 
+ * 
+ */
 
+function caricaOrdiniPrenotazione(){
+    if(idHashPrenotazione.length > 0){
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            caricaTHs(xmlDoc);
+            caricaDati(xmlDoc);
+        };
+        xhttp.open('GET', '../../scripts/index.php/ordine/get?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
+        xhttp.send();
+    }
+}
+
+function caricaDati(xmlDoc){
+
+    let table = document.getElementById("tabella_prenotazione");
+    xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
+
+        let newTR = "<tr class=\"tr_prenotazione\">"
+
+        row.childNodes.forEach( col => {
+            if(col.childNodes.length > 0){
+                    let tr = caricaTDUL(col.childNodes);
+                    newTR += tr;
+            }else if(col.attributes.length > 0){
+                let tr = caricaTD(col);
+                newTR += tr;
+            }
+        });
+
+        newTR += "</tr>";
+        table.innerHTML += newTR;
+    });
+}
+
+function caricaTDUL(col){
+    let newTD = "<td class=\"td_prenotazione\"><ul class=\"ul_prenotazione\">";
+
+    col.forEach( value =>{
+        let idHash = value.attributes[0].value;
+        let nome = value.attributes[1].value;
+        newTD += "<li class=\"li_prenotazione\">" + nome + "</li>";
+    } );
+    newTD += "</ul></td>";
+    return newTD;
+}
+
+function caricaTD(col){
+    let valueHash = col.attributes[0].value;
+    let value = col.attributes[1].value;
+    let newTD = "<td class=\"td_prenotazione\">";
+    newTD += value;
+    newTD += "</td>";
+    return newTD;
+}
+
+function caricaTHs(xmlDoc){
+    xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
+        row.childNodes.forEach( col => {
+            aggiungiTH(col.nodeName);
+        })
+    });
+}
+
+function aggiungiTH(nomeColonna){
+    console.log("Provando ad aggiungere la colonna: " + nomeColonna);
+    let trh = document.getElementById("table_row_header_prenotazione");
+    let oldTHs = trh.getElementsByClassName("th_prenotazione");
+    for(var oldTH in oldTHs){
+        if(oldTH.innerText === nomeColonna){
+            return;
+        }
+    }
+    trh.innerHTML += "<th class=\"th_prenotazione\">" + nomeColonna + "</th>";
+    console.log("Aggiunta");
 }

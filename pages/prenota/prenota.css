@@ -138,13 +138,6 @@ div.fs_tipoaggiunta_div_inner{
     overflow-y: auto;
 }
 
-/*Div contentente checkbox, nome e prezzo di ogni aggiunta*/
-div.fs_tipoaggiunta_aggiunta_div{
-    display: inline;
-    width: fit-content;
-}
-
-
 
 /********************************************
  *                                          *

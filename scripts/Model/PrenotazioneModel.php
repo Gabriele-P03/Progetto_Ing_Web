@@ -60,6 +60,12 @@ class PrenotazioneModel extends Connection{
                     " WHERE " . DB_PRENOTAZIONE_USERID . " = ? AND ID_HASH = ?";
         $this->insert($sql, "sssssss", array($nominativo, $data, $numero_persone, $asporto, $telefono, $userid, $hash), DB_PRENOTAZIONE);
     }
+
+    public function aggiungiOrdine($xml, $hash, $userid){
+        $pizza = $xml->pizza[0]->attributes()[0];
+        $allergeni = $xml->allergeni;
+        
+    }
 }
 
 ?>

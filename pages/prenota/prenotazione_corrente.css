@@ -50,3 +50,20 @@ div#info_ordine_nome_bottone{
 div#info_ordine_bottone_div{
     width: 100%;
 }
+
+table#tabella_prenotazione{
+    border: 2px solid white;
+    margin: 1%;
+    width: 98%;
+}
+
+th.th_prenotazione{
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+td.td_prenotazione{
+    color: white;
+    text-align: center;
+}
