@@ -130,6 +130,14 @@ class OrdineModel extends Connection{
         return $xml;
         
     }
+
+    public function remove($idHashOrdine = ""){
+        $this->ordineAllergenModel->deleteByIdHashOrdine($idHashOrdine);
+        $this->ordineAggiuntaModel->deleteByIdHashOrdine($idHashOrdine);
+        
+        $sql = "DELETE FROM " . DB_ORDINE . " WHERE ID_HASH = ?";
+        $this->delete($sql, "s", array($idHashOrdine));
+    }
 }
 
 ?>

@@ -42,6 +42,15 @@ class Connection{
         }
     }
 
+    public function delete( $query = "", $types = "", $params = []): void{
+        try {
+            $stmt = $this->executeStatement($query, $types, $params);
+            $stmt->close();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function selectWithTypes( $query = "", $types = "", $params = []){
         try {
             $stmt = $this->executeStatement($query, $types, $params);

@@ -14,6 +14,11 @@ class OrdineAggiuntaModel extends Connection{
         echo $sql . " -> " . $idHashOrdine . ", " . $idHashAggiunta . "\n";
         $this->insert( $sql , "ss", array($idHashOrdine, $idHashAggiunta), DB_ORDINEAGGIUNTA);
     }
+
+    public function deleteByIdHashOrdine($idHashOrdine = ""){
+        $sql = "DELETE FROM " . DB_ORDINEAGGIUNTA . " WHERE " . DB_ORDINEAGGIUNTA_IDORDINE . " IN (SELECT ID FROM " . DB_ORDINE . " WHERE ID_HASH = ?)";
+        $this->delete($sql, "s", array($idHashOrdine));
+    }
 }
 
 ?>

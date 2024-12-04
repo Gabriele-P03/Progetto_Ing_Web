@@ -13,6 +13,11 @@ class OrdineAllergeneModel extends Connection{
         $sql = "INSERT INTO " . DB_ORDINEALLERGENE . " VALUES(NULL, NULL, (SELECT ID FROM " . DB_ORDINE ." WHERE ID_HASH = ?), (SELECT ID FROM " . DB_ALLERGENE . " WHERE ID_HASH = ?))";
         $this->insert( $sql , "ss", array($idHashOrdine, $idHashAllergene), DB_ORDINEALLERGENE);
     }
+
+    public function deleteByIdHashOrdine($idHashOrdine = ""){
+        $sql = "DELETE FROM " . DB_ORDINEALLERGENE . " WHERE " . DB_ORDINEALLERGENE_IDORDINE . " IN (SELECT ID FROM " . DB_ORDINE . " WHERE ID_HASH = ?)";
+        $this->delete($sql, "s", array($idHashOrdine));
+    }
 }
 
 ?>

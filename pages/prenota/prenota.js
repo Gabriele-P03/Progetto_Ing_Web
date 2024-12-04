@@ -512,14 +512,18 @@ function aggiungiTH(nomeColonna){
  */
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
-    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione")[0].querySelectorAll("td");
-    //Parte da 1 in modo da non prendere la colonna delle azioni
-    for(let i = 0; i < tableTBodyTDs.length; i++){
-        let e = tableTBodyTDs[i];
-        let w = e.scrollWidth-2*2//.offsetWidth - e.style.marginLeft - e.style.marginRight;
-        tableTHeadTHs[i].style.width = w+'px';
-        if(i > 0){
-            tableTHeadTHs[i].style.marginLeft = '2px';
+    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione")[0];
+    if(tableTBodyTDs !== undefined){
+        tableTBodyTDs = tableTBodyTDs.querySelectorAll("td");
+    
+        //Parte da 1 in modo da non prendere la colonna delle azioni
+        for(let i = 0; i < tableTBodyTDs.length; i++){
+            let e = tableTBodyTDs[i];
+            let w = e.scrollWidth-2*2//.offsetWidth - e.style.marginLeft - e.style.marginRight;
+            tableTHeadTHs[i].style.width = w+'px';
+            if(i > 0){
+                tableTHeadTHs[i].style.marginLeft = '2px';
+            }
         }
     }
 }
@@ -533,6 +537,9 @@ function popolaFormPerModifica(){
 function cancellaOrdine(ordine){
     let confermato = confirm("Sei sicuro di voler eliminare quest'ordine?");
     if(confermato){
-        let idHashOrdine = null;
+        let idHashOrdine = ordine.name;
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('DELETE', '../../scripts/index.php/ordine/delete?ordine='+idHashOrdine, true);
+        xhttp.send();
     }
 }
