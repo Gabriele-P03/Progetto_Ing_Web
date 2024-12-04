@@ -1,3 +1,16 @@
+window.onresize = function(){
+    allineaTabella();
+}
+window.onload = function(){
+
+    carica_allergeni();
+    carica_pizze();
+    cookie = getCookie();
+    bloccaNumeroPersone();
+    impostaMinDataAvvenimento();
+    caricaUltimaPrenotazioneBozza();
+}
+
 var idHashPrenotazione = "";
 
 //Carica gli allergeni
@@ -55,45 +68,6 @@ function carica_ingredienti(pizzaSelezionata){
 
 function svuotaListaIngredienti(){
     document.getElementById("show_aggiunte_pizza_selected_ul").innerHTML = "";
-}
-
-window.onload = function(){
-
-    carica_allergeni();
-    carica_pizze();
-    cookie = getCookie();
-    bloccaNumeroPersone();
-    impostaMinDataAvvenimento();
-    caricaUltimaPrenotazioneBozza();
-}
-
-let footer_arrow_state = true
-function footer_up(){
-
-    let arrow = document.getElementById("footer_arrow");
-    let footer = document.getElementById("footer_info");
-
-    if(footer_arrow_state){
-        arrow.setAttribute("src", '../../resources/body/footer/footer_down.png');
-        footer_arrow_state = false;
-        footer.style.display = "block";
-        footer.animate([
-                {
-                    transform: 'translateY(100%)'
-                },
-                {
-                    transform: 'translateY(0%)'
-                }
-            ],{
-                duration: 1000,
-                iterations: 1
-            }
-        );
-    }else{
-        arrow.setAttribute("src", '../../resources/body/footer/footer_up.png');
-        footer_arrow_state = true;
-        footer.style.display = "none";
-    }
 }
 
 
@@ -430,6 +404,7 @@ function caricaOrdiniPrenotazione(){
             var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
             caricaTHs(xmlDoc);
             caricaDati(xmlDoc);
+            allineaTabella();
         };
         xhttp.open('GET', '../../scripts/index.php/ordine/get?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
         xhttp.send();
@@ -446,8 +421,15 @@ function caricaDati(xmlDoc){
     xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
 
         let newTR = "<tr class=\"tr_prenotazione\">"
+        //Aggiungo i due tasti per le azioni
+        newTR += "<td class=\"td_prenotazione\">"
+        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\">";
+        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\">";
+        newTR += "</td>";
 
-        ths.forEach( th => {
+        //Salto la prima colonna essendo quella delle azioni
+        for(let i = 1; i < ths.length; i++){
+            let th = ths[i];
             let nomeCol = th.innerHTML;
 
             let parentElement = ordine.querySelector(nomeCol);
@@ -464,7 +446,7 @@ function caricaDati(xmlDoc){
                     newTR += res;
                 }
             }
-        })
+        }
 
         newTR += "</tr>";
         table.innerHTML += newTR;
@@ -493,12 +475,18 @@ function caricaTD(col){
 }
 
 function caricaTHs(xmlDoc){
-    //childNodes.item(0) per entrare nel results
-    xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
-        row.childNodes.forEach(col => {
-            aggiungiTH(col.nodeName);
+    if(xmlDoc.childNodes.item(0).childNodes.length > 0){ 
+
+        //Carico la colonna delle azioni
+        let azioniHTMLTH = "<th class=\"th_prenotazione\">AZIONI</th>";
+        document.getElementById("table_row_header_prenotazione").innerHTML += azioniHTMLTH;
+        //childNodes.item(0) per entrare nel results
+        xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
+            row.childNodes.forEach(col => {
+                aggiungiTH(col.nodeName);
+            });
         });
-    });
+    }
 }
 
 function aggiungiTH(nomeColonna){
@@ -513,4 +501,23 @@ function aggiungiTH(nomeColonna){
     }
     trh.innerHTML += "<th class=\"th_prenotazione\">" + nomeColonna + "</th>";
     console.log("Aggiunta");
+}
+
+/**
+ * Per abilitare lo scroll al tbody, ho dovuto configurare il diplay block ma ciò causa la
+ * perdita dell'allineamento tra i th e i td.
+ * Solo tramite JS si può rimediare completamente
+ */
+function allineaTabella(){
+    let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
+    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione")[0].querySelectorAll("td");
+    //Parte da 1 in modo da non prendere la colonna delle azioni
+    for(let i = 0; i < tableTBodyTDs.length; i++){
+        let e = tableTBodyTDs[i];
+        let w = e.scrollWidth-2*2//.offsetWidth - e.style.marginLeft - e.style.marginRight;
+        tableTHeadTHs[i].style.width = w+'px';
+        if(i > 0){
+            tableTHeadTHs[i].style.marginLeft = '2px';
+        }
+    }
 }

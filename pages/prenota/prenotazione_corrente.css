@@ -5,7 +5,8 @@ article{
     border: 1px solid white;
     width: 55%;
     margin: 1% 0.5% 0.5% 2%;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
 }
 
 article>div#introduzione_article{
@@ -14,6 +15,7 @@ article>div#introduzione_article{
     text-align: center;
     font-size: medium;
     border-bottom: 1px solid white;
+    flex: 0.1 0 auto;
 }
 
 div#info_ordine_outer_nome_bottone_div{
@@ -33,6 +35,7 @@ div.info_ordine_div{
 div#info_ordine{
     margin: 0.5% 0.5% 0.5% 0.5%;
     border: 1px solid white;
+    flex: 0.2 0 auto;
 }
 
 input.cb_info_ordine_tipo{
@@ -56,35 +59,62 @@ div#div_prenotazione{
 }
 
 table#tabella_prenotazione{
+    display: block;
     border: 4px solid white;
     margin: 1%;
-    width: 98%;
-
+    height: fit-content;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
+thead, tbody{
+    display: block;
+}
+
+tr#table_row_header_prenotazione{
+    white-space: nowrap;
+}
 
 th.th_prenotazione{
     color: white;
     text-align: center;
     text-transform: uppercase;
     border: 2px solid white;
+    white-space: nowrap;
+    display: inline-block;
 }
 
-ul.ul_prenotazione{
-    list-style-position: inside;
+
+
+tbody{
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 1%;
+    max-height: 95%;
+    width: fit-content;
 }
+
+tr.tr_prenotazione{
+    white-space: nowrap;
+    width: fit-content;
+}
+
 
 td.td_prenotazione{
     color: white;
     border: 1px solid white;
+    width: fit-content;
+}
+ul.ul_prenotazione{
+    list-style-position: inside;
+    width: fit-content;
+}
+li.li_prenotazione{
+    width: fit-content;
 }
 
-thead, tbody{
-}
-thead{
-
-}
-tbody{
-    overflow: auto;
-    max-height: 50%;
+input.azione_prenotazione_button{
+    display: block;
+    margin: 0% 0.5em 0% 0.5em;
+    width: 80%;
 }
