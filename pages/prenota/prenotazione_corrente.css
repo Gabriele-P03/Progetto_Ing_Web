@@ -15,7 +15,6 @@ article>div#introduzione_article{
     text-align: center;
     font-size: medium;
     border-bottom: 1px solid white;
-    flex: 0.1 0 auto;
 }
 
 div#info_ordine_outer_nome_bottone_div{
@@ -35,7 +34,6 @@ div.info_ordine_div{
 div#info_ordine{
     margin: 0.5% 0.5% 0.5% 0.5%;
     border: 1px solid white;
-    flex: 0.2 0 auto;
 }
 
 input.cb_info_ordine_tipo{
@@ -65,10 +63,14 @@ table#tabella_prenotazione{
     height: fit-content;
     overflow-y: hidden;
     overflow-x: auto;
+    width: fit-content;
+    align-self: center;
+    max-width: 98%; /*100% - 2% per i margini left e right*/
 }
 
 thead, tbody{
     display: block;
+    width: fit-content;
 }
 
 tr#table_row_header_prenotazione{
@@ -82,6 +84,7 @@ th.th_prenotazione{
     border: 2px solid white;
     white-space: nowrap;
     display: inline-block;
+    min-width: fit-content;
 }
 
 
