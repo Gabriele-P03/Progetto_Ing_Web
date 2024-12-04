@@ -115,6 +115,6 @@ li.li_prenotazione{
 
 input.azione_prenotazione_button{
     display: block;
-    margin: 0% 0.5em 0% 0.5em;
+    margin: 0.25em 0.5em 0.25em 0.5em;
     width: 80%;
 }

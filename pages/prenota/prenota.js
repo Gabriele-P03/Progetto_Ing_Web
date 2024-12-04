@@ -420,11 +420,13 @@ function caricaDati(xmlDoc){
     //row è l'ordine
     xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
 
+        let idHashOrdine = ordine.getAttribute("hash");
+
         let newTR = "<tr class=\"tr_prenotazione\">"
         //Aggiungo i due tasti per le azioni
         newTR += "<td class=\"td_prenotazione\">"
-        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\">";
-        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\">";
+        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\" name=\"" + idHashOrdine + "\">";
+        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\" name=\"" + idHashOrdine + "\" onclick=cancellaOrdine(this)>";
         newTR += "</td>";
 
         //Salto la prima colonna essendo quella delle azioni
@@ -519,5 +521,18 @@ function allineaTabella(){
         if(i > 0){
             tableTHeadTHs[i].style.marginLeft = '2px';
         }
+    }
+}
+
+
+var idHashOrdineModificando = "";
+function popolaFormPerModifica(){
+
+}
+
+function cancellaOrdine(ordine){
+    let confermato = confirm("Sei sicuro di voler eliminare quest'ordine?");
+    if(confermato){
+        let idHashOrdine = null;
     }
 }
