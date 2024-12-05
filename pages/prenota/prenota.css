@@ -39,6 +39,25 @@ legend.lg_fs_prenota{
     width: fit-content !important;
 }
 
+div#bottoni_form_div{
+    width: 100%;
+}
+
+/*Bottoni modifica*/
+input.modifica_bottoni{
+    display: block;
+    float: right;
+    width: fit-content;
+    margin-top: 0.5%;
+    visibility: hidden;
+    margin-right: 0.1%;
+}
+input#salva_button{
+    float: left;
+    margin-top: 0.5%;
+    margin-left: 0.1%;
+    visibility: visible;
+}
 
 form#form_prenotazione{
     width: fit-content;

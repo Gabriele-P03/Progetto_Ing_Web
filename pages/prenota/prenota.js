@@ -4,7 +4,6 @@ window.onresize = function(){
 window.onload = function(){
 
     carica_allergeni();
-    carica_pizze();
     cookie = getCookie();
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
@@ -28,7 +27,7 @@ function carica_allergeni(){
                 let html = "<input type=\"checkbox\" name=\""+idHash+"\" value=\"" + idHash + "\"><label for=\""+idHash+"\">"+name+"</label><br>";
                 allergeni.innerHTML += html;
         });
-        
+        carica_pizze();
     }
     xhttp.open('GET', '../../scripts/index.php/allergene/all', true);
     xhttp.send();
@@ -43,7 +42,7 @@ function carica_pizze(){
     xhttp.send();
 }
 
-function carica_ingredienti(pizzaSelezionata){
+function carica_ingredienti(pizzaSelezionata, async = true){
     if(pizzaSelezionata != ""){ //Controllo dovuto al selected value della lista delle pizze
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
@@ -58,12 +57,12 @@ function carica_ingredienti(pizzaSelezionata){
             });
             
         }
-        xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
+        xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, async);
         xhttp.send();
     }else{
         svuotaListaIngredienti();
     }
-    carica_tipo_aggiunta();
+    carica_tipo_aggiunta(async);
 }
 
 function svuotaListaIngredienti(){
@@ -109,14 +108,13 @@ function impostaSelettoreBasePizza(pizzeInfoXHTTP){
     //carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
 }
 
-function carica_tipo_aggiunta(){
+function carica_tipo_aggiunta(async = true){
     let fieldset = document.getElementById("fsprenota_tipoaggiunta_slidex_wrap_div");
     fieldset.innerHTML = "";
     const xhttp = new XMLHttpRequest();
 
     //Siccome gli allergeni sono selezionati esternamente, li inserisco in un array prima di entrare nei vari forEach
     var idHashAllergeni = getAllergeniIdHashAsParameters();
-    console.log(idHashAllergeni);
 
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
@@ -166,7 +164,7 @@ function carica_tipo_aggiunta(){
 
         });
     }
-    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', true);
+    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', async);
     xhttp.send();
 }
 
@@ -260,7 +258,6 @@ function salvaPrenotazione(){
     var cookie = getCookie();  //usrcok concordato con backend PHP
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
-        console.log("Prenotazione salvata");
         if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
             var XMLParser = new DOMParser();
             var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
@@ -283,7 +280,6 @@ function salvaPrenotazione(){
 function getCookie(){
     //Prendo il cookie e ne eseguo il decoding al fine di bonificare da eventuali caratteri speciali
     let decodedCookie = document.cookie;    
-    console.log("Cookie: " + decodedCookie);
     //Stringa vuota vuol dire dunque che non vi è un cookie con quel nome
     return decodedCookie;
 }
@@ -305,7 +301,6 @@ function impostaMinDataAvvenimento(){
 }
 
 function caricaUltimaPrenotazioneBozza(){
-    console.log("Caricando l'ultima prenotazione in bozza");
     var cookie = getCookie();  //usrcok concordato con backend PHP
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
@@ -495,7 +490,6 @@ function caricaTHs(xmlDoc){
 }
 
 function aggiungiTH(nomeColonna){
-    console.log("Provando ad aggiungere la colonna: " + nomeColonna);
     let trh = document.getElementById("table_row_header_prenotazione");
     let oldTHs = trh.getElementsByClassName("th_prenotazione");
     for(let i = 0; i < oldTHs.length; i++){
@@ -505,7 +499,6 @@ function aggiungiTH(nomeColonna){
         }
     }
     trh.innerHTML += "<th class=\"th_prenotazione\">" + nomeColonna + "</th>";
-    console.log("Aggiunta");
 }
 
 /**
@@ -545,12 +538,6 @@ function popolaFormPerModifica(ordine){
     idHashOrdineModificando = ordine.name;
     let row = ordine.parentElement.parentElement;
 
-    //prendo la pizza
-    let pizza = row.childNodes[1];
-    let value = (pizza.hasAttribute("name")) ? pizza.getAttribute("name") : "";
-    document.getElementById("select_base_pizza").value = value;
-    carica_ingredienti(value);
-
     //Popolo gli allergeni
     //childNodes[2] prendo il td. childNodes[0] prendo la UL
     let allergeniIN = row.childNodes[2].childNodes[0];
@@ -565,12 +552,60 @@ function popolaFormPerModifica(ordine){
                 break;
             }
         }
-
-        //let presente = allergeniIN.
     }
+
+    //prendo la pizza
+    let pizza = row.childNodes[1];
+    let value = (pizza.hasAttribute("name")) ? pizza.getAttribute("name") : "";
+    document.getElementById("select_base_pizza").value = value;
+    carica_ingredienti(value, false);
+
+    let divTipoaggiunte = document.getElementById("fsprenota_tipoaggiunta_slidex_wrap_div");
+    divTipoaggiunte = divTipoaggiunte.getElementsByClassName("fs_tipoaggiunta_div_outer");
+    let ths = document.getElementById("table_row_header_prenotazione").getElementsByClassName("th_prenotazione");
+
+    //Popolo le aggiunte
+    //SAlto le azioni, la pizza e gli allergeni, e dunque parto da 3
+    for(let i = 3; i < row.childNodes.length; i++){
+        if(row.childNodes[i].childNodes.length > 0){
+            let aggiunte = row.childNodes[i].childNodes[0].childNodes;
+            let th = ths[i].innerHTML;//Prendo l'etichetta del tipo aggiunta relativa alla colonna in questione
+
+            //Prendo il div delle aggiunte
+            for(let i1 = 0; i1 < divTipoaggiunte.length; i1++){
+                let fsCR = divTipoaggiunte[i1].getElementsByClassName("fs_tipo_aggiunta")[0];
+                let legendFSCR = fsCR.getElementsByClassName("lg_fs_tipo_aggiunta")[0].innerText;
+                if(legendFSCR === th){
+                    //Ho trovato il fieldset giusto, lo popolo
+
+                    let options = fsCR.querySelectorAll("input");
+                    for(let i2 = 0; i2 < options.length; i2++){
+                        options[i2].checked = false;
+                        aggiunte.forEach(aggiunta => {
+                            if(aggiunta.getAttribute("name") === options[i2].value){
+                                options[i2].checked = true;
+                            }
+                        });
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    document.getElementById("salva_button").style.visibility = "hidden";
+    document.getElementsByClassName("modifica_bottoni")[0].style.visibility = "visible";
+    document.getElementsByClassName("modifica_bottoni")[1].style.visibility = "visible";
 }
 
 function cancellaOrdine(ordine){
+    if(idHashOrdineModificando !== ""){
+        if(idHashOrdineModificando === ordine.name){
+            alert("Non puoi cancellare quest'ordine siccome è in fase di modifica");
+            return;
+        }
+    }
     let confermato = confirm("Sei sicuro di voler eliminare quest'ordine?");
     if(confermato){
         let idHashOrdine = ordine.name;
@@ -581,4 +616,16 @@ function cancellaOrdine(ordine){
         xhttp.open('DELETE', '../../scripts/index.php/ordine/delete?ordine='+idHashOrdine, true);
         xhttp.send();
     }
+}
+
+function annullaOrdine(){
+    document.getElementById("salva_button").style.visibility = "visible";
+    document.getElementsByClassName("modifica_bottoni")[0].style.visibility = "hidden";
+    document.getElementsByClassName("modifica_bottoni")[1].style.visibility = "hidden";
+    idHashOrdineModificando = "";
+    resetForm();
+}
+
+function resetForm(){
+    carica_allergeni();
 }

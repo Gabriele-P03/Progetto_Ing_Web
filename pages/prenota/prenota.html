@@ -59,8 +59,12 @@
                             <!-- Ogni sezione è rappresentata da un fieldset il cui legend è il Tipo Aggiunta-->
                     </div>
                 </fieldset>
-
-                <input id="salva_button" type="submit" name="salva" value="Aggiungi all'ordine">
+                
+                <div id="bottoni_form_div">
+                    <input id="salva_button" type="submit" name="salva" value="Aggiungi all'ordine">
+                    <input type="button" class="modifica_bottoni" value="Conferma Modifica">
+                    <input type="button" class="modifica_bottoni" value="Annulla Modifica" onclick="annullaOrdine()"> 
+                </div>
             </form>
 
             <article>
