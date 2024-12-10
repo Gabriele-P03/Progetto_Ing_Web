@@ -41,26 +41,25 @@ class OrdineModel extends Connection{
         return "<results xmlns=\"http://www.w3.org/1999/xhtml\"><digest value=\"" . $idHashOrdine . "\"/></results>";;
     }
 
+    /**
+     * Modificare esplicitamente un ordine vorrebbe dire andare a vedere singolarmente le variazioni - che siano di allergeni, aggiunte o pizze - rispetto
+     * alla versione antecedente; troppe select ed eventuali update da fare, oltre che un dispendio a livello di codice.
+     * Per ovviare, preferisco eliminare tutto quello che concerne la vecchia versione dell'ordine (nella sua interezza) e creo la nuova
+     */
     public function update($xml, $hash, $userid){
-        $asporto = $xml->asporto[0]->attributes()[0];
-        if($asporto == "true" || $asporto == "1"){
-            $asporto = '1';
-        }else{
-            $asporto = '0';
-        }
-        $numero_persone = $xml->numero_persone[0]->attributes()[0];
-        $telefono = $xml->telefono[0]->attributes()[0];
-        $data = $xml->data[0]->attributes()[0];
-        $nominativo = $xml->nome[0]->attributes()[0];
+        //Conservo l'idHash della prenotazione alla quale era collegata la vecchia versione dell'ordine che sto per "sovrascrivere"
+        $sqlGetHashPrenotazionePreDelete = "SELECT ID_HASH FROM " . DB_PRENOTAZIONE . " WHERE ID IN (SELECT " . DB_ORDINE_IDPRENOTAZIONE . " FROM " . DB_ORDINE . " WHERE ID_HASH = ?)";
+        $res = $this->select($sqlGetHashPrenotazionePreDelete, array($hash));
+        $hashPrenotazione = $res[0]['ID_HASH'];
 
-        $sql = "UPDATE " . DB_PRENOTAZIONE . " SET " .
-                    DB_PRENOTAZIONE_NOME . " = ?, " .
-                    DB_PRENOTAZIONE_DATAAVVENIMENTO . " = ?, " .
-                    DB_PRENOTAZIONE_NUMEROPERSONE . " = ?, " .
-                    DB_PRENOTAZIONE_TIPO . " = ?, " .
-                    DB_PRENOTAZIONE_TELEFONO . " = ?" . 
-                    " WHERE " . DB_PRENOTAZIONE_USERID . " = ? AND ID_HASH = ?";
-        $this->insert($sql, "sssssss", array($nominativo, $data, $numero_persone, $asporto, $telefono, $userid, $hash), DB_PRENOTAZIONE);
+        //Cancello i vecchi allergeni e le aggiunte
+        $this->ordineAllergenModel->deleteByIdHashOrdine($hash);
+        $this->ordineAggiuntaModel->deleteByIdHashOrdine($hash);
+        //Cancello l'ordine
+        $this->delete("DELETE FROM " . DB_ORDINE . " WHERE ID_HASH = ?", "s", array($hash));
+
+        //Salvo la nuova versione
+        $this->save($xml, $hashPrenotazione, $userid);
     }
 
     private function creaNuovoOrdine($idHashPizza = "" | null, $idHashPrenotazione = ""){
@@ -73,8 +72,10 @@ class OrdineModel extends Connection{
         $res = $this->select($sql, array($idHashPrenozatione));
         $xml = new SimpleXMLElement("<results />");
 
+        $totale = 0.0;
         foreach ($res as $row) {
-
+            
+            $prezzo = 0.0;
             $ordineXML = $xml->addChild("ordine");
 
             $idOrdine = $row['ID'];
@@ -84,13 +85,14 @@ class OrdineModel extends Connection{
             $ordineXML->addAttribute('hash', $idHash);
 
             $idPizza = $row[DB_ORDINE_IDPIZZA];
+            $xmlPizza = $ordineXML->addChild("pizza");
             if($idPizza !== null){
-                $xmlPizza = $ordineXML->addChild("pizza");
-                $sqlPizza = "SELECT ID_HASH, " . DB_PIZZA_NOME . " FROM " . DB_PIZZA . " WHERE ID = ?";
+                $sqlPizza = "SELECT ID_HASH, " . DB_PIZZA_NOME . ", " . DB_PIZZA_PREZZO . " FROM " . DB_PIZZA . " WHERE ID = ?";
                 $resPizza = $this->select($sqlPizza, array($idPizza));
                 $xmlPizza->addAttribute("hash", $resPizza[0]["ID_HASH"]);
                 $xmlPizza->addAttribute("value", $resPizza[0][DB_PIZZA_NOME]);
                 $xmlPizza->addAttribute("th", true);
+                $prezzo += $resPizza[0][DB_PIZZA_PREZZO];
             }
 
             //Scrivo le allergie
@@ -125,8 +127,13 @@ class OrdineModel extends Connection{
                 $aggiuntaXML->addAttribute("hash", $rowAggiunta['ID_HASH_AGGIUNTA']);
                 $aggiuntaXML->addAttribute('value', $rowAggiunta[DB_AGGIUNTA_NOME]);
                 $aggiuntaXML->addAttribute('ul', false);
+                $prezzo += $rowAggiunta[DB_AGGIUNTA_PREZZO];
             }
+
+            $ordineXML->addAttribute("prezzo", $prezzo);
+            $totale += $prezzo;
         }
+        $xml->addAttribute("totale", $totale);
         return $xml;
         
     }

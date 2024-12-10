@@ -11,7 +11,6 @@ class OrdineAggiuntaModel extends Connection{
 
     public function save($idHashOrdine = "", $idHashAggiunta = ""){
         $sql = "INSERT INTO " . DB_ORDINEAGGIUNTA . " VALUES(NULL, NULL, (SELECT ID FROM " . DB_ORDINE ." WHERE ID_HASH = ?), (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?))";
-        echo $sql . " -> " . $idHashOrdine . ", " . $idHashAggiunta . "\n";
         $this->insert( $sql , "ss", array($idHashOrdine, $idHashAggiunta), DB_ORDINEAGGIUNTA);
     }
 

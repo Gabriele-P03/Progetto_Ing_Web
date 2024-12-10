@@ -57,6 +57,7 @@ div#div_prenotazione{
 }
 
 table#tabella_prenotazione{
+    visibility: hidden;
     display: block;
     border: 4px solid white;
     margin: 1%;
@@ -106,7 +107,7 @@ tr.tr_prenotazione{
 td.td_prenotazione{
     color: white;
     border: 1px solid white;
-    width: fit-content;
+    text-align: center;
 }
 ul.ul_prenotazione{
     list-style-position: inside;

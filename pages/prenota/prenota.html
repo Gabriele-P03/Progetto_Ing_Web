@@ -62,7 +62,7 @@
                 
                 <div id="bottoni_form_div">
                     <input id="salva_button" type="submit" name="salva" value="Aggiungi all'ordine">
-                    <input type="button" class="modifica_bottoni" value="Conferma Modifica">
+                    <input type="button" class="modifica_bottoni" value="Conferma Modifica" onclick="confermaOrdine()">
                     <input type="button" class="modifica_bottoni" value="Annulla Modifica" onclick="annullaOrdine()"> 
                 </div>
             </form>
@@ -100,6 +100,10 @@
                         <div id="info_ordine_bottone_div">
                             <input type="button" id="salva_info_prenotazione_bt" value="Salva Informazioni" onclick="salvaPrenotazione()">
                         </div>
+                    </div>
+
+                    <div class="info_ordine_div" id="info_ordine_totale">
+                        
                     </div>
 
                 </div>

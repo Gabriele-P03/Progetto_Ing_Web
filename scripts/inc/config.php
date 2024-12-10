@@ -75,6 +75,7 @@ define("MODULE_AGGIUNTA", "aggiunta");
 define("MODULE_TIPOAGGIUNTA", "tipoaggiunta");
 define("MODULE_PRENOTAZIONE", "prenotazione");
 define("MODULE_ORDINE", "ordine");
+define("MODULE_COOKIE", "cookie");
 
 /*DEFINIZIONE STATO PRENOTAZIONE*/
 define("PRENOTAZIONE_STATO_BOZZA", "'0'");

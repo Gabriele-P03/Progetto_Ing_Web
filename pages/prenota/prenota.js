@@ -2,9 +2,7 @@ window.onresize = function(){
     allineaTabella();
 }
 window.onload = function(){
-
     carica_allergeni();
-    cookie = getCookie();
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
     caricaUltimaPrenotazioneBozza();
@@ -21,6 +19,7 @@ function carica_allergeni(){
         var XMLParser = new DOMParser();
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
         let allergeni = document.getElementById("fs_prenota_allergeni_div");
+        allergeni.innerHTML = "";
         xmlDoc.childNodes.item(0).childNodes.forEach( function(row){//Inside row there are column->value
                 let idHash = row.childNodes.item(0).textContent;
                 let name = row.childNodes.item(1).textContent;
@@ -195,6 +194,7 @@ function salvaNuovaPizza(){
     }
     putHTTP.onload = function(){
         caricaOrdiniPrenotazione();
+        resetForm();
     }
     putHTTP.open('POST', '../../scripts/index.php/ordine/save?prenotazione=' + idHashPrenotazione, true);
     putHTTP.setRequestHeader("Content-Type", "text/xml");
@@ -255,7 +255,6 @@ function salvaPrenotazione(){
     if(idHashPrenotazione.length > 0){
         method = 'PUT';
     }
-    var cookie = getCookie();  //usrcok concordato con backend PHP
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
@@ -277,13 +276,6 @@ function salvaPrenotazione(){
     }
 }
 
-function getCookie(){
-    //Prendo il cookie e ne eseguo il decoding al fine di bonificare da eventuali caratteri speciali
-    let decodedCookie = document.cookie;    
-    //Stringa vuota vuol dire dunque che non vi è un cookie con quel nome
-    return decodedCookie;
-}
-
 function bloccaNumeroPersone(){
     let cbAsporto = document.getElementById("cb_asporto");
     let personeTextField = document.getElementById("tf_persone");
@@ -301,32 +293,34 @@ function impostaMinDataAvvenimento(){
 }
 
 function caricaUltimaPrenotazioneBozza(){
-    var cookie = getCookie();  //usrcok concordato con backend PHP
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
         let row = xmlDoc.documentElement;
-        if(row.childNodes.item(0).childNodes.length === 10){
-            idHashPrenotazione = row.getElementsByTagName("ID_HASH")[0].textContent; //ID_HASH
-            document.getElementById("nominativo_input").value = row.getElementsByTagName("NOME")[0].textContent;//Nominativo
-            document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_PRENOTAZIONE")[0].textContent;//Data avventimento
-            document.getElementById("telefono_input").value = row.getElementsByTagName("TELEFONO")[0].textContent;  //Telefono
+        if(row.childNodes.item(0) !== null){
+            if(row.childNodes.item(0).childNodes.length === 10){
+                idHashPrenotazione = row.getElementsByTagName("ID_HASH")[0].textContent; //ID_HASH
+                document.getElementById("nominativo_input").value = row.getElementsByTagName("NOME")[0].textContent;//Nominativo
+                document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_PRENOTAZIONE")[0].textContent;//Data avventimento
+                document.getElementById("telefono_input").value = row.getElementsByTagName("TELEFONO")[0].textContent;  //Telefono
 
-            let cb_asporto_value = row.getElementsByTagName("TIPO")[0].textContent;
-            document.getElementById("cb_asporto").checked = cb_asporto_value;
-            if(!cb_asporto_value){
-                document.getElementById("tf_persone").value = row.getElementsByTagName("NUMERO_PERSONE")[0].textContent;
-            }else{
-                bloccaNumeroPersone();
+                let cb_asporto_value = row.getElementsByTagName("TIPO")[0].textContent;
+                document.getElementById("cb_asporto").checked = cb_asporto_value;
+                if(!cb_asporto_value){
+                    document.getElementById("tf_persone").value = row.getElementsByTagName("NUMERO_PERSONE")[0].textContent;
+                }else{
+                    bloccaNumeroPersone();
+                }
             }
         }
 
         caricaOrdiniPrenotazione();
     }
     xhttp.open('GET', '../../scripts/index.php/prenotazione/continua', true);
+    xhttp.withCredentials = true;
     xhttp.send();
-
+    
 }
 
 function infoPrenotazioneToXML(){
@@ -410,47 +404,59 @@ function caricaOrdiniPrenotazione(){
 }
 
 function caricaDati(xmlDoc){
+    let table = document.getElementById("tabella_prenotazione");
+    let tbody = table.querySelector("tbody");
+    let ths = table.querySelectorAll("th"); //Prendo tutti gli header
+    tbody.innerHTML = "";
 
-    let table = document.getElementById("tabella_prenotazione").querySelector("tbody");
-    let ths = document.getElementById("tabella_prenotazione").querySelectorAll("th"); //Prendo tutti gli header
-    table.innerHTML = "";
     //item(0) per entrare nel root results
-    //row è l'ordine
-    xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
+    //Prendo il totale dell'ordine
+    let totale = xmlDoc.childNodes.item(0).getAttribute("totale");
+    let divTotale = document.getElementById("info_ordine_totale");
+    divTotale.innerHTML = totale += " &euro;"
 
-        let idHashOrdine = ordine.getAttribute("hash");
+    if(xmlDoc.childNodes.item(0).childNodes.length > 0){
+        table.style.visibility = "show";
+        xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
 
-        let newTR = "<tr class=\"tr_prenotazione\">"
-        //Aggiungo i due tasti per le azioni
-        newTR += "<td class=\"td_prenotazione\">"
-        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\" name=\"" + idHashOrdine + "\" onclick=popolaFormPerModifica(this)>";
-        newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\" name=\"" + idHashOrdine + "\" onclick=cancellaOrdine(this)>";
-        newTR += "</td>";
+            let idHashOrdine = ordine.getAttribute("hash");
 
-        //Salto la prima colonna essendo quella delle azioni
-        for(let i = 1; i < ths.length; i++){
-            let th = ths[i];
-            let nomeCol = th.innerHTML;
+            let newTR = "<tr class=\"tr_prenotazione\">"
+            //Aggiungo i due tasti per le azioni
+            newTR += "<td class=\"td_prenotazione\">"
+            newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\" name=\"" + idHashOrdine + "\" onclick=popolaFormPerModifica(this)>";
+            newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\" name=\"" + idHashOrdine + "\" onclick=cancellaOrdine(this)>";
+            newTR += "</td>";
+            
+            //Salto la prima colonna essendo quella delle azioni e la seconda essendo quella del prezzo
+            newTR += "<td class=\"td_prenotazione\">" + ordine.getAttribute("prezzo") + " &euro;</td>";
+            for(let i = 2; i < ths.length; i++){
+                let th = ths[i];
+                let nomeCol = th.innerHTML;
 
-            let parentElement = ordine.querySelector(nomeCol);
+                let parentElement = ordine.querySelector(nomeCol);
 
-            //Vuol dire che non vi è questa colonna nell'ordinazione corrente
-            if(parentElement === null){
-                newTR += "<td class=\"td_prenotazione\"></td>";
-            }else{
-                if(parentElement.hasAttribute("th") && !parentElement.hasAttribute("ul")){
-                    let res = caricaTD(parentElement);
-                    newTR += res;
+                //Vuol dire che non vi è questa colonna nell'ordinazione corrente
+                if(parentElement === null){
+                    newTR += "<td class=\"td_prenotazione\"></td>";
                 }else{
-                    let res = caricaTDUL(parentElement.childNodes);
-                    newTR += res;
+                    if(parentElement.hasAttribute("th") && !parentElement.hasAttribute("ul")){
+                        let res = caricaTD(parentElement);
+                        newTR += res;
+                    }else{
+                        let res = caricaTDUL(parentElement.childNodes);
+                        newTR += res;
+                    }
                 }
             }
-        }
 
-        newTR += "</tr>";
-        table.innerHTML += newTR;
-    });
+            newTR += "</tr>";
+            tbody.innerHTML += newTR;
+        });
+    }else{
+        //Nessun ordine da visualizzare, nascondo la tabella
+        table.style.visibility = "hidden";
+    }
 }
 
 function caricaTDUL(col){
@@ -478,7 +484,7 @@ function caricaTHs(xmlDoc){
     if(xmlDoc.childNodes.item(0).childNodes.length > 0){ 
 
         //Carico la colonna delle azioni
-        let azioniHTMLTH = "<th class=\"th_prenotazione\">AZIONI</th>";
+        let azioniHTMLTH = "<th class=\"th_prenotazione\">AZIONI</th><th class=\"th_prenotazione\">PREZZO</th>";
         document.getElementById("table_row_header_prenotazione").innerHTML = azioniHTMLTH;
         //childNodes.item(0) per entrare nel results
         xmlDoc.childNodes.item(0).childNodes.forEach( row =>{
@@ -513,7 +519,6 @@ function allineaTabella(){
         document.getElementById("tabella_prenotazione").style.visibility = "visible";
         tableTBodyTDs = tableTBodyTDs.querySelectorAll("td");
     
-        //Parte da 1 in modo da non prendere la colonna delle azioni
         for(let i = 0; i < tableTBodyTDs.length; i++){
             let th = tableTHeadTHs[i];
             let e = tableTBodyTDs[i];
@@ -525,6 +530,7 @@ function allineaTabella(){
             }
             if(i > 0){
                 tableTHeadTHs[i].style.marginLeft = '2px';
+                e.style.marginLeft = '2px';
             }
         }
     }else{
@@ -565,8 +571,8 @@ function popolaFormPerModifica(ordine){
     let ths = document.getElementById("table_row_header_prenotazione").getElementsByClassName("th_prenotazione");
 
     //Popolo le aggiunte
-    //SAlto le azioni, la pizza e gli allergeni, e dunque parto da 3
-    for(let i = 3; i < row.childNodes.length; i++){
+    //SAlto le azioni, il prezzo, la pizza e gli allergeni, e dunque parto da 3
+    for(let i = 4; i < row.childNodes.length; i++){
         if(row.childNodes[i].childNodes.length > 0){
             let aggiunte = row.childNodes[i].childNodes[0].childNodes;
             let th = ths[i].innerHTML;//Prendo l'etichetta del tipo aggiunta relativa alla colonna in questione
@@ -628,4 +634,24 @@ function annullaOrdine(){
 
 function resetForm(){
     carica_allergeni();
+}
+
+/**
+ * Chiamato quando l'utente ha confermato, mediante apposito pulsante, la modifica su un singolo ordine di una prenotazione
+ */
+function confermaOrdine(){
+    if(idHashOrdineModificando !== ""){
+        xml = creaXMLFormOrdine();
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            resetForm();
+            caricaOrdiniPrenotazione();
+        }
+        xhttp.open('PUT', '../../scripts/index.php/ordine/save?ordine=' + encodeURIComponent(idHashOrdineModificando), true);
+        xhttp.setRequestHeader("Content-Type", 'application/xml; charset=utf-8');
+        xhttp.send(new XMLSerializer().serializeToString(xml));
+        document.getElementById("salva_button").style.visibility = "visible";
+        document.getElementsByClassName("modifica_bottoni")[0].style.visibility = "hidden";
+        document.getElementsByClassName("modifica_bottoni")[1].style.visibility = "hidden";
+    }
 }

@@ -37,9 +37,18 @@ class OrdineController extends BaseController{
     }
 
     public function save(){
-        $this->validaMetodi(array("POST"));
+        $this->validaMetodi(array("POST", "PUT"));
+        $hash = "";
+        $metodo = "";
         try{
-            $this->validaParametri(array("prenotazione"), null);
+            $metodo = $_SERVER["REQUEST_METHOD"];
+            if($metodo == 'POST'){
+                $this->validaParametri(array("prenotazione"), null);
+                $hash = $_GET['prenotazione'];
+            }else{
+                $this->validaParametri(array("ordine"), null);
+                $hash = $_GET['ordine'];
+            }
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
@@ -52,9 +61,13 @@ class OrdineController extends BaseController{
             header('Content-Type: application/xml; charset=utf-8');
             $xmlString = file_get_contents('php://input');
             $xml = new SimpleXMLElement($xmlString);
-
-            $hash = $_GET['prenotazione'];
-            $res = $this->ordineModel->save($xml, $hash,  $userid);
+            $res = null;
+            if($metodo == 'POST')
+                $res = $this->ordineModel->save($xml, $hash,  $userid);
+            else{
+                $this->ordineModel->update($xml, $hash, $userid);
+                $res = "";
+            }
             $this->inviaRispostaOK($res);  
         }catch(Exception $e){
             header(HTTP_V." 505 Internal Server Error");
