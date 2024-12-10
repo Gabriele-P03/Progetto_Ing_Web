@@ -10,7 +10,7 @@ function controllaCookie($cname){
     }else{
         $cookie = $_COOKIE[$cname];
         $secs = time();
-        $secs += 60*60*24*400;
+        $secs += 60*60*24*400;  //max 400 giorni di exp days causa Google Chrome
         setcookie($cname, $cookie, $secs,"/");//Updating cookie
     }
     return $cookie;
@@ -20,7 +20,7 @@ function creaNuovoCookie($cname){
     global $prenotazioneModel;
     $id = "";
     $flag = true;
-    //Genero uno uniqid finchè non ve n'è traccia tra le prenotazioni
+    //Genero uno uniqid finchè vi è traccia tra le prenotazioni
     do{
         $id = uniqid();
         $res = $prenotazioneModel->select("SELECT " . DB_PRENOTAZIONE_USERID . " FROM " . DB_PRENOTAZIONE . 
@@ -29,8 +29,9 @@ function creaNuovoCookie($cname){
             $flag = false;
         }
     }while($flag);
-    $secs = 1000*60*60*24*400;
-    setcookie($cname, $id, $secs,"/");
+    $secs = time();
+    $secs += 60*60*24*400;  //max 400 giorni di exp days causa Google Chrome
+    setcookie($cname, $id, $secs,"/");//Updating cookie
 }
 
 ?>

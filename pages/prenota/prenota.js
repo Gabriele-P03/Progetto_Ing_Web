@@ -413,7 +413,7 @@ function caricaDati(xmlDoc){
     //Prendo il totale dell'ordine
     let totale = xmlDoc.childNodes.item(0).getAttribute("totale");
     let divTotale = document.getElementById("info_ordine_totale");
-    divTotale.innerHTML = totale += " &euro;"
+    divTotale.innerHTML = "Totale: " + totale + " &euro;"
 
     if(xmlDoc.childNodes.item(0).childNodes.length > 0){
         table.style.visibility = "show";
