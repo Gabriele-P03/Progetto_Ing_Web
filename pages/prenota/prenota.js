@@ -514,27 +514,40 @@ function aggiungiTH(nomeColonna){
  */
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
-    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione")[0];
-    if(tableTBodyTDs !== undefined){
-        document.getElementById("tabella_prenotazione").style.visibility = "visible";
-        tableTBodyTDs = tableTBodyTDs.querySelectorAll("td");
-    
-        for(let i = 0; i < tableTBodyTDs.length; i++){
-            let th = tableTHeadTHs[i];
-            let e = tableTBodyTDs[i];
-            let w = e.scrollWidth-2-2;//.offsetWidth - e.style.marginLeft - e.style.marginRight;
-            if(th.clientWidth > w){
-                e.style.width = th.clientWidth + 'px';
-            }else{
-                th.style.width = w+'px';
+    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
+
+    //Essendo la table inline-block prima calcolo h e w per ogni colonna
+    //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
+    //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
+    for(let i = 0; i < tableTHeadTHs.length; i++){
+        //Inizializzo sempre h a 0 e w al valore della cella di testata
+        let h = 0, w = tableTHeadTHs[i].clientWidth;
+        //Scorro la colonna i-esima alla ricerca di aventuali h o w maggiori 
+        for(let j = 0; j < tableTBodyTDs.length; j++){
+            let cell = tableTBodyTDs[j].childNodes.item(i);
+            if(cell.clientWidth > w){
+                w = cell.clientWidth;
             }
-            if(i > 0){
-                tableTHeadTHs[i].style.marginLeft = '2px';
-                e.style.marginLeft = '2px';
+            if(cell.clientHeight > h){
+                h = cell.clientHeight;
             }
         }
-    }else{
-        document.getElementById("tabella_prenotazione").style.visibility = "hidden";
+
+        //ora che ho trovato i valori giusti di h e w, li setto su tutta la colonna i-esima (testata compresa)
+        //tableTHeadTHs[i].style.height = h;    //L'altezza della testata non deve essere modificata
+        tableTHeadTHs[i].style.width = w + 'px';
+        if(i > 0){
+            tableTHeadTHs[i].style.marginLeft = '2px';
+        }
+        w = (parseInt(w) + 2); //Aggiungo 1px per bordo
+        for(let j = 0; j < tableTBodyTDs.length; j++){
+            let cell = tableTBodyTDs[j].childNodes.item(i);
+            cell.style.width = w + 'px';
+            cell.style.height = h + 'px';
+            if(i > 0){
+                cell.style.marginLeft = '2px';
+            }
+        }
     }
 }
 
