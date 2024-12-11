@@ -60,7 +60,6 @@ input#salva_button{
 }
 
 form#form_prenotazione{
-    width: fit-content;
     width: 40%;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -184,7 +183,7 @@ nav#header_nav>a{
     color: white;
     background-color: #555555;
     text-decoration-line: none; /*  Rimuove il sottolineato che sta di default */
-    font-size: large;       
+    font-size: 2vh;       
     text-align: center;     /*Leggere il commento in header>nav#header_nav*/
     flex-grow: 1;           /*Leggere il commento in header>nav#header_nav*/
     margin: auto 0.25% auto 0.25%;

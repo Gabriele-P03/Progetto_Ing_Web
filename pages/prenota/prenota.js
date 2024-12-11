@@ -1,5 +1,5 @@
 window.onresize = function(){
-    allineaTabella();
+    //allineaTabella();
 }
 window.onload = function(){
     carica_allergeni();
@@ -302,7 +302,7 @@ function caricaUltimaPrenotazioneBozza(){
             if(row.childNodes.item(0).childNodes.length === 10){
                 idHashPrenotazione = row.getElementsByTagName("ID_HASH")[0].textContent; //ID_HASH
                 document.getElementById("nominativo_input").value = row.getElementsByTagName("NOME")[0].textContent;//Nominativo
-                document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_PRENOTAZIONE")[0].textContent;//Data avventimento
+                document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_AVVENIMENTO")[0].textContent;//Data avventimento
                 document.getElementById("telefono_input").value = row.getElementsByTagName("TELEFONO")[0].textContent;  //Telefono
 
                 let cb_asporto_value = row.getElementsByTagName("TIPO")[0].textContent;
@@ -416,7 +416,7 @@ function caricaDati(xmlDoc){
     divTotale.innerHTML = "Totale: " + totale + " &euro;"
 
     if(xmlDoc.childNodes.item(0).childNodes.length > 0){
-        table.style.visibility = "show";
+        table.style.visibility = "visible";
         xmlDoc.childNodes.item(0).childNodes.forEach( ordine =>{
 
             let idHashOrdine = ordine.getAttribute("hash");
@@ -519,18 +519,17 @@ function allineaTabella(){
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
+    let hs = [];
     for(let i = 0; i < tableTHeadTHs.length; i++){
-        //Inizializzo sempre h a 0 e w al valore della cella di testata
-        let h = 0, w = tableTHeadTHs[i].clientWidth;
+        //Inizializzo sempre w al valore della cella di testata
+        let w = tableTHeadTHs[i].clientWidth;
         //Scorro la colonna i-esima alla ricerca di aventuali h o w maggiori 
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             if(cell.clientWidth > w){
                 w = cell.clientWidth;
             }
-            if(cell.clientHeight > h){
-                h = cell.clientHeight;
-            }
+            hs.push(parseInt(tableTBodyTDs[j].clientHeight)-4);
         }
 
         //ora che ho trovato i valori giusti di h e w, li setto su tutta la colonna i-esima (testata compresa)
@@ -543,7 +542,7 @@ function allineaTabella(){
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
-            cell.style.height = h + 'px';
+            cell.style.height = hs[j] + 'px';
             if(i > 0){
                 cell.style.marginLeft = '2px';
             }
@@ -558,8 +557,8 @@ function popolaFormPerModifica(ordine){
     let row = ordine.parentElement.parentElement;
 
     //Popolo gli allergeni
-    //childNodes[2] prendo il td. childNodes[0] prendo la UL
-    let allergeniIN = row.childNodes[2].childNodes[0];
+    //childNodes[3] prendo il td. childNodes[0] prendo la UL
+    let allergeniIN = row.childNodes[3].childNodes[0];
     let allergeni = document.getElementById("fs_prenota_allergeni_div").querySelectorAll("input");
     for(let i = 0; i < allergeni.length; i++){
         let allergene = allergeni[i];
@@ -574,7 +573,7 @@ function popolaFormPerModifica(ordine){
     }
 
     //prendo la pizza
-    let pizza = row.childNodes[1];
+    let pizza = row.childNodes[2];
     let value = (pizza.hasAttribute("name")) ? pizza.getAttribute("name") : "";
     document.getElementById("select_base_pizza").value = value;
     carica_ingredienti(value, false);
