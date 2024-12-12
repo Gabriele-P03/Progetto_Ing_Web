@@ -10,7 +10,12 @@ class PrenotazioneModel extends Connection{
     }
 
     public function getAllByUserID($userid){
-
+        $sql = "SELECT ID_HASH, " . DB_PRENOTAZIONE_NOME . ", " . DB_PRENOTAZIONE_DATAPRENOTAZIONE . ", " .
+                        DB_PRENOTAZIONE_DATAAVVENIMENTO . ", " . DB_PRENOTAZIONE_STATO . ", " . DB_PRENOTAZIONE_IDTAVOLO . ", " . 
+                        DB_PRENOTAZIONE_NUMEROPERSONE . ", " . DB_PRENOTAZIONE_TIPO . ", " . DB_PRENOTAZIONE_DESCRIZIONESTATO . ", ". 
+                        DB_PRENOTAZIONE_TELEFONO . " FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_USERID . " = ? 
+                        ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO;
+        return $this->select($sql, array($userid));
     }
 
     public function getBozzaByUserID($userid){

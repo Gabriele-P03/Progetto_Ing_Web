@@ -12,7 +12,7 @@ class PrenotazioneController extends BaseController{
     }
 
     /**
-     * End-point /prenotazione/save
+     * End-point /prenotazione/continua
      * @return void
      */
     public function continua(){
@@ -40,7 +40,7 @@ class PrenotazioneController extends BaseController{
      * End-point /prenotazione/all
      * @return void
      */
-    public function all(): void{
+    public function all(){
         $this->validaMetodi("GET");
 
         try{

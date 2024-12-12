@@ -21,22 +21,63 @@ body{
     bottom: 0;
 }
 
+
+
+main{
+    width: 99%; /*Ho sottratto 0.5% margin left e 0.5% margin right*/
+    max-height: 89%;
+    height: 89%;    /*Header e footer hanno 5% height. Poi ho sottratto i margini*/
+    margin: 0.5% 0.5% 0% 0.5%;
+    display: flex;
+    flex-direction: column;
+}
+
 main>div#storico_benvenuto_div{
     width: 100%;
     font-size: 2vh;
     text-align: center;
     color: white;
     background-color: #55555555;
-    border: 1px  solid white;
+    flex: 0.01 0 auto;
 }
 
-main{
-    width: 99%; /*Ho sottratto 0.5% margin left e 0.5% margin right*/
-    max-height: 90%;
-    display: flex;
-    flex-direction: row;
-    margin: 0.5% 0.5% 0% 0.5%;
+
+table#tabella_storico{
+    width: fit-content;
+    max-width: 100%;
+    flex: 0.95 0 auto;
+    border: 4px solid white;
+    display: inline-block;
+    color: white;
+    overflow-y: hidden;
+    overflow-x: auto;
+    align-self: center;
 }
+
+thead{
+    width: 100%;
+    height: 10%;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 10%;
+    overflow: hidden;
+}
+th.th_storico{
+    margin: 1px;
+    border: 2px solid white;
+}
+
+tbody{
+    width: 100%;
+    height: 90%;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
 
 
 
@@ -48,10 +89,7 @@ main{
 
 header{
     height: 5%;
-}
-
-fieldset#fs_prenota_allergeni>label{
-    color: white;
+    max-height: 5%;
 }
 
 header>nav#header_nav{
@@ -83,6 +121,7 @@ footer{
     background-color: #555555;
     width: 100%;
     height: fit-content;
+    max-height: 5%;
     display: flex;
     flex-direction: row;
     position: fixed;
@@ -94,13 +133,4 @@ footer>div.info{
     flex-grow: 1;
     font-size: medium;
     text-align: center;
-}
-
-table#tabella_storico{
-    width: 100%;
-    height: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
-    max-width: 100%;
-    border: 0.1% solid white;
 }
