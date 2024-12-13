@@ -47,7 +47,7 @@ table#tabella_storico{
     max-width: 100%;
     flex: 0.95 0 auto;
     border: 4px solid white;
-    display: inline-block;
+    display: block;
     color: white;
     overflow-y: hidden;
     overflow-x: auto;
@@ -55,26 +55,32 @@ table#tabella_storico{
 }
 
 thead{
-    width: 100%;
-    height: 10%;
-    display: inline-block;
+    width: fit-content;
+    height: fit-content;
+    display: block;
     max-width: 100%;
     max-height: 10%;
     overflow: hidden;
 }
 th.th_storico{
-    margin: 1px;
+    font-size: 2vh;
     border: 2px solid white;
 }
 
 tbody{
-    width: 100%;
+    width: fit-content;
     height: 90%;
-    display: inline-block;
+    display: block;
     max-width: 100%;
     max-height: 90%;
     overflow-y: auto;
     overflow-x: hidden;
+
+}
+
+td.td_storico{
+    border: 1px solid white;
+    text-align: center;
 }
 
 
