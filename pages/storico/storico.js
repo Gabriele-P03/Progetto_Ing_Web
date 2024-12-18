@@ -10,6 +10,7 @@ function caricaStorico(){
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
         let rows = xmlDoc.childNodes.item(0).childNodes;
         if(rows.length > 0){
+            document.getElementById("tabella_storico").style.visibility = 'visible';
             let i = 0;
             rows.forEach( row => {
                 if(i++ === 0){
@@ -86,6 +87,9 @@ function allineaTabella(){
         //tableTHeadTHs[i].style.height = h;    //L'altezza della testata non deve essere modificata
         tableTHeadTHs[i].style.width = w + 'px';
         w = (parseInt(w) + 2); //Aggiungo 1px per bordo
+        if(i > 0){
+            tableTHeadTHs[i].style.marginLeft = '2px';
+        }
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
@@ -103,5 +107,5 @@ function allineaTabella(){
  */
 var srcPopup = "popup/popup.html";
 function apriVisualizzazioneIFRAME(input){
-    window.open('', '', 'popup=true');
+    window.open(srcPopup+'?prenotazione='+input.name, 'Ordini', 'popup');
 }

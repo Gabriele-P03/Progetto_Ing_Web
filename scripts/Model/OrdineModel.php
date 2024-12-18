@@ -145,6 +145,21 @@ class OrdineModel extends Connection{
         $sql = "DELETE FROM " . DB_ORDINE . " WHERE ID_HASH = ?";
         $this->delete($sql, "s", array($idHashOrdine));
     }
+
+    public function removeAllByIdHashPrenotazione($idHashPrenotazione = ""){
+
+        //Cancello tutte le relazione create per le aggiunte
+        $sql = "DELETE FROM " . DB_ORDINEAGGIUNTA . " WHERE " . DB_ORDINEAGGIUNTA_IDORDINE . " IN ( SELECT ID FROM " . DB_ORDINE ." WHERE " . DB_ORDINE_IDPRENOTAZIONE . " IN ( SELECT ID FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ?))";
+        $this->delete($sql, "s", array($idHashPrenotazione));
+
+        //Cancello tutte le relazione create per gli allergeni
+        $sql = "DELETE FROM " . DB_ORDINEALLERGENE . " WHERE " . DB_ORDINEALLERGENE_IDORDINE . " IN ( SELECT ID FROM " . DB_ORDINE ." WHERE " . DB_ORDINE_IDPRENOTAZIONE . " IN ( SELECT ID FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ?))";
+        $this->delete($sql, "s", array($idHashPrenotazione));
+
+        //Adesso posso cancellare tutti gli ordini
+        $sql = "DELETE FROM " . DB_ORDINE . " WHERE " . DB_ORDINE_IDPRENOTAZIONE . " IN (SELECT ID FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ?)"; 
+        $this->delete($sql, "s", array($idHashPrenotazione));
+    }
 }
 
 ?>

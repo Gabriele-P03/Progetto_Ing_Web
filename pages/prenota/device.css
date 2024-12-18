@@ -1,0 +1,69 @@
+/**
+    Questo file css contiene delle istruzioni di overriding al fine di garantire 
+    la compatibilità coi dispositivi mobile.
+    Questa parte è stata studiata da https://www.w3schools.com/css/css_rwd_mediaqueries.asp
+*/
+
+/*A partire dagli smartphone*/
+@media only screen and (max-device-width: 600px){
+    main{
+        display: block;
+        overflow-y: auto;
+    }
+
+    main>form#form_prenotazione{
+        width: 100%;
+    }
+
+    article{
+        width: calc(100% - 1px - 1px);  /*1px border sx e 1px border dx*/
+        margin: 20px 0 0 0;  /*Overriding del margin*/  
+    }
+
+    div.info_ordine_div {
+        width: 97.5%;
+        display: block;
+    }
+}
+
+
+/*Min width 600 => tablet in poi (dunque anche desktop) */
+@media only screen and (min-device-width: 600px) {
+    
+    /*
+        Sui desktop e tablet si riesce ad avere una buona 
+        UX affiancando il main e l'article; sugli smartphone no
+    */
+    main{
+        display: flex;
+    }
+}
+
+
+/*Smartphone in orientamento orizzontale*/
+/*
+    Di per sè, basterebbe 'orientation: landscape' per prendere i device con schermo a prevalenza orizzontale;
+    ciò però influirebbe anche sui desktop.
+    Per ovviare, sfrutto anche:
+    1) pointer: coarse; ovvero puntatore grossolano come può essere un dito...
+    2) hover: none; ovvero se il puntatore può "passare" sugli elementi! 
+*/
+@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+    form#form_prenotazione{
+        overflow-y: auto;   /*Perché altrimenti i pulsanti di aggiunta/modifica non vengono visualizzati causa overflow*/
+    }
+
+    fieldset#fs_prenota_allergeni{
+        height: 40vh;
+        max-height: 40vh;
+    }
+
+    fieldset#fs_prenota_base_pizza{
+        height: 40vh;
+    }
+
+    fieldset#fs_prenota_tipo_aggiunta{
+        height: 70vh;
+        max-height: 70vh;
+    }
+}

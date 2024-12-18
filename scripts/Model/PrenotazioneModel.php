@@ -2,11 +2,15 @@
 
 // include the base controller file
 require_once __DIR__ . "/Connection.php";
+require_once __DIR__ . "/OrdineModel.php";
 
 class PrenotazioneModel extends Connection{
 
+    private OrdineModel $ordineModel;
+
     public function __construct(){
         parent::__construct();
+        $this->ordineModel = new OrdineModel();
     }
 
     public function getAllByUserID($userid){
@@ -66,10 +70,10 @@ class PrenotazioneModel extends Connection{
         $this->insert($sql, "sssssss", array($nominativo, $data, $numero_persone, $asporto, $telefono, $userid, $hash), DB_PRENOTAZIONE);
     }
 
-    public function aggiungiOrdine($xml, $hash, $userid){
-        $pizza = $xml->pizza[0]->attributes()[0];
-        $allergeni = $xml->allergeni;
-        
+    public function removeByIdHash($idHash = ""){
+        $this->ordineModel->removeAllByIdHashPrenotazione($idHash);
+        $sql = "DELETE FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ? ";
+        $this->delete($sql, 's', array($idHash)); 
     }
 }
 

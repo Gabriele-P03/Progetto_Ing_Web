@@ -94,6 +94,32 @@ class PrenotazioneController extends BaseController{
             exit;
         }
     }
+
+        /**
+     * End-point /prenotazione/all
+     * @return void
+     */
+    public function delete(){
+        $this->validaMetodi("DELETE");
+
+        try{
+            $this->validaParametri(array("prenotazione"), null);
+        }catch(Exception $e){
+            header(HTTP_V." 400 Bad Request");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+        try{
+            $userid = controllaCookie(COOKIE_NAME);
+            $hash = $_GET['prenotazione'];
+            $this->prenotazioneModel->removeByIdHash($hash);
+            $this->inviaRispostaOK("");   
+        }catch(Exception $e){
+            header(HTTP_V." 505 Internal Server Error");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+    }
 }
 
 ?>

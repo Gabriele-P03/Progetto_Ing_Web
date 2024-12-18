@@ -19,13 +19,12 @@ body{
     height: 100%;
     width: 100%;
     bottom: 0;
+    overflow-y: hidden;
 }
 
 main{
     width: 99%; /*Ho sottratto 0.5% margin left e 0.5% margin right*/
     max-height: 90%;
-    display: flex;
-    flex-direction: row;
     margin: 0.5% 0.5% 0% 0.5%;
 }
 
@@ -41,6 +40,7 @@ legend.lg_fs_prenota{
 
 div#bottoni_form_div{
     width: 100%;
+    /*height: auto;*/   /*Poiché questo div contiene solo floating children, la sua altezza sarà sempre 0*/
 }
 
 /*Bottoni modifica*/
@@ -61,7 +61,7 @@ input#salva_button{
 
 form#form_prenotazione{
     width: 40%;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 

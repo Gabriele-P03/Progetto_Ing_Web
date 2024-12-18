@@ -6,7 +6,7 @@
         <meta name="author" content="Gabriele Pace">
         <meta name="description" content="Progetto Ingegneria del Web">
         <meta name="date" content="2024-11-20T16:51:12+00:00">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>
             Pizzeria da Gabbo
         </title>
@@ -15,6 +15,7 @@
 
         <link href="prenota.css" type="text/css" rel="stylesheet">
         <link href="prenotazione_corrente.css" type="text/css" rel="stylesheet">
+        <link href="device.css" type="text/css" rel="stylesheet">
     </head>
 
     <body>
@@ -92,20 +93,19 @@
                             <input type="date" id="date_dataavvenimento">
                         </div>
                     </div>
-
-                    <div class="info_ordine_div" id="info_ordine_nome_bottone">
-                        <div id="info_ordine_nome_div">
-                                Nominativo: <input type="text" id="nominativo_input" required>
-                        </div>
-                        <div id="info_ordine_bottone_div">
-                            <input type="button" id="salva_info_prenotazione_bt" value="Salva Informazioni" onclick="salvaPrenotazione()">
+                    <div class="info_ordine_div" id="info_ordine_nome_div">
+                        Nominativo: 
+                        <input type="text" id="nominativo_input" required>
+                        <div id="info_ordine_totale">
+                            Totale: 0 &euro;
                         </div>
                     </div>
+                </div>
 
-                    <div class="info_ordine_div" id="info_ordine_totale">
-                        Totale: 0 &euro;
-                    </div>
-
+                <div id="info_ordine_bottone_div">
+                    <input type="button" id="salva_info_prenotazione_bt" value="Salva Prenotazione" onclick="salvaPrenotazione()">
+                    <input type="button" id="elimina_info_prenotazione_bt" value="Elimina Prenotazione" onclick="eliminaPrenotazione()">
+                    <input type="button" id="nuova_info_prenotazione_bt" value="Nuova Prenotazione" onclick="nuovaPrenotazione()">
                 </div>
 
                 <table id="tabella_prenotazione">
@@ -114,7 +114,7 @@
 
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="body_prenotazione">
                         
                     </tbody>
                 </table>

@@ -400,6 +400,8 @@ function caricaOrdiniPrenotazione(){
         };
         xhttp.open('GET', '../../scripts/index.php/ordine/get?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
         xhttp.send();
+    }else{
+
     }
 }
 
@@ -615,6 +617,41 @@ function popolaFormPerModifica(ordine){
     document.getElementById("salva_button").style.visibility = "hidden";
     document.getElementsByClassName("modifica_bottoni")[0].style.visibility = "visible";
     document.getElementsByClassName("modifica_bottoni")[1].style.visibility = "visible";
+}
+
+/* 
+    Funzione che viene chiamata per creare una nuova prenotazione.
+    Siccome per creare una nuova prenotazione servirebbero le solite informazioni, non è
+    possibile creare effettivamente una nuova prenotazione. 
+    Tale azione viene dunque raggiunta pulendo la variabile interna contenente l'hash della prenotazione
+    e pulendo tutto 
+*/
+function nuovaPrenotazione(){
+    idHashPrenotazione = '';
+    document.getElementById("table_row_header_prenotazione").innerHTML = ""; //Pulisco l'header della tabella
+    document.getElementById("body_prenotazione").innerHTML = ""; //Pulisco il body della tabella
+    document.getElementById("tabella_prenotazione").style.visibility = 'hidden'; //Nascondo la tabella
+    //Adesso pulisco i campi delle informazioni
+    document.getElementById("cb_asporto").checked = false;
+    document.getElementById("telefono_input").innerText = '';
+    document.getElementById("nominativo_input").innerText = '';
+    document.getElementById("info_ordine_totale").innerHTML = 'Totale: 0 &euro;';
+    document.getElementById("date_dataavvenimento").textContent = '';
+    resetForm();
+}
+
+/* 
+    Funzione che viene chiamata per cancellare l'intera prenotazione se è ancora in bozza
+*/
+function eliminaPrenotazione(){
+    if(idHashPrenotazione.length > 0){
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            location.reload(true);
+        }
+        xhttp.open('DELETE', '../../scripts/index.php/prenotazione/delete?prenotazione='+idHashPrenotazione, true);
+        xhttp.send();
+    }
 }
 
 function cancellaOrdine(ordine){
