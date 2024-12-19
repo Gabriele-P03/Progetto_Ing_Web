@@ -13,12 +13,15 @@ class PrenotazioneController extends BaseController{
 
     /**
      * End-point /prenotazione/continua
+     * Se questa API non riceve alcun parametro 'prenotazione', vuole in risposta la prossima disponibile.
+     * Altrimenti ritorna quella richiesta.
+     * Il parametro viene inoltrato quando la rispettiva pagina viene invocata tramite tasto modifica presente per ogni prenotazione in bozza nell storico
      * @return void
      */
     public function continua(){
         $this->validaMetodi("GET");
         try{
-            $this->validaParametri(null, null);
+            $this->validaParametri(null, array("prenotazione"));
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
@@ -26,7 +29,11 @@ class PrenotazioneController extends BaseController{
         }
         try{
             $userid = controllaCookie(COOKIE_NAME);
-            $res = $this->prenotazioneModel->getBozzaByUserID($userid);
+            $hash = "";
+            if(filter_has_var(INPUT_GET, "prenotazione")){
+                $hash = $_GET['prenotazione'];
+            }
+            $res = $this->prenotazioneModel->getBozzaByUserID($userid, $hash);
             $res_xml = $this->res_to_xml($res);
             $this->inviaRispostaOK($res_xml);   
         }catch(Exception $e){

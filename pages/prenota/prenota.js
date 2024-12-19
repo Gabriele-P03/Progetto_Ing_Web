@@ -2,10 +2,26 @@ window.onresize = function(){
     //allineaTabella();
 }
 window.onload = function(){
+    idHashPrenotazione = retrieveIdHashPrenotazione();
     carica_allergeni();
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
-    caricaUltimaPrenotazioneBozza();
+    caricaPrenotazioneBozza();
+}
+
+/**
+ * Si prende l'idHash della prenotazione posta nell'url
+ */
+function retrieveIdHashPrenotazione(){
+    let url = document.URL;
+    let indexQuestionMark = url.indexOf('?');
+    if(indexQuestionMark === -1){   //Nessun parametro, vuol dire che la pagina di prenotazione non è stata invocata dal tasto modifica dello storico
+        return "";
+    }
+    url = url.substring(indexQuestionMark+1);
+    let idHash = url.substring('prenotazione='.length);
+    console.log(url + "\n" + idHash);
+    return idHash;
 }
 
 var idHashPrenotazione = "";
@@ -292,7 +308,7 @@ function impostaMinDataAvvenimento(){
     datePicker.min = new Date().toISOString().split("T")[0];
 }
 
-function caricaUltimaPrenotazioneBozza(){
+function caricaPrenotazioneBozza(){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         var XMLParser = new DOMParser();
@@ -317,7 +333,13 @@ function caricaUltimaPrenotazioneBozza(){
 
         caricaOrdiniPrenotazione();
     }
-    xhttp.open('GET', '../../scripts/index.php/prenotazione/continua', true);
+    //Questa funzione viene chiamata solo al caricamento della pagina, dunque se idHashPrenotazione è valorizzato vuol dire
+    //che questa prenotazione è stata invocata dal tasto di modifica dello storico
+    let appendice = "";
+    if(idHashPrenotazione.length > 0){
+        appendice += "?prenotazione="+encodeURIComponent(idHashPrenotazione);
+    }
+    xhttp.open('GET', '../../scripts/index.php/prenotazione/continua'+appendice, true);
     xhttp.withCredentials = true;
     xhttp.send();
     
@@ -633,11 +655,12 @@ function nuovaPrenotazione(){
     document.getElementById("tabella_prenotazione").style.visibility = 'hidden'; //Nascondo la tabella
     //Adesso pulisco i campi delle informazioni
     document.getElementById("cb_asporto").checked = false;
-    document.getElementById("telefono_input").innerText = '';
-    document.getElementById("nominativo_input").innerText = '';
+    document.getElementById("telefono_input").value = '';
+    document.getElementById("nominativo_input").value = '';
     document.getElementById("info_ordine_totale").innerHTML = 'Totale: 0 &euro;';
-    document.getElementById("date_dataavvenimento").textContent = '';
+    document.getElementById("date_dataavvenimento").value = '';
     resetForm();
+    bloccaNumeroPersone();
 }
 
 /* 
@@ -645,12 +668,17 @@ function nuovaPrenotazione(){
 */
 function eliminaPrenotazione(){
     if(idHashPrenotazione.length > 0){
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function(){
-            location.reload(true);
+
+        //Prima di eliminare, chuedi all'utente la conferma
+        let go = confirm("Sicuro di voler eliminare questa prenotazione?");
+        if(go){
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function(){
+                location.reload(true);
+            }
+            xhttp.open('DELETE', '../../scripts/index.php/prenotazione/delete?prenotazione='+idHashPrenotazione, true);
+            xhttp.send();
         }
-        xhttp.open('DELETE', '../../scripts/index.php/prenotazione/delete?prenotazione='+idHashPrenotazione, true);
-        xhttp.send();
     }
 }
 

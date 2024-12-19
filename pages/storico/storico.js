@@ -26,22 +26,39 @@ function caricaStorico(){
     xhttp.send();
 }
 
+/* 
+    Carica la singola prenotazione.
+    Siccome per inserire i tasti delle varie azioni, mi serve sapere lo stato, ma per esse devo comunque sapere il digest
+    della prenotazione in esame (un'altra colonna), mi salvo prima lo stato e l'hash in apposite variabile. 
+    Dopo il ciclo for, sarò in grado di scegliere quali tasti far visualizzare
+*/
 function caricaPrenotazione(row){
     var tbody = document.getElementsByTagName("tbody")[0];
     var newTR = "<tr class=\"tr_body\">";
     var trBuffer = "";
-    var tdAzioni = "<td class=\"td_storico\"><input type=button value=\"Visualizza\" onclick=\"apriVisualizzazioneIFRAME(this)\" name=";
+    var tdAzioni = "<td class=\"td_storico\">";
     //Adesso inserisco i dati
-    row.childNodes.forEach(col => {
+    //Poiché 
+    let flagBozza = false;
+    let idHash = "";
+    for(let i = 0; i < row.childNodes.length; i++){
+        let col = row.childNodes.item(i);
         if(col.nodeName !== "ID_HASH"){
+            if(col.nodeName === "Stato" && col.textContent === '0'){
+                flagBozza = true;
+            }
             let td = "<td class=\"td_storico\">";
-            td += col.textContent;
+            let content = tryParseContent(col.textContent, col.nodeName);
+            td += content
             td += "</td>";
             trBuffer += td;
         }else{
-            tdAzioni += "\"" + col.textContent + "\"></td>";
+            idHash = col.textContent;
         }
-    });
+    }
+    tdAzioni += "<input type=button value=\"Visualizza\" onclick=\"apriVisualizzazioneIFRAME(this)\" name=\"" + idHash + "\">";
+    tdAzioni += "<input type=button value=\"Modifica\" onclick=\"modificaPrenotazione(this)\" name=\"" + idHash + "\">";
+    tdAzioni += "</td>";
     tbody.innerHTML += newTR + tdAzioni + trBuffer + "</tr>";
 }
 
@@ -108,4 +125,31 @@ function allineaTabella(){
 var srcPopup = "popup/popup.html";
 function apriVisualizzazioneIFRAME(input){
     window.open(srcPopup+'?prenotazione='+input.name, 'Ordini', 'popup');
+}
+
+function tryParseContent(content, colName){
+    if(colName === 'Stato'){
+        switch(content){
+            case '0':
+                return "Bozza";
+            break;
+            case '1':
+                return "Passato";
+            break;
+        }
+    }else if(colName === 'Tipo'){
+        switch(content){
+            case '0':
+                return "Al Tavolo";
+            break;
+            case '1':
+                return "Asporto";
+            break;
+        }
+    }
+    return content;
+}
+
+function modificaPrenotazione(input){
+    window.location.href += "/../../prenota/prenota.html?prenotazione="+encodeURIComponent(input.name);
 }

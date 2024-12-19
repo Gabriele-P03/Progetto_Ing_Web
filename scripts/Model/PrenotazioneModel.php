@@ -22,13 +22,20 @@ class PrenotazioneModel extends Connection{
         return $this->select($sql, array($userid));
     }
 
-    public function getBozzaByUserID($userid){
-        return $this->select("SELECT ID_HASH, " . DB_PRENOTAZIONE_NOME . ", " . DB_PRENOTAZIONE_DATAPRENOTAZIONE . ", " .
+    public function getBozzaByUserID($userid, $idHashPrenotazione = ""){
+        $sql = "SELECT ID_HASH, " . DB_PRENOTAZIONE_NOME . ", " . DB_PRENOTAZIONE_DATAPRENOTAZIONE . ", " .
                         DB_PRENOTAZIONE_DATAAVVENIMENTO . ", " . DB_PRENOTAZIONE_STATO . ", " . DB_PRENOTAZIONE_IDTAVOLO . ", " . 
                         DB_PRENOTAZIONE_NUMEROPERSONE . ", " . DB_PRENOTAZIONE_TIPO . ", " . DB_PRENOTAZIONE_DESCRIZIONESTATO . ", ". 
                         DB_PRENOTAZIONE_TELEFONO . " FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_USERID . " = ? AND " . 
-                        DB_PRENOTAZIONE_STATO . " = " . PRENOTAZIONE_STATO_BOZZA . " AND " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " > (SELECT CURDATE())" . " ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO 
-                        . " LIMIT 1", array($userid));
+                        DB_PRENOTAZIONE_STATO . " = " . PRENOTAZIONE_STATO_BOZZA . " AND ";
+        $arr = array($userid);
+        if(!empty( $idHashPrenotazione )){
+            $sql .= "ID_HASH = ? LIMIT 1";
+            $arr[] = $idHashPrenotazione;   //Aggiungo l'hash della prenotazione
+        }else{
+            $sql .= DB_PRENOTAZIONE_DATAAVVENIMENTO . " >= (SELECT CURDATE())" . " ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " LIMIT 1";
+        }
+        return $this->select($sql, $arr);
     }
 
     public function save($xml, $userid){
