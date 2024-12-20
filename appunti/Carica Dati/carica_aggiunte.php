@@ -18,7 +18,6 @@ if ($conn->connect_error) {
 
 $array = array(
     //Inserire qui altri allergeni a piacere
-    /*
     array("Salsa di Pomodoro", 0.0, 1, 2),
     array("Mozzarella", 0.0, 1, 2),
     array("Prosciutto Cotto", 0.5, 1, 2),
@@ -47,7 +46,6 @@ $array = array(
     array("Scamorza Affumicata", 0.5, 1, 2),
     array("Svizzero", 0.5, 1, 2),
     array("Kebab", 0.5, 1, 2),
-    array("!!!!ANANAS!!!!", 0.5, 1, 2),
     array("Burratina", 0.5, 1, 2),
     array("Granella di Pistacchio", 0.5, 1, 2),
     array("Crema di Pistacchio", 0.5, 1, 2),
@@ -55,6 +53,11 @@ $array = array(
     array("Aglio", 0.0, 1, 2),
     array("Mozzarella Senza Lattosio", 0.0, 1, 2),
     array("Uova", 0.25, 1, 2),
+    array("Olio", 0.0, 1, 2),
+    array("Bufala", 0.5, 1, 2),
+    array("Zucchine", 0.5, 1, 2),
+    array("Melanzane", 0.5, 1, 2),
+    array("Peperoni", 0.5, 1, 2),
 
     //bevande
     array("Acqua Naturale 0.5cc", 0.5, 1, 3),
@@ -80,10 +83,7 @@ $array = array(
     array("Senape", 0.0, 1, 4),
     array("Salsa Piccante", 0.0, 1, 4),
     array("Salsa Yogurt", 0.0, 1, 4)
-    */
 
-    //array("Olio", 0.0, 1, 2),
-    array("Bufala", 0.5, 1, 2)
 );
 
 $ALLERGENE_TAB_NAME = "AGGIUNTA";

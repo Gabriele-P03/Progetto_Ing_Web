@@ -27,7 +27,10 @@ $array = array(
     "Funghi e Salsiccia" => array("Salsa di Pomodoro", "Mozzarella", "Funghi", "Salame Piccante"),
     "Bufala Speciale" => array("Salsa di Pomodoro", "Mozzarella", "Bufala", "Mortadella", "Granella di Pistacchio"),
     "Calabrese" => array("Salsa di Pomodoro", "Mozzarella", "Salame Piccante"),
-    "Diavola" => array("Salsa di Pomodoro", "Mozzarella", "Salame Piccante")
+    "Diavola" => array("Salsa di Pomodoro", "Mozzarella", "Salame Piccante"),
+    "4 Stagioni" => array("Salsa di Pomodoro", "Mozzarella", "Prosciutto Cotto", "Olive", "Carciofi", "Funghi"),
+    "Valtellina" => array("Salsa di Pomodoro", "Mozzarella", "Bresaola", "Grana Padano DOC", "Rucola"),
+    "Contadina" => array("Salsa di Pomodoro", "Mozzarella", "Melanzane", "Zucchine", "Peperoni")
 );
 
 $PIZZA_TAB_NAME = "PIZZA";

@@ -35,6 +35,7 @@ div#info_ordine{
     border: 1px solid white;
     display: flex;
     flex-direction: row;
+    overflow-x: auto;
 }
 
 input.cb_info_ordine_tipo{
