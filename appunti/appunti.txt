@@ -1,6 +1,28 @@
-Nella presentazione PP:
-Schema DB
-Requisiti Funzionali
-Scelte Prgettuali
-Interfaccia
-Doc API
+Cosa vuole il professore nel PowerPoint:
+
+- Schema DB
+- Requisiti Funzionali
+- Scelte Prgettuali
+- Interfaccia
+- Doc API
+
+
+
+Utente normale attraverso cookie -> NO LOGIN
+Amministrazione -> login e pagina ad hoc
+
+
+Ruoli:
+
+- Cucina: può gestire le aggiunte
+- Cameriere: può gestire i tavoli e dunque le prenotazioni (solo quelle al tavolo, NO ASPORTO!)
+- Pizzaiolo: può visualizzare le prenotazioni e gestire le pizze
+- Responsabile: può gestire gli allergeni e le relazioni di questi con gli ingredienti, gestire le prenotazioni, e può
+inoltre registrare nuovi individui (la psw la sceglie lui)
+
+Tutti i ruoli sono catalogati nel DB e ogni individuo vi ha una referenziazione. 
+Ogni individuo è censito con:
+Nome, Cognome, username, password, ruolo_id
+
+Ogni ruolo invece ha le seguenti proprietà:
+Nome Ruolo, identificativo_numerico

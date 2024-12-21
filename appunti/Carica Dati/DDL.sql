@@ -110,3 +110,29 @@ CREATE TABLE ORDINE_ALLERGENE(
     FOREIGN KEY (ID_ORDINE) REFERENCES ORDINE(ID),
     FOREIGN KEY (ID_ALLERGENE) REFERENCES ALLERGENE(ID)
 )
+
+
+-- Creo la tabella dei ruoli
+CREATE TABLE RUOLO(
+    ID BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    NOME_RUOLO VARCHAR(64) UNIQUE NOT NULL,
+    IDENTIFICATIVO INTEGER UNSIGNED UNIQUE NOT NULL
+);
+
+-- Creo la tabella dell'anagrafica
+CREATE TABLE ANAGRAFICA(
+    ID BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    NOME VARCHAR(64) NOT NULL,
+    COGNOME VARCHAR(64) NOT NULL,
+    USERNAME VARCHAR(64) UNIQUE NOT NULL,
+    PSW VARCHAR(128) NOT NULL, -- 128 chars per lo sha512
+    ID_RUOLO BIGINT UNSIGNED NOT NULL, 
+    FOREIGN KEY (ID_RUOLO) REFERENCES RUOLO(ID)
+);
+
+INSERT INTO RUOLO VALUES (NULL, "Cameriere", 1), (NULL, "Magazziniere", 2), (NULL, "Pizzaiolo", 3), (NULL, "Responsabile", 4);
+INSERT INTO ANAGRAFICA VALUES
+(NULL, "Gabriele", "Pace", "gabriele_pace", SHA2("password", 512), 1),
+(NULL, "Maria", "Vitale", "maria_vitale", SHA2("password", 512), 2),
+(NULL, "Mario", "Rossi", "mario_rossi", SHA2("password", 512), 3),
+(NULL, "Luigi", "Verdi", "luigi_verdi", SHA2("password", 512), 4);

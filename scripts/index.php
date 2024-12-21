@@ -37,6 +37,7 @@ require PROJECT_ROOT_PATH . "/Controller/Api/AggiuntaController.php";
 require PROJECT_ROOT_PATH . "/Controller/Api/TipoAggiuntaController.php";
 require PROJECT_ROOT_PATH . "/Controller/Api/OrdineController.php";
 require PROJECT_ROOT_PATH . "/Controller/Api/PrenotazioneController.php";
+require PROJECT_ROOT_PATH . "/Controller/Api/AnagraficaController.php";
 
 try{
     $allergeniController = new AllergeniController(); 
@@ -45,6 +46,7 @@ try{
     $tipoAggiuntaController = new TipoAggiuntaController();
     $prenotazioneController = new PrenotazioneController();
     $ordineController = new OrdineController();
+    $anagraficaController = new AnagraficaController();
 } catch ( Exception $e ){
     header(HTTP_V." 505 Internal Server Error");
     echo "\"".$e->getMessage()."\"";
@@ -70,6 +72,9 @@ switch ($module) {
     break;
     case MODULE_ORDINE:
         $ordineController->{$uri}();
+    break;
+    case MODULE_ANAGRAFICA:
+        $anagraficaController->{$uri}();
     break;
 
     default:

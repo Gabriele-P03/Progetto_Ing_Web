@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Gabriele Pace">
+        <meta name="description" content="Progetto Ingegneria del Web">
+        <meta name="date" content="2024-11-12T16:51:12+00:00">
+        
+
+        <title>
+            Pizzeria da Gabbo
+        </title>
+
+        <script src="magazziniere.js"></script>
+
+        <link href="magazziniere.css" type="text/css" rel="stylesheet">
+    </head>
+
+
+    <body>
+        <main>
+            <iframe id="iframe_pannello_utente" >
+
+            </iframe>
+            <fieldset id="fieldset_prenotazioni_tavoli" name="fieldset_prenotazioni_tavoli">
+                <legend>Per quale data vuoi visualizzare gli ordini?</legend>
+                <input id="date_prenotazioni" type="date" onchange="caricaPrenotazioniTavoli()">
+
+                <div id="div_fs_inner">
+                    <fieldset id="fieldset_prenotazioni">
+                        <legend>Le prenotazioni per questa data: </legend>
+                    </fieldset>
+                    <fieldset id="fieldset_tavoli">
+                        <legend>I tavoli per questa data: </legend>
+                    </fieldset>
+                </div>
+            </fieldset>
+        </main>
+    </body>
+
+</html>
