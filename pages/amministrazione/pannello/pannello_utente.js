@@ -74,7 +74,8 @@ const HTML_MODIFICA_PSW = "" +
  */
 function showCambioPassword(){
     if(!flagCambiandoPsw){
-        document.getElementById("pannello_utente").innerHTML += HTML_MODIFICA_PSW;
+        let div = document.getElementById("cambio_psw_pannello_utente_div");
+        div.innerHTML = HTML_MODIFICA_PSW + div.innerHTML;
         flagCambiandoPsw = true;
     }
 }

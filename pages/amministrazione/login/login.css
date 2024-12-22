@@ -24,7 +24,7 @@ main{
 }
 
 main>form#login_form{
-    width: 20%;
+    width: 50vw;
     height: fit-content;
     background-color: white;
     margin: auto;
@@ -32,18 +32,22 @@ main>form#login_form{
     border-radius: 5%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 form#login_form>*{
     display: block;
-    width: 50%;
+    width: 75%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 1em;
     border: 2px solid black;
+    font-size: large;
+    text-align: center;
 }
 
 form>button#login_button{
     height: fit-content;
+    width: fit-content;
     margin-bottom: 1em;
 }
 

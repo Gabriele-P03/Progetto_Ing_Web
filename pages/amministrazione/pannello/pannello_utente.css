@@ -17,6 +17,10 @@ main{
     color: white;
 }
 
+div#pannello_utente{
+    height: 100%;
+}
+
 div#icona_div_pannello_utente{
     width: 100%;
     height: fit-content;
@@ -36,10 +40,28 @@ div.info_pannello_utente{
 
 /*DA QUI INIZIA LA PARTE INERENTE AI CAMPI/PULSANTI PER IL RESET DELLA PSW*/
 
+div#cambio_psw_pannello_utente_div{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 2em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+button#show_psw_reset_fields_bt{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
 /*Div dei campi per il reset della psw*/
 div#div_campi_psw_reset{
     display: flex;
     flex-direction: column;
+    margin-bottom: 1em;
+    border: 2px solid white;
 }
 
 div#div_campi_psw_reset>input{
@@ -48,5 +70,5 @@ div#div_campi_psw_reset>input{
 }
 
 div#div_psw_reset_bt{
-    margin: 1em auto 0 auto;
+    margin: 1em auto 1em auto;
 }
