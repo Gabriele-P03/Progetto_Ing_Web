@@ -62,7 +62,7 @@ class Connection{
         }
     }
 
-    private function executeStatement($query = "", $types = "", $params = []){
+    protected function executeStatement($query = "", $types = "", $params = []){
         try {
             $stmt = $this->connection->prepare($query);
             if ($stmt === false) {

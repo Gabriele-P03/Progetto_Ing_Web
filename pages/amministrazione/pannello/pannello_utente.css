@@ -16,3 +16,37 @@ main{
     height: 100%;
     color: white;
 }
+
+div#icona_div_pannello_utente{
+    width: 100%;
+    height: fit-content;
+    /*La prop seguente serve a centrare l'icona, insieme ai margin auto di img*/
+    display: flex;  
+}
+div#icona_div_pannello_utente>img{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.info_pannello_utente{
+    width: 100%;
+    text-align: center;
+}
+
+
+/*DA QUI INIZIA LA PARTE INERENTE AI CAMPI/PULSANTI PER IL RESET DELLA PSW*/
+
+/*Div dei campi per il reset della psw*/
+div#div_campi_psw_reset{
+    display: flex;
+    flex-direction: column;
+}
+
+div#div_campi_psw_reset>input{
+    width: 50%;
+    margin: 1em auto 0 auto;
+}
+
+div#div_psw_reset_bt{
+    margin: 1em auto 0 auto;
+}

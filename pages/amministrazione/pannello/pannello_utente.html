@@ -12,25 +12,28 @@
         <meta name="date" content="2024-11-12T16:51:12+00:00">
 
         <link href="pannello_utente.css" type="text/css" rel="stylesheet">
-        <link href="pannello_utenteq.js">
+        <script src="pannello_utente.js"></script>
     </head>
 
 
     <body>
         <main>
             <div id="pannello_utente">
-                <div id="nome_div_pannello_utente">
+                <div id="icona_div_pannello_utente">
+                    <img id="icona_pannello_utente">
+                </div>
+                <div class="info_pannello_utente" id="nome_div_pannello_utente">
                     Nome: 
                 </div>
-                <div id="cognome_div_pannello_utente">
+                <div class="info_pannello_utente" id="cognome_div_pannello_utente">
                     Cognome: 
                 </div>
-                <div id="ruolo_div_pannello_utente">
+                <div class="info_pannello_utente" id="ruolo_div_pannello_utente">
                     Ruolo: 
                 </div>
 
                 <div id="cambio_psw_pannello_utente">
-                    <button type="button" >Cambio Password</button>
+                    <button id="show_psw_reset_fields_bt" type="button" onclick="showCambioPassword()">Cambio Password</button>
                 </div>
             </div>
         </main>

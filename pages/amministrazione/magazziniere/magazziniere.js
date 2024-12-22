@@ -1,4 +1,4 @@
-var nome, cognome, ruolo;
+var nome, cognome, ruolo = 'Magazziniere';
 
 window.onload = function(){
     parseInfoProfilo();
@@ -10,11 +10,6 @@ function caricaIframeProfilo(){
     var iframe = document.getElementById("iframe_pannello_utente");
     let parameters = "nome="+encodeURIComponent(nome)+"&cognome="+encodeURIComponent(cognome)+"&ruolo="+encodeURIComponent(ruolo);
     iframe.setAttribute("src", "http://localhost/pages/amministrazione/pannello/pannello_utente.html?"+parameters);
-    iframe.onload = function(){
-        iframe.contentDocument.getElementById("nome_div_pannello_utente").innerHTML += nome;
-        iframe.contentDocument.getElementById("cognome_div_pannello_utente").innerHTML += cognome;
-        iframe.contentDocument.getElementById("ruolo_div_pannello_utente").innerHTML += ruolo;
-    }
 }
 
 function parseInfoProfilo(){
@@ -27,7 +22,6 @@ function parseInfoProfilo(){
     urls = url.split("&");
     nome = decodeURIComponent(urls[0].split("=")[1]);
     cognome = decodeURIComponent(urls[1].split("=")[1]);
-    ruolo = decodeURIComponent(urls[2].split("=")[1]);
 }
 
 function impostaMinDataAvvenimento(){

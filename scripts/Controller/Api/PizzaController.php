@@ -15,7 +15,7 @@ class PizzaController extends BaseController{
      * @return void
      */
     public function all(): void{
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
 
         try{
             $this->validaParametri(null, null);
@@ -40,7 +40,7 @@ class PizzaController extends BaseController{
      * @return void
      */
     public function allergeni(): void{
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
         try{
             $this->validaParametri(array("allergene0"), null);  //Per accertarmi che almeno un allergene sia arrivato
             $this->validaParametriArbitrari("/allergene\d/s");   //Mi potrei aspettare allergene0, allergene1 ....

@@ -52,12 +52,15 @@ class BaseController{
         if(is_array($metodi)){
             if(in_array($metodo, $metodi)){
                 return true;
-            }else{
-                header($erroreHeader);
             }
+            $responseError = "";
         }else{
             $erroreHeader = HTTP_V." 400 Bad Request";
+            $responseError = "Errore nella validazione del metodo richiesto";
         }
+        header($erroreHeader);
+        echo $responseError;
+        exit;
     }
 
     protected function validaParametri($paramsExpected, $paramsOptional):void{

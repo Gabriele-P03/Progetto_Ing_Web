@@ -19,7 +19,7 @@ class PrenotazioneController extends BaseController{
      * @return void
      */
     public function continua(){
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
         try{
             $this->validaParametri(null, array("prenotazione"));
         }catch(Exception $e){
@@ -48,7 +48,7 @@ class PrenotazioneController extends BaseController{
      * @return void
      */
     public function all(){
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
 
         try{
             $this->validaParametri(null, "date");
@@ -112,7 +112,7 @@ class PrenotazioneController extends BaseController{
      * @return void
      */
     public function delete(){
-        $this->validaMetodi("DELETE");
+        $this->validaMetodi(array("DELETE"));
 
         try{
             $this->validaParametri(array("prenotazione"), null);

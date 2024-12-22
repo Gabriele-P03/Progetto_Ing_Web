@@ -15,7 +15,7 @@ class TipoAggiuntaController extends BaseController{
      * @return void
      */
     public function all(): void{
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
 
         try{
             $this->validaParametri(null, null);

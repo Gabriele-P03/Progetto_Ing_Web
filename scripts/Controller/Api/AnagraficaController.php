@@ -18,7 +18,7 @@ class AnagraficaController extends BaseController{
      * @return void
      */
     public function login(): void{
-        $this->validaMetodi("POST");
+        $this->validaMetodi(array("POST", "PUT"));
 
         try{
             $this->validaParametri(null, null);
@@ -33,20 +33,32 @@ class AnagraficaController extends BaseController{
             header('Content-Type: application/xml; charset=utf-8');
             $xmlString = file_get_contents('php://input');
             $xml = new SimpleXMLElement($xmlString);
-            $res = $this->anagraficaModel->getByUsernameAndPassword($xml);
 
-            //Salvo e poi rimuovo, per motivi di sicurezza, l'id del ruolo
-            $idRuolo = $res[0][DB_ANAGRAFICA_IDRUOLO];
-            unset($res[0][DB_ANAGRAFICA_IDRUOLO]);
+            $res_xml = null;
+            if($_SERVER["REQUEST_METHOD"] == 'POST'){
+                $res = $this->anagraficaModel->getByUsernameAndPassword($xml);
 
-            $res_xml = $this->res_to_xml($res);
-            //Adesso al res_xml aggiungo anche un child col ruolo
-            $resRuolo = $this->ruoloModel->getByIdentificativoRuolo($idRuolo);
-            if($res_xml != null){
-                $xml = new SimpleXMLElement($res_xml);
-                $ruoloChild = $xml->row[0]->addChild('RUOLO');
-                $ruoloChild->addChild('NOME', $resRuolo[0][DB_RUOLO_NOME]);
-                $res_xml = $xml->asXML();
+                //Salvo e poi rimuovo, per motivi di sicurezza, l'id del ruolo
+                $idRuolo = $res[0][DB_ANAGRAFICA_IDRUOLO];
+                unset($res[0][DB_ANAGRAFICA_IDRUOLO]);
+
+                $res_xml = $this->res_to_xml($res);
+                //Adesso al res_xml aggiungo anche un child col ruolo
+                $resRuolo = $this->ruoloModel->getByIdentificativoRuolo($idRuolo);
+                if($res_xml != null){
+                    $xml = new SimpleXMLElement($res_xml);
+                    $ruoloChild = $xml->row[0]->addChild('RUOLO');
+                    $ruoloChild->addChild('NOME', $resRuolo[0][DB_RUOLO_NOME]);
+                    $res_xml = $xml->asXML();
+                }
+            }else if($_SERVER["REQUEST_METHOD"] == 'PUT'){
+                //Reset della password
+                //Prima controllo che username e oldpassword siano corretti
+                $res = $this->anagraficaModel->getByUsernameAndPassword($xml); //Sfrutto la funzione già presente
+                $res = $this->anagraficaModel->resetPassword($xml);
+                if($res){
+                    $res_xml = "<result value=\"OK\" />";
+                }
             }
             $this->inviaRispostaOK($res_xml);   
         }catch(Exception $e){

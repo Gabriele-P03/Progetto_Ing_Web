@@ -15,7 +15,7 @@ class AggiuntaController extends BaseController{
      * @return void
      */
     public function all(): void{
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
 
         try{
             $this->validaParametri(array("pizza"), null);
@@ -42,7 +42,7 @@ class AggiuntaController extends BaseController{
     }
 
     public function allfilter(): void{
-        $this->validaMetodi("GET");
+        $this->validaMetodi(array("GET"));
         try{
             #$this->validaParametri(null, null);
             $this->validaParametriArbitrari("/(tipoaggiunta)|(pizza)|(allergene\d)/");
