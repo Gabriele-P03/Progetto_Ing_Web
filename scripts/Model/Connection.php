@@ -74,7 +74,6 @@ class Connection{
                 }
             }
 
-
             if(!$stmt->execute()){
                 throw new Exception("Errore nell'esecuzione della SQL: ". $stmt->error);
             }

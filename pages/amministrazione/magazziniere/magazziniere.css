@@ -11,6 +11,8 @@ body{
     background-repeat: no-repeat;
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
 main{
@@ -28,19 +30,47 @@ fieldset#fieldset_prenotazioni_tavoli{
     display: inline-block;
 }
 
-/*Classe dei fieldset interni a quello parent*/
 div#div_fs_inner{
-    display: flex;
-    flex-direction: row;
+    height: inherit;
 }
+
+/*Classe dei fieldset interni a quello parent*/
 div#div_fs_inner>fieldset{
     margin-bottom: 0;
     margin-top: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-fieldset#fieldset_prenotazioni{
-    flex-grow: 0.6;
+table#prenotazioni_magazziniere{
+    border: 4px solid white;
+    display: block;
+    overflow: hidden auto;
+    visibility: hidden;
+    width: fit-content;
+    max-width: 100%;
+    align-self: center;
+    text-align: center;
 }
-fieldset#fieldset_tavoli{
-    flex-grow: 0.4;
+
+thead{
+    display: block;
+    visibility: visible;
+}
+
+th{
+    white-space: nowrap;
+    border: 2px solid white;
+}
+
+tbody{
+    display: inline-block;
+    overflow: auto hidden;
+    visibility: visible;
+}
+
+td{
+    border: 1px solid white;
+    white-space: nowrap;
 }

@@ -273,12 +273,18 @@ function salvaPrenotazione(){
     }
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
-        if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
-            var XMLParser = new DOMParser();
-            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+        if(method === 'PUT' && xhttp.status === 200){
+            return;
+        }
+        var XMLParser = new DOMParser();
+        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+        if(xhttp.status === 400){
+            alert(xmlDoc.childNodes.item(0).attributes[0].value)
+        }else if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
             idHashPrenotazione = xmlDoc.childNodes.item(0).childNodes.item(0).attributes[0].value;
         }
     }
+
 
     let path = '../../scripts/index.php/prenotazione/save';
     if(method === 'PUT'){
@@ -315,17 +321,19 @@ function caricaPrenotazioneBozza(){
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
         let row = xmlDoc.documentElement;
         if(row.childNodes.item(0) !== null){
-            if(row.childNodes.item(0).childNodes.length === 10){
+            if(row.childNodes.item(0).childNodes.length === 9){
                 idHashPrenotazione = row.getElementsByTagName("ID_HASH")[0].textContent; //ID_HASH
                 document.getElementById("nominativo_input").value = row.getElementsByTagName("NOME")[0].textContent;//Nominativo
                 document.getElementById("date_dataavvenimento").value = row.getElementsByTagName("DATA_AVVENIMENTO")[0].textContent;//Data avventimento
                 document.getElementById("telefono_input").value = row.getElementsByTagName("TELEFONO")[0].textContent;  //Telefono
 
                 let cb_asporto_value = row.getElementsByTagName("TIPO")[0].textContent;
-                document.getElementById("cb_asporto").checked = cb_asporto_value;
-                if(!cb_asporto_value){
+                if(cb_asporto_value === '0'){
+                    document.getElementById("cb_asporto").checked = false;
+                    document.getElementById("tf_persone").disabled = false;
                     document.getElementById("tf_persone").value = row.getElementsByTagName("NUMERO_PERSONE")[0].textContent;
                 }else{
+                    document.getElementById("cb_asporto").checked = true;
                     bloccaNumeroPersone();
                 }
             }

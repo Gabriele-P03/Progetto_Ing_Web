@@ -13,14 +13,35 @@
         </title>
 
         <script src="magazziniere.js"></script>
+        <script src="../pannello/pannello_utente.js"></script>
         <link href="device.css" type="text/css" rel="stylesheet">
         <link href="magazziniere.css" type="text/css" rel="stylesheet">
+        <link href="../pannello/pannello_utente.css" type="text/css" rel="stylesheet">
     </head>
 
 
     <body>
+        <aside>
+            <div id="pannello_utente">
+                <div id="icona_div_pannello_utente">
+                    <img id="icona_pannello_utente">
+                </div>
+                <div class="info_pannello_utente" id="nome_div_pannello_utente">
+                    Nome: 
+                </div>
+                <div class="info_pannello_utente" id="cognome_div_pannello_utente">
+                    Cognome: 
+                </div>
+                <div class="info_pannello_utente" id="ruolo_div_pannello_utente">
+                    Ruolo: 
+                </div>
+
+                <div id="cambio_psw_pannello_utente_div">
+                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>
+                </div>
+            </div>
+        </aside>
         <main>
-            <iframe id="iframe_pannello_utente" >
 
             </iframe>
             <fieldset id="fieldset_prenotazioni_tavoli" name="fieldset_prenotazioni_tavoli">
@@ -30,9 +51,14 @@
                 <div id="div_fs_inner">
                     <fieldset id="fieldset_prenotazioni">
                         <legend>Le prenotazioni per questa data: </legend>
-                    </fieldset>
-                    <fieldset id="fieldset_tavoli">
-                        <legend>I tavoli per questa data: </legend>
+                        <table id="prenotazioni_magazziniere">
+                            <thead id="thead">
+
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+                        </table>
                     </fieldset>
                 </div>
             </fieldset>

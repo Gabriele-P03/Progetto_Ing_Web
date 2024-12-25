@@ -51,6 +51,8 @@ class AnagraficaController extends BaseController{
                     $ruoloChild->addChild('NOME', $resRuolo[0][DB_RUOLO_NOME]);
                     $res_xml = $xml->asXML();
                 }
+                //session_id($res[0][DB_ANAGRAFICA_USERNAME]);
+                //session_start();
             }else if($_SERVER["REQUEST_METHOD"] == 'PUT'){
                 //Reset della password
                 //Prima controllo che username e oldpassword siano corretti

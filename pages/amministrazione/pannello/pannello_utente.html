@@ -1,6 +1,14 @@
 <!--
     Questo vuole essere il pannello utente comune a tutti gli operatori dalla quale possono visionare
     le proprie informazioni e cambiare la password
+
+    Si potrebbe optare per l'utilizzo di iframe al fine di non ripetere la scrittura di questa parte, nonché 
+    del relativo file css e js; vi sarebbero però vari problemi legati alla compatibilità sui dispositivi mobile
+    circa l'header di sicurezza X-Frame-Options.
+    Si opta dunque per copiare e incollare solo il file html, ma di mantenere in questa sotto-directory i file css e js
+    che verranno richiamati dalle varie occorrenze di questo html.
+
+    Si deve dunque prestare attenzione a definire 
 -->
 <!DOCTYPE html>
 
@@ -33,7 +41,7 @@
                 </div>
 
                 <div id="cambio_psw_pannello_utente_div">
-                    <button id="show_psw_reset_fields_bt" type="button" onclick="showCambioPassword()">Cambio Password</button>
+                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>
                 </div>
             </div>
         </main>

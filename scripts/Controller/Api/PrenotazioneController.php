@@ -51,16 +51,18 @@ class PrenotazioneController extends BaseController{
         $this->validaMetodi(array("GET"));
 
         try{
-            $this->validaParametri(null, "date");
+            $this->validaParametri(null, array('date'));
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
             exit;
         }
         try{
-            $res = null;
+            $res = "";
             if(filter_has_var(INPUT_GET, "date")){
                 //Vuol dire che è un cameriere, devo controllare la sessione
+
+                $res = $this->prenotazioneModel->getAllByDataAvvenimento($_GET['date']);
             }else{
                 $userid = controllaCookie(COOKIE_NAME);
                 $res = $this->prenotazioneModel->getAllByUserID($userid);

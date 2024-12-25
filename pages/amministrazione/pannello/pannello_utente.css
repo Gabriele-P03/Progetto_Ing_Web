@@ -1,29 +1,16 @@
-html{
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-body{
-    margin: 0;
-    background-color: #444444;
-    height: 100%;
-    width: 100%;
-}
-
-main{
-    width: 100%;
-    height: 100%;
-    color: white;
-}
-
 div#pannello_utente{
-    height: 100%;
+    color: white;
+    height: calc(100% - 4px);
+    white-space: nowrap;
+    border: 2px solid white;
+    display: flex;
+    flex-direction: column;
 }
 
 div#icona_div_pannello_utente{
     width: 100%;
     height: fit-content;
+    margin-top: 1em;
     /*La prop seguente serve a centrare l'icona, insieme ai margin auto di img*/
     display: flex;  
 }
@@ -34,6 +21,7 @@ div#icona_div_pannello_utente>img{
 
 div.info_pannello_utente{
     width: 100%;
+    margin-top: 0.5em;
     text-align: center;
 }
 
@@ -41,9 +29,8 @@ div.info_pannello_utente{
 /*DA QUI INIZIA LA PARTE INERENTE AI CAMPI/PULSANTI PER IL RESET DELLA PSW*/
 
 div#cambio_psw_pannello_utente_div{
-    position: absolute;
-    bottom: 0;
     margin-bottom: 2em;
+    margin-top: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -61,7 +48,6 @@ div#div_campi_psw_reset{
     display: flex;
     flex-direction: column;
     margin-bottom: 1em;
-    border: 2px solid white;
 }
 
 div#div_campi_psw_reset>input{
@@ -71,4 +57,8 @@ div#div_campi_psw_reset>input{
 
 div#div_psw_reset_bt{
     margin: 1em auto 1em auto;
+}
+
+button#show_psw_reset_fields_bt_pannello_utente{
+    margin: auto;
 }
