@@ -1,0 +1,80 @@
+html{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    margin: 0;
+    background-image: url("../../../resources/body/pizza_bkg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+fieldset#fieldset_prenotazioni_tavoli{
+    margin-left: 2em;
+    margin-right: 2em;
+    color: white;
+    flex-grow: 1;
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+}
+
+input#date_prenotazioni{
+    width: fit-content;
+}
+
+div#div_fs_inner{
+    height: 100%;
+}
+
+/*Classe dei fieldset interni a quello parent*/
+div#div_fs_inner>fieldset{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+table#prenotazioni_cameriere{
+    border: 4px solid white;
+    display: block;
+    overflow: hidden auto;
+    visibility: hidden;
+    width: fit-content;
+    max-width: 100%;
+    align-self: center;
+    text-align: center;
+}
+
+thead{
+    display: block;
+    visibility: visible;
+}
+
+th{
+    white-space: nowrap;
+    border: 2px solid white;
+}
+
+tbody{
+    display: inline-block;
+    overflow: auto hidden;
+    visibility: visible;
+}
+
+td{
+    border: 1px solid white;
+    white-space: nowrap;
+}

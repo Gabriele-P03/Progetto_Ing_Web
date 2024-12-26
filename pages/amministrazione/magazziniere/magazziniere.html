@@ -14,9 +14,9 @@
 
         <script src="magazziniere.js"></script>
         <script src="../pannello/pannello_utente.js"></script>
-        <link href="device.css" type="text/css" rel="stylesheet">
         <link href="magazziniere.css" type="text/css" rel="stylesheet">
         <link href="../pannello/pannello_utente.css" type="text/css" rel="stylesheet">
+        <link href="device.css" type="text/css" rel="stylesheet">
     </head>
 
 
@@ -26,42 +26,59 @@
                 <div id="icona_div_pannello_utente">
                     <img id="icona_pannello_utente">
                 </div>
-                <div class="info_pannello_utente" id="nome_div_pannello_utente">
-                    Nome: 
+                <div id="info_pannello_utente_div">
+                    <div class="info_pannello_utente" id="nome_div_pannello_utente">
+                        Nome: 
+                    </div>
+                    <div class="info_pannello_utente" id="cognome_div_pannello_utente">
+                        Cognome: 
+                    </div>
+                    <div class="info_pannello_utente" id="ruolo_div_pannello_utente">
+                        Ruolo: 
+                    </div>
                 </div>
-                <div class="info_pannello_utente" id="cognome_div_pannello_utente">
-                    Cognome: 
-                </div>
-                <div class="info_pannello_utente" id="ruolo_div_pannello_utente">
-                    Ruolo: 
-                </div>
-
-                <div id="cambio_psw_pannello_utente_div">
-                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>
+                <div id="div_psw_reset">
+                    <div id="div_campi_psw_reset">
+                        
+                    </div>
+                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>            
                 </div>
             </div>
         </aside>
         <main>
-
-            </iframe>
-            <fieldset id="fieldset_prenotazioni_tavoli" name="fieldset_prenotazioni_tavoli">
-                <legend>Per quale data vuoi visualizzare gli ordini?</legend>
-                <input id="date_prenotazioni" type="date" onchange="caricaPrenotazioniTavoli()">
-
-                <div id="div_fs_inner">
-                    <fieldset id="fieldset_prenotazioni">
-                        <legend>Le prenotazioni per questa data: </legend>
-                        <table id="prenotazioni_magazziniere">
-                            <thead id="thead">
-
-                            </thead>
-                            <tbody id="tbody">
-
-                            </tbody>
-                        </table>
-                    </fieldset>
+            <fieldset id="fieldset_tipoaggiunte" name="fieldset_prenotazioni_tavoli">
+                <legend>Gestisci i Tipo Aggiunta</legend>
+                <form id="aggiungi_tipoaggiunta_form">
+                    
+                    Etichetta: <input type="text" id="nome_nuovo_tipoaggiunta" placeholder="Nome Tipo">
+                    <button type="button" id="salva_nuovo_tipoaggiunta" onclick="salvaTipoAggiunta()">Salva</button>
+                </form>
+                <div id="storico_etichette_div">
+                    
                 </div>
             </fieldset>
+            <fieldset id="fieldset_aggiunte" name="fieldset_prenotazioni_tavoli">
+                <legend>Gestisci le Aggiunte</legend>
+                <div id="nuova_aggiunta_div">
+                    Nome: <input type="text" id="nome_nuova_aggiunta" placeholder="Nome Aggiunta">
+                    Quantità: <input id="quantita_input_aggiunta" type="number" min="0" placeholder="Quantità">
+                    Seleziona un tipo aggiunta: <select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
+                </div>
+                <table id="table_aggiunte">
+                    <thead id="thead">
+                        <tr class="table_row_header_aggiunta">
+                            <th class="th_aggiunta">Tipo Aggiunta</th>
+                            <th class="th_aggiunta">Aggiunta</th>
+                            <th class="th_aggiunta">Quantità</th>
+                            <th class="th_aggiunta">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+    
+                    </tbody>
+                </table>
+            </fieldset>
+
         </main>
     </body>
 

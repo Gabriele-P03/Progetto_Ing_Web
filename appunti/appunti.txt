@@ -14,7 +14,7 @@ Amministrazione -> login e pagina ad hoc
 
 Ruoli:
 
-- Cucina: può gestire le aggiunte
+- Magazziniere: può gestire le aggiunte
 - Cameriere: può gestire i tavoli e dunque le prenotazioni (solo quelle al tavolo, NO ASPORTO!)
 - Pizzaiolo: può visualizzare le prenotazioni e gestire le pizze
 - Responsabile: può gestire gli allergeni e le relazioni di questi con gli ingredienti, gestire le prenotazioni, e può

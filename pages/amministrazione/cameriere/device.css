@@ -9,9 +9,6 @@
     body{
         flex-direction: column;
     }
-    main{
-        flex-direction: column;
-    }
 
     div#pannello_utente{
         flex-direction: row;
