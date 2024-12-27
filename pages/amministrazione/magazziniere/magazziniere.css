@@ -21,6 +21,7 @@ main{
     display: flex;
     flex-direction: row;
     color: white;
+    overflow: hidden;
 }
 
 
@@ -28,6 +29,8 @@ fieldset#fieldset_tipoaggiunte{
     flex-grow: 0.3;
     display: flex;
     flex-direction: column;
+    max-height: 100%;
+    overflow: auto;
 }
 fieldset#fieldset_aggiunte{
     flex-grow: 1;
@@ -36,10 +39,14 @@ fieldset#fieldset_aggiunte{
 }
 
 form#aggiungi_tipoaggiunta_form{
-    width: fit-content;
     margin: 0 auto;
-    white-space: nowrap;
-    overflow-x: auto;
+}
+
+div#div_aggiungi_tipoaggiunta{
+    overflow: auto;
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
 }
 
 /*Div dello storico delle etichette*/
@@ -66,7 +73,9 @@ div.tipoaggiunta_bt_div{
 div#nuova_aggiunta_div{
     margin: 0 auto;
     height: fit-content;
-    display: inline;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
 }
 div#nuova_aggiunta_div>*{
     height: fit-content;
@@ -79,12 +88,18 @@ table#table_aggiunte{
     background-color: #33333399;
     align-self: center;
     display: block;
-    overflow: hidden auto;
+    overflow: auto hidden;
     margin-top: 0.5em;
     width: fit-content;
     max-width: 100%;
     border: 4px solid white;
     white-space: nowrap;
+}
+
+tbody{
+    overflow-x: hidden;
+    display: block;
+    overflow-y: auto;
 }
 
 td.td_body{
