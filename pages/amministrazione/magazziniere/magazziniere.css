@@ -38,6 +38,8 @@ fieldset#fieldset_aggiunte{
 form#aggiungi_tipoaggiunta_form{
     width: fit-content;
     margin: 0 auto;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
 /*Div dello storico delle etichette*/
@@ -63,9 +65,18 @@ div.tipoaggiunta_bt_div{
 
 div#nuova_aggiunta_div{
     margin: 0 auto;
+    height: fit-content;
+    display: inline;
+}
+div#nuova_aggiunta_div>*{
+    height: fit-content;
+    display: inline;
 }
 
+/*Tabella delle aggiunte*/
+
 table#table_aggiunte{
+    background-color: #33333399;
     align-self: center;
     display: block;
     overflow: hidden auto;
@@ -73,8 +84,17 @@ table#table_aggiunte{
     width: fit-content;
     max-width: 100%;
     border: 4px solid white;
+    white-space: nowrap;
+}
+
+td.td_body{
+    border-bottom: 1px solid white;
 }
 
 th.th_aggiunta{
     border: 2px solid white;
+}
+
+button#annulla_modifica_aggiunta{
+    visibility: hidden;
 }

@@ -61,15 +61,20 @@
                 <legend>Gestisci le Aggiunte</legend>
                 <div id="nuova_aggiunta_div">
                     Nome: <input type="text" id="nome_nuova_aggiunta" placeholder="Nome Aggiunta">
-                    Quantità: <input id="quantita_input_aggiunta" type="number" min="0" placeholder="Quantità">
+                    Quantità: <input id="quantita_nuova_aggiunta" type="number" min="0" placeholder="Quantità">
+                    Prezzo: <input id="prezzo_nuova_aggiunta" type="number" min="0" placeholder="Prezzo">
                     Seleziona un tipo aggiunta: <select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
+                    <button id="salva_nuova_aggiunta" type="button" onclick="salvaAggiunta()">Salva</button>
+                    <button id="annulla_modifica_aggiunta" type="button" onclick="annullaModificaAggiunta()">Annulla</button>
+                    
                 </div>
                 <table id="table_aggiunte">
                     <thead id="thead">
-                        <tr class="table_row_header_aggiunta">
+                        <tr id="table_row_header_aggiunta">
                             <th class="th_aggiunta">Tipo Aggiunta</th>
                             <th class="th_aggiunta">Aggiunta</th>
                             <th class="th_aggiunta">Quantità</th>
+                            <th class="th_aggiunta">Prezzo</th>
                             <th class="th_aggiunta">Azioni</th>
                         </tr>
                     </thead>

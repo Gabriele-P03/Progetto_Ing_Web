@@ -82,6 +82,46 @@ class AggiuntaController extends BaseController{
             exit;
         }
     }
+
+    public function aggiunta(){
+        $this->validaMetodi(array("POST", "PUT", "DELETE"));
+        $metodo = $_SERVER['REQUEST_METHOD'];
+        try{
+            if($metodo == 'POST'){
+                $this->validaParametri(null, null);
+            }else if($metodo == 'PUT' || $metodo == 'DELETE'){
+                $this->validaParametri(array("hash"), null);
+            }
+        }catch(Exception $e){
+            header(HTTP_V." 400 Bad Request");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+
+        try{
+            $res = "";
+            if($metodo == 'DELETE'){
+                $idHashAggiunta = $_GET["hash"];
+                $this->aggiuntaModel->remove($idHashAggiunta);
+            }else{
+                //Prelevo il file xml
+                header('Content-Type: application/xml; charset=utf-8');
+                $xmlString = file_get_contents('php://input');
+                $xml = new SimpleXMLElement($xmlString);
+                if($metodo == 'PUT'){
+                    $idHashAggiunta = $_GET["hash"];
+                    $this->aggiuntaModel->edit($idHashAggiunta, $xml);
+                }else if($metodo == 'POST'){
+                    $this->aggiuntaModel->save($xml);
+                }
+            }
+            $this->inviaRispostaOK("");   
+        }catch(Exception $e){
+            header(HTTP_V." 505 Internal Server Error");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+    }
 }
 
 ?>

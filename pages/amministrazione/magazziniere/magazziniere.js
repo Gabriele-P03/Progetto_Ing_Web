@@ -18,16 +18,154 @@ window.onload = function(){
 
 function caricaAggiunte(){
     let optionsTipoAggiunte = document.getElementById("tipoaggiunta_input_list").querySelectorAll("option");
+    let body = document.getElementById("tbody");
+    body.innerHTML = "";    //Pulisco il tbody
     optionsTipoAggiunte.forEach(option => {
+        if(option.value !== ""){    //Scarto la prima opzione che è quella senza valori ("Seleziona")
+            const xhttp = new XMLHttpRequest();
 
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function(){
-            
-        };
-        xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/allfilter?tipoaggiunta='+encodeURIComponent(option.value), true);
-        xhttp.send();
+
+            xhttp.onload = function(){
+                //Carico i dati nella tabella
+
+                var XMLParser = new DOMParser();
+                var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+
+                xmlDoc.childNodes.item(0).childNodes.forEach(aggiunta => {
+                    let nome = aggiunta.childNodes.item(1).textContent;
+                    let hash = aggiunta.childNodes.item(0).textContent;
+                    let row = "<tr class=\"tr_body\">";
+                    //Aggiungo il td del tipo aggiunta
+                    row += "<td class=\"td_body\" value=\""+option.value+"\">"+option.innerHTML+"</td>";
+                    //Aggiungo l'aggiunta
+                    row += "<td class=\"td_body\">"+nome+"</td>";
+                    //Aggiungo la quantità
+                    row += "<td class=\"td_body\">"+aggiunta.childNodes.item(3).textContent+"</td>";
+                    //Aggiungo il prezzo
+                    row += "<td class=\"td_body\">"+aggiunta.childNodes.item(2).textContent+"&euro;</td>";
+                    //Aggiungo i tasti di elimina e modifica
+                    row += "<td class=\"td_body\"><button type=\"button\" value=\""+hash+"\" name=\""+nome+"\" onclick=\"caricaModificaAggiunta(this)\">Modifica</button>"
+                    row += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"eliminaAggiunta(this)\">Elimina</button>";
+                    row += "</td>";
+                    body.innerHTML += row;
+                });
+
+
+            }; 
+            xhttp.open('GET', '/../../../scripts/index.php/aggiunta/allfilter?tipoaggiunta='+encodeURIComponent(option.value), true);
+            xhttp.send();
+        }
     });
     allineaTabella();
+}
+
+var modificandoAggiuntaHash = '';
+var modificandoAggiunta = false;
+function caricaModificaAggiunta(input){
+    modificandoAggiuntaHash = input.value;
+    let nome = input.name;
+    modificandoAggiunta = true;
+    let parentRow = input.parentElement.parentElement; 
+    //Setta il tipo aggiunta
+    let tipoAggiuntaHash = parentRow.childNodes.item(0).getAttribute("value");
+    document.getElementById("tipoaggiunta_input_list").value=tipoAggiuntaHash;  //Setta automaticamente la option selezionata
+    //Pongo il nome nella casella di testo
+    document.getElementById("nome_nuova_aggiunta").value = nome;
+    //Pongo la quantità
+    document.getElementById("quantita_nuova_aggiunta").value = parentRow.childNodes.item(2).innerHTML;
+    //Pongo il prezzo
+    document.getElementById("prezzo_nuova_aggiunta").value = parentRow.childNodes.item(3).innerHTML.slice(0,-1);
+
+    document.getElementById("annulla_modifica_aggiunta").style.visibility = "visible";
+}
+
+function eliminaAggiunta(input){
+    let go = confirm("Sicuro di voler eliminare l'aggiunta " + input.name + "?");
+    if(go){
+        const xhttp = new XMLHttpRequest();
+        let hash = input.value;
+        xhttp.onload = function(){
+            if(xhttp.status === 200){
+                caricaAggiunte();
+            }else{
+                var XMLParser = new DOMParser();
+                var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+                alert(xmlDoc.childNodes.item(0).getAttribute("value"));
+            }
+        }
+        xhttp.open('DELETE', '/../../../scripts/index.php/aggiunta/aggiunta?hash='+hash, true);
+        xhttp.send();
+    }
+}
+
+function annullaModificaAggiunta(){
+    modificandoAggiunta = false;
+    modificandoAggiuntaHash = "";
+    document.getElementById("annulla_modifica_aggiunta").style.visibility = "hidden";
+    document.getElementById("tipoaggiunta_input_list").value=""; 
+    document.getElementById("nome_nuova_aggiunta").value = "";
+    document.getElementById("quantita_nuova_aggiunta").value = "";
+    document.getElementById("prezzo_nuova_aggiunta").value = "";
+}
+
+function salvaAggiunta(){
+    let metodo = 'POST';
+    let appendiceParametro = '';
+    if(modificandoAggiunta){
+        metodo = 'PUT';
+        appendiceParametro = '?hash='+modificandoAggiuntaHash;
+    }
+    //Genero il file xml
+    xml = document.createElement("root");
+    //Allego il nome
+    let nome = document.getElementById("nome_nuova_aggiunta").value;
+    if(nome === ''){
+        alert("Il nome dell'aggiunta è vuoto");
+        return;
+    }
+    nomeXML = document.createElement("nome");
+    nomeXML.setAttribute("value", nome);
+    xml.appendChild(nomeXML);
+    //Allego il prezzo
+    let prezzo = document.getElementById("prezzo_nuova_aggiunta").value;
+    if(prezzo === ''){
+        alert("Il prezzp dell'aggiunta è vuoto");
+        return;
+    }
+    prezzoXML = document.createElement("prezzo");
+    prezzoXML.setAttribute("value", prezzo);
+    xml.appendChild(prezzoXML);
+    //Allego la quantità
+    let quantita = document.getElementById("quantita_nuova_aggiunta").value;
+    if(quantita === ''){
+        alert("La quantità dell'aggiunta è vuota");
+        return;
+    }
+    quantitaXML = document.createElement("quantita");
+    quantitaXML.setAttribute("value", quantita);
+    xml.appendChild(quantitaXML);
+    //Allego il tipo aggiunta
+    let tipoaggiunta = document.getElementById("tipoaggiunta_input_list").value;
+    if(tipoaggiunta === ''){
+        alert("Il tipo aggiunta non è stato selezionato");
+        return;
+    }
+    tipoaggiuntaXML = document.createElement("tipoaggiunta");
+    tipoaggiuntaXML.setAttribute("value", tipoaggiunta);
+    xml.appendChild(tipoaggiuntaXML);    
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        if(xhttp.status === 200){
+            caricaAggiunte();
+        }else{
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            alert(xmlDoc.childNodes.item(0).getAttribute("value"));
+        }
+    }
+    xhttp.open(metodo, '/../../../scripts/index.php/aggiunta/aggiunta'+appendiceParametro, true);
+    xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 
 function caricaIconaProfiloByRuolo(){
