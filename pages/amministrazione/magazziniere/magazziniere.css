@@ -16,37 +16,31 @@ body{
 }
 
 main{
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: row;
     color: white;
-    overflow: hidden;
 }
 
-
+/*Fieldset parent del form per la gestione dei tipo aggiunta*/
 fieldset#fieldset_tipoaggiunte{
     flex-grow: 0.3;
     display: flex;
     flex-direction: column;
-    max-height: 100%;
-    overflow: auto;
 }
-fieldset#fieldset_aggiunte{
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
+/*Form per la post/edit di un tipo aggiunta (il form sopra il div dello storico dei tipo aggiunta)*/
 form#aggiungi_tipoaggiunta_form{
     margin: 0 auto;
 }
-
+/* Div interno al form sopra descritto */
 div#div_aggiungi_tipoaggiunta{
     overflow: auto;
   display: flex;
   flex-direction: row;
   max-width: 100%;
+}
+
+fieldset#fieldset_aggiunte{
+    flex-grow: 1;
 }
 
 /*Div dello storico delle etichette*/
@@ -69,12 +63,21 @@ div.tipoaggiunta_bt_div{
     margin: 2px 0 2px auto;
 }
 
+/*Bottone per l'annulla modifica di tipo aggiunta*/
+button#annulla_modifica_tipoaggiunta_bt{
+    visibility: hidden;
+}
+
+
+/*Questa è la parte inerente le aggiunte*/
+
 
 div#nuova_aggiunta_div{
-    margin: 0 auto;
-    height: fit-content;
-    display: flex;
-    flex-direction: row;
+    border: 1px solid white;
+    margin: 0.5em auto;
+    max-width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
     white-space: nowrap;
 }
 div#nuova_aggiunta_div>*{
@@ -96,10 +99,20 @@ table#table_aggiunte{
     white-space: nowrap;
 }
 
+thead{
+    display: block;
+    width: fit-content;
+}
+
+tr#table_row_header_aggiunta{
+    white-space: nowrap;
+}
+
 tbody{
     overflow-x: hidden;
     display: block;
     overflow-y: auto;
+    max-height: 100%;
 }
 
 td.td_body{

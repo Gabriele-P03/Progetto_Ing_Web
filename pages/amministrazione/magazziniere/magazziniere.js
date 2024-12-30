@@ -52,11 +52,10 @@ function caricaAggiunte(){
 
 
             }; 
-            xhttp.open('GET', '/../../../scripts/index.php/aggiunta/allfilter?tipoaggiunta='+encodeURIComponent(option.value), true);
+            xhttp.open('GET', '/../../../scripts/index.php/aggiunta/allfilter?tipoaggiunta='+encodeURIComponent(option.value), false);
             xhttp.send();
         }
     });
-    allineaTabella();
 }
 
 var modificandoAggiuntaHash = '';
@@ -87,6 +86,7 @@ function eliminaAggiunta(input){
         xhttp.onload = function(){
             if(xhttp.status === 200){
                 caricaAggiunte();
+                allineaTabella();
             }else{
                 var XMLParser = new DOMParser();
                 var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
@@ -158,6 +158,7 @@ function salvaAggiunta(){
     xhttp.onload = function(){
         if(xhttp.status === 200){
             caricaAggiunte();
+            allineaTabella();
         }else{
             var XMLParser = new DOMParser();
             var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
@@ -233,6 +234,7 @@ function caricaTipoAggiunte(){
         });
         div += "</div>";
         caricaAggiunte();
+        allineaTabella();
     }
     xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/all', true);
     xhttp.send();
@@ -259,12 +261,8 @@ function eliminaTipoAggiunta(input){
 
 var modificandoTipoAggiuntaHash='';
 var modificandoTipoAggiunta = false;
-var templateAnnullaModificaTipoAggiunta = "<button id=\"annulla_modifica_tipoaggiunta_bt\" type=\"button\" onclick=\"annullaModificaTipoAggiunta()\">Annulla</button>"
 function caricaModificaTipoAggiunta(input){
-    let precModifica = document.getElementById("annulla_modifica_tipoaggiunta_bt");
-    if(precModifica !== null)
-        precModifica.remove();
-    document.getElementById("aggiungi_tipoaggiunta_form").innerHTML += templateAnnullaModificaTipoAggiunta;
+    document.getElementById("annulla_modifica_tipoaggiunta_bt").style.visibility = 'visible';
     let inputText = document.getElementById("nome_nuovo_tipoaggiunta");
     inputText.value = input.name;
     modificandoTipoAggiunta = true;
@@ -302,7 +300,7 @@ function annullaModificaTipoAggiunta(){
     modificandoTipoAggiunta = false;
     document.getElementById("nome_nuovo_tipoaggiunta").value = "";
     modificandoTipoAggiuntaHash = '';
-    document.getElementById("annulla_modifica_tipoaggiunta_bt").remove();
+    document.getElementById("annulla_modifica_tipoaggiunta_bt").style.visibility = 'hidden';
 }
 
 /**
@@ -312,12 +310,11 @@ function annullaModificaTipoAggiunta(){
  */
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_aggiunta").querySelectorAll("th");
-    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
+    let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
-    let hs = [];
     for(let i = 0; i < tableTHeadTHs.length; i++){
         //Inizializzo sempre w al valore della cella di testata
         let w = tableTHeadTHs[i].clientWidth;
@@ -327,23 +324,15 @@ function allineaTabella(){
             if(cell.clientWidth > w){
                 w = cell.clientWidth;
             }
-            hs.push(parseInt(tableTBodyTDs[j].clientHeight)-4);
         }
 
-        //ora che ho trovato i valori giusti di h e w, li setto su tutta la colonna i-esima (testata compresa)
-        //tableTHeadTHs[i].style.height = h;    //L'altezza della testata non deve essere modificata
+        //ora che ho trovato i valore giusto di w, lo setto su tutta la colonna i-esima (testata compresa)
         tableTHeadTHs[i].style.width = w + 'px';
-        if(i > 0){
-            tableTHeadTHs[i].style.marginLeft = '2px';
-        }
-        w = (parseInt(w) + 2); //Aggiungo 1px per bordo
+
+        w = (parseInt(w)+4); //Aggiungo 2px per bordo della cella di testata
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
-            cell.style.height = hs[j] + 'px';
-            if(i > 0){
-                cell.style.marginLeft = '2px';
-            }
         }
     }
 }

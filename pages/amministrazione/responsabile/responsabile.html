@@ -12,9 +12,9 @@
             Pizzeria da Gabbo
         </title>
 
-        <script src="magazziniere.js"></script>
+        <script src="responsabile.js"></script>
         <script src="../pannello/pannello_utente.js"></script>
-        <link href="magazziniere.css" type="text/css" rel="stylesheet">
+        <link href="responsabile.css" type="text/css" rel="stylesheet">
         <link href="../pannello/pannello_utente.css" type="text/css" rel="stylesheet">
         <link href="device.css" type="text/css" rel="stylesheet">
     </head>
@@ -46,38 +46,27 @@
             </div>
         </aside>
         <main>
-            <fieldset id="fieldset_tipoaggiunte" name="fieldset_prenotazioni_tavoli">
-                <legend>Gestisci i Tipo Aggiunta</legend>
-                <form id="aggiungi_tipoaggiunta_form">
-                    <div id="div_aggiungi_tipoaggiunta">                 
-                        Etichetta: <input type="text" id="nome_nuovo_tipoaggiunta" placeholder="Nome Tipo">
-                        <button type="button" id="salva_nuovo_tipoaggiunta" onclick="salvaTipoAggiunta()">Salva</button>
-                        <button type="button" id="annulla_modifica_tipoaggiunta_bt" onclick="annullaModificaTipoAggiunta()">Annulla</button>
+            <fieldset id="fieldset_allergeni">
+                <legend>Gestisci gli Allergeni</legend>
+                <form id="aggiungi_allergeni_form">
+                    <div id="div_aggiungi_allergeni">                 
+                        Nome: <input type="text" id="nome_nuovo_allergene" placeholder="Nome Allergene">
+                        <button type="button" id="salva_nuovo_allergene" onclick="salvaAllergene()">Salva</button>
+                        <button type="button" id="annulla_modifica_allergene_bt" onclick="annullaModificaAllergene()">Annulla</button>
                     </div>
                 </form>
                 <div id="storico_etichette_div">
                     
                 </div>
             </fieldset>
-            <fieldset id="fieldset_aggiunte" name="fieldset_prenotazioni_tavoli">
+            <fieldset id="fieldset_aggiunteallergeni">
                 <legend>Gestisci le Aggiunte</legend>
-                <div id="nuova_aggiunta_div">
-                    Nome: <input type="text" id="nome_nuova_aggiunta" placeholder="Nome Aggiunta">
-                    &emsp;Quantità: <input id="quantita_nuova_aggiunta" type="number" min="0" placeholder="Quantità">
-                    &emsp;Prezzo: <input id="prezzo_nuova_aggiunta" type="number" min="0" placeholder="Prezzo">
-                    &emsp;Seleziona un tipo aggiunta: <select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
-                    &emsp;<button id="salva_nuova_aggiunta" type="button" onclick="salvaAggiunta()">Salva</button>
-                    <button id="annulla_modifica_aggiunta" type="button" onclick="annullaModificaAggiunta()">Annulla</button>
-                    
-                </div>
-                <table id="table_aggiunte">
+                <table id="table_aggiunteallergeni">
                     <thead id="thead">
                         <tr id="table_row_header_aggiunta">
                             <th class="th_aggiunta">Tipo Aggiunta</th>
                             <th class="th_aggiunta">Aggiunta</th>
-                            <th class="th_aggiunta">Quantità</th>
-                            <th class="th_aggiunta">Prezzo</th>
-                            <th class="th_aggiunta">Azioni</th>
+                            <th class="th_aggiunta">Allergene</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">

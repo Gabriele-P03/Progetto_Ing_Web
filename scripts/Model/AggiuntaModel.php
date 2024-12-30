@@ -9,6 +9,7 @@ class AggiuntaModel extends Connection{
         parent::__construct();
     }
 
+
     public function getAllByPizza(string $idHashPizza){
         return $this->select(" 
         SELECT " . DB_AGGIUNTA_NOME . " FROM " . DB_AGGIUNTA ." WHERE ID IN 
