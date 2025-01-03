@@ -23,12 +23,15 @@ class PrenotazioneModel extends Connection{
         return $this->select($sql, array($userid));
     }
 
-    public function getAllByDataAvvenimento($data){
+    public function getAllByDataAvvenimento($data, $asporto){
         $sql = "SELECT ID_HASH, " . DB_PRENOTAZIONE_NOME . " AS Nome, " . DB_PRENOTAZIONE_DATAPRENOTAZIONE . " AS 'Data_Prenotazione', " .
         DB_PRENOTAZIONE_DATAAVVENIMENTO . " AS 'Data_Avvenimento', " . DB_PRENOTAZIONE_STATO . " Stato, " . 
         DB_PRENOTAZIONE_NUMEROPERSONE . " AS Persone, " . DB_PRENOTAZIONE_TIPO . " AS Tipo, " . DB_PRENOTAZIONE_DESCRIZIONESTATO . " Informazioni, ". 
-        DB_PRENOTAZIONE_TELEFONO . " AS Telefono, " . DB_PRENOTAZIONE_IDTAVOLO . " AS Tavolo FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " = ? AND " . DB_PRENOTAZIONE_TIPO ." = " . PRENOTAZIONE_TIPO_TAVOLO . " " .
-        "ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO;
+        DB_PRENOTAZIONE_TELEFONO . " AS Telefono, " . DB_PRENOTAZIONE_IDTAVOLO . " AS Tavolo FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " = ?";
+        if(!$asporto){
+            $sql .= " AND " . DB_PRENOTAZIONE_TIPO ." = " . PRENOTAZIONE_TIPO_TAVOLO;
+        } 
+        $sql .= " ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO;
         
         return $this->select($sql, array($data));
     }

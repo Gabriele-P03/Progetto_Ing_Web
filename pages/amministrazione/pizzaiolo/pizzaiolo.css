@@ -1,0 +1,93 @@
+html{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    background-color: #999999;
+    margin: 0;
+    background-image: url("../../../resources/body/pizza_bkg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+aside{
+    width: fit-content;
+}
+
+main{
+    display: inline-block;
+    max-width: 100%;
+    width: 100%;
+    color: white;
+    flex-grow: 1;
+    height: 100%;
+    max-height: 100%;
+}
+
+
+div.div_fieldset{
+    width: 50%;
+    max-width: 50%;
+    height: 100%;
+    max-height: 100%;
+    float: left;
+}
+
+fieldset{
+    /*
+        Circa il min-width, tutti i browser hanno la proprietà interna per la gestione
+        Si forza dunque il min-width a 0 indipendentemente dal browser
+        https://stackoverflow.com/questions/27660423/fieldset-width-100-of-parent
+    */
+    min-width: 0;
+    height: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+/* Prenotzioni fieldset */
+div#div_date_input{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+
+table{
+    border: 4px solid white;
+    display: block;
+    margin: 0.4em auto;
+    width: fit-content;
+    max-width: 100%;
+    height: fit-content;
+    max-height: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+
+thead{
+    display: block;
+}
+
+th{
+    border: 2px solid white;
+    display: inline-block;
+}
+
+tbody{
+    display: block;
+}
+
+td{
+    display: inline-block;
+    border: 1px solid white;
+}

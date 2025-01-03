@@ -7,13 +7,14 @@ const RUOLO_PIZZAIOLO_ICONA = '../../../resources/profilazione/pizzaiolo_icona.p
 const RUOLO_MAGAZZINIERE_ICONA = '../../../resources/profilazione/magazziniere_icona.png';
 const RUOLO_RESPONSABILE_ICONA = '../../../resources/profilazione/responsabile_icona.png';
 
-var nome, cognome, ruolo = 'Cameriere';
+var nome, cognome, ruolo = 'Pizzaiolo';
 
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
-    impostaMinDataAvvenimento();
 }
+
+
 
 function caricaIconaProfiloByRuolo(){
     let iconaIMG = document.getElementById("icona_pannello_utente");
@@ -51,58 +52,36 @@ function parseInfoProfilo(){
     document.getElementById("ruolo_div_pannello_utente").innerHTML += ruolo;
 }
 
-function impostaMinDataAvvenimento(){
-    let datePicker = document.getElementById("date_prenotazioni");
-    datePicker.min = new Date().toISOString().split("T")[0];
-}
 
 /**
- * Funzione richiamata quando il cameriere cambia la data dal picker
- * Carica le prenotazioni per la data richiesta e visualizza i tutti i tavoli 
+ * Richiamta quando si cambia la data al date-picker
+ * Esegue la get delle prenotazioni per quella data e inserisce i dati nella tabella
  */
-function caricaPrenotazioniTavoli(){
-    const xhttp = new XMLHttpRequest();
-
-    xhttp.onload = function(){
-        var XMLParser = new DOMParser();
-        var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
-        document.getElementById("tbody").innerHTML = "";
-        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
-            let tr = "<tr class=\"tr_prenotazione\">";
+function caricaPrenotazioni(input){
+    let date = input.value;
+    let body = document.getElementById("tbody_prenotazioni");
+    if(date !== null){
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            const XMLParser = new DOMParser();
+            xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+            xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+                let hash = row.childNodes.item(0).textContent;
                 let nome = row.childNodes.item(1).textContent;
-                tr += "<td class=\"td_prenotazione\">" + nome + "</td>";
-                let persone = row.childNodes.item(5).textContent;
-                tr += "<td class=\"td_prenotazione\">" + persone + "</td>";
-                let tavolo = row.childNodes.item(9).textContent;
-                tr += "<td class=\"td_prenotazione\">" + (parseInt(tavolo)+1) + "</td>";
-                let stato = row.childNodes.item(4).textContent;
-                tr += "<td class=\"td_prenotazione\">" + stato + "</td>";
-                let telefono = row.childNodes.item(8).textContent;
-                tr += "<td class=\"td_prenotazione\">" + telefono + "</td>";
-            document.getElementById("tbody").innerHTML += tr;
-        });    //Prendo il child row
-        if(xmlDoc.childNodes.item(0).childNodes.length > 0){
-            document.getElementById("prenotazioni_cameriere").style.visibility = 'visible';
-            caricaTHs();
+                let asporto = row.childNodes.item(7).textContent;
+
+                let tr = "<tr class=\"tr_body\">"
+                tr += "<td class=\"td_tbody\">"+nome+"</td>";
+                tr += "<td class=\"td_tbody\">"+(asporto === '1' ? 'Sì' : 'No')+"</td>";
+                tr += "<td class=\"td_tbody\"><button type=\"button\" value=\""+hash+"\">Visualizza</button></td>";
+                tr += "</tr>";
+                body.innerHTML += tr;
+            });
             allineaTabella();
-        }else{
-            document.getElementById("prenotazioni_cameriere").style.visibility = 'hidden'; 
-        }        
+        }
+        xhttp.open('GET', '../../../scripts/index.php/prenotazione/all?date='+encodeURIComponent(date) + '&asporto=1', true);
+        xhttp.send();
     }
-    let date = document.getElementById("date_prenotazioni").value;
-    xhttp.open('GET', '../../../scripts/index.php/prenotazione/all?date='+encodeURIComponent(date) + '&asporto=0', true);
-    xhttp.send();
-}
-
-
-function caricaTHs(){
-    document.getElementById("thead").innerHTML = "<tr id=\"table_row_header_prenotazione\">"+
-                                    "<th class=\"th_prenotazione\">Nome</th>"+
-                                    "<th class=\"th_prenotazione\">Persone</th>"+
-                                    "<th class=\"th_prenotazione\">Tavolo</th>"+
-                                    "<th class=\"th_prenotazione\">Stato</th>"+
-                                    "<th class=\"th_prenotazione\">Telefono</th>"+
-                                "</tr>";
 }
 
 /**
@@ -111,13 +90,17 @@ function caricaTHs(){
  * Solo tramite JS si può rimediare completamente
  */
 function allineaTabella(){
-    let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
-    let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
+    let theadH = document.getElementById("thead_prenotazioni").clientHeight;
+    let h = parseInt(theadH)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    h = 'calc(100% - '+h+'px)';
+    document.getElementById("tbody_prenotazioni").style.maxHeight = h;
+
+    let tableTHeadTHs = document.getElementById("tr_thead_prenotazioni").querySelectorAll("th");
+    let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
-    let hs = [];
     for(let i = 0; i < tableTHeadTHs.length; i++){
         //Inizializzo sempre w al valore della cella di testata
         let w = tableTHeadTHs[i].clientWidth;
@@ -127,23 +110,18 @@ function allineaTabella(){
             if(cell.clientWidth > w){
                 w = cell.clientWidth;
             }
-            hs.push(parseInt(tableTBodyTDs[j].clientHeight)-4);
         }
 
-        //ora che ho trovato i valori giusti di h e w, li setto su tutta la colonna i-esima (testata compresa)
-        //tableTHeadTHs[i].style.height = h;    //L'altezza della testata non deve essere modificata
+        //ora che ho trovato i valore giusto di w, lo setto su tutta la colonna i-esima (testata compresa)
         tableTHeadTHs[i].style.width = w + 'px';
         if(i > 0){
             tableTHeadTHs[i].style.marginLeft = '2px';
         }
-        w = (parseInt(w) + 2); //Aggiungo 1px per bordo
+
+        w = (parseInt(w)+4); //Aggiungo 2px per bordo della cella di testata
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
-            cell.style.height = hs[j] + 'px';
-            if(i > 0){
-                cell.style.marginLeft = '2px';
-            }
         }
     }
 }

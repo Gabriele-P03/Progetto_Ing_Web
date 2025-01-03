@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-
 <html>
     <head>
+        <title>
+            Pizzeria da Gabbo
+        </title>
+
         <meta charset="UTF-8">
         <meta name="author" content="Gabriele Pace">
         <meta name="description" content="Progetto Ingegneria del Web">
         <meta name="date" content="2024-11-12T16:51:12+00:00">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
 
-        <title>
-            Pizzeria da Gabbo
-        </title>
-
-        <script src="responsabile.js"></script>
+        <script src="pizzaiolo.js"></script>
         <script src="../pannello/pannello_utente.js"></script>
-        <link href="responsabile.css" type="text/css" rel="stylesheet">
+        <link href="pizzaiolo.css" type="text/css" rel="stylesheet">
         <link href="../pannello/pannello_utente.css" type="text/css" rel="stylesheet">
         <link href="device.css" type="text/css" rel="stylesheet">
     </head>
 
-
     <body>
+
         <aside>
             <div id="pannello_utente">
                 <div id="icona_div_pannello_utente">
@@ -46,39 +44,33 @@
                 </div>
             </div>
         </aside>
+
         <main>
             <div class="div_fieldset">
-                <fieldset id="fieldset_allergeni">
-                    <legend>Gestisci gli Allergeni</legend>
-                    <form id="aggiungi_allergeni_form">
-                        <div id="div_aggiungi_allergeni">                 
-                            Nome: <input type="text" id="nome_nuovo_allergene" placeholder="Nome Allergene">
-                            <button type="button" id="salva_nuovo_allergene" onclick="salvaAllergene()">Salva</button>
-                            <button type="button" id="annulla_modifica_allergene_bt" onclick="annullaModificaAllergene()" style="visibility: hidden;">Annulla</button>
-                        </div>
-                    </form>
-                    <div id="storico_etichette_div">
-                        
+                <fieldset>
+                    <legend>Le prenotazioni per la data selezionata:</legend>
+                    <div id="div_date_input">
+                        <input type="date" id="date_input" onchange="caricaPrenotazioni(this)">
                     </div>
+                    <table id="table_prenotazioni">
+                        <thead id="thead_prenotazioni">
+                            <tr id="tr_thead_prenotazioni">
+                                <th class="th_thead_prenotazioni">Nome</th>
+                                <th class="th_thead_prenotazioni">Asporto</th>
+                                <th class="th_thead_prenotazioni">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_prenotazioni">
+
+                        </tbody>
+                    </table>
                 </fieldset>
             </div>
             <div class="div_fieldset">
-            <fieldset id="fieldset_aggiunteallergeni">
-                <legend>Gestisci le Aggiunte</legend>
-                <table id="table_aggiunteallergeni">
-                    <thead id="thead">
-                        <tr id="table_row_header_aggiunta">
-                            <th class="th_aggiunta">Tipo Aggiunta</th>
-                            <th class="th_aggiunta">Aggiunta</th>
-                            <th class="th_aggiunta">Allergene</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody">
-    
-                    </tbody>
-                </table>
-            </fieldset>
-            </div>  
+                <fieldset>
+                    <legend>Gestisci le pizze</legend>
+                </fieldset>
+            </div>
         </main>
     </body>
 
