@@ -5,23 +5,40 @@ html{
 }
 
 body{
+    background-color: #999999;
     margin: 0;
     background-image: url("../../../resources/body/pizza_bkg.png");
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
     width: 100%;
+    max-width: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: row;
+}
+
+aside{
+    width: 10%;
+    max-width: 10%;
 }
 
 main{
     display: flex;
     flex-direction: row;
     color: white;
+    max-width: 90%;
+    width: 90%;
 }
 
 /*gestione allergeni*/
+
+fieldset#fieldset_allergeni{
+    width: 50%;
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+}
 
 div#storico_etichette_div{
     margin-top: 0.25em;
@@ -29,14 +46,104 @@ div#storico_etichette_div{
     max-height: 99%;
     border: 2px solid white;
     white-space: nowrap;
+    max-width: 100%;
 }
 
-div.div_etichetta{
+form#aggiungi_allergeni_form{
+    width: fit-content;
+    margin: 0 auto; /*Centrato*/
+}
+
+div.div_etichetta_bt{
     display: flex;
     flex-direction: row;
     border-top: 1px solid white;
+    max-width: 100%;
+}
+
+div.div_etichetta{
+    overflow-x: auto;
+    max-width: 80%;
 }
 
 div.allergene_bt_div{
     margin: 0.25em 0 0.25em auto
+}
+
+/* Gestione N-N aggiunta-allergeni */
+
+fieldset#fieldset_aggiunteallergeni{
+    width: 50%;
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+table{
+    background-color: #55555599;    /*Dono un grigio opacizzato al fine di dare risalto al testo (La copertina di bkg tende a non far vedere dei tratti di testo bianco)*/
+    max-width: 100%;
+    border: 4px solid white;
+    display: block;
+    overflow-y: hidden;
+    overflow-x: auto;
+    max-height: 100%;
+    width: fit-content;
+    align-self: center;
+}
+
+thead>tr{
+    display: inline-block;
+    overflow: hidden;
+}
+
+th.th_aggiunta{
+    border: 2px solid white;
+}
+
+tbody{
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100%;
+}
+
+tbody>tr{
+    display: block;
+    white-space: nowrap;
+}
+
+td.td_body{
+    display: inline-block;
+    border: 1px solid white;
+    margin: 1px;
+    text-align: center;
+}
+
+/* Div popup delle relazioni tra aggiunta e allergene. Mostrato cliccando su visualizza */
+
+div#div_popup_aggiuntaallergeni{
+    background-color: #66666699;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    width: fit-content;
+    max-height: 25%;
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+}
+
+/* Div contenente le checkbox*/
+div#div_allergeni_popup{
+    overflow-y: auto;
+}
+
+/*Bottone per salvare gli allergeni di un'aggiunta*/
+button#save_aggiunta_allergeni_bt{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2px;
 }

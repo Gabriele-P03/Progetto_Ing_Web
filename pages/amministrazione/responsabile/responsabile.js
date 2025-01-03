@@ -18,6 +18,7 @@ window.onload = function(){
 
 function caricaAggiunteAllergeni(){
     const xhttp = new XMLHttpRequest();
+    let tbody = document.getElementById("tbody");
     xhttp.onload = function(){
         const XMLParser = new DOMParser();
         xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
@@ -32,20 +33,9 @@ function caricaAggiunteAllergeni(){
                 xmlDoc1.childNodes.item(0).childNodes.forEach(aggiunta => {
                     let hashAggiunta = aggiunta.childNodes.item(0).textContent;
                     let nomeAggiunta = aggiunta.childNodes.item(1).textContent;
-                    //Ora prendo gli alelrgeni dell'aggiunta corrente
-                    const xhttp2 = new XMLHttpRequest();
-                    xhttp2.onload = function(){
-                        xmlDoc2 = XMLParser.parseFromString(xhttp2.responseText, 'application/xml');
-                        //Ora posso inserire tutto nella tabella
-                        let selectHTML = retrieveAllAllergeniAsSelect();
-                        let multiOptionSelect = creaSelectAllergeni(selectHTML, xmlDoc2.childNodes.item(0));
-                        let tr = "<tr class=\"td_body\"><td class=\"td_body\">"+nomeTipo+"</td><td class=\"td_body\">"+nomeAggiunta+"</td><td class=\"td_body\">"+multiOptionSelect+"<td>";
-                        document.getElementById("tbody").innerHTML += tr;
-                    }
-                    xhttp2.open('GET', '/../../../scripts/index.php/allergene/all?aggiunta='+encodeURIComponent(hashAggiunta), false);
-                    xhttp2.send();
-                    
-                });
+                    let tr = "<tr class=\"tr_body\"><td class=\"td_body\">"+nomeTipo+"</td><td class=\"td_body\">"+nomeAggiunta+"</td><td class=\"td_body\"><button value=\""+hashAggiunta+"\" class=\"show_popup_allergeni_bt\" onclick=\"showPopupAllergeni(this)\">Visualizza</button></td></tr>";
+                    tbody.innerHTML += tr; 
+                })
             };
             xhttp1.open('GET', '/../../../scripts/index.php/aggiunta/allfilter?tipoaggiunta='+encodeURIComponent(hashTipo), false);
             xhttp1.send();
@@ -57,72 +47,6 @@ function caricaAggiunteAllergeni(){
     xhttp.send();
 }
 
-function caricaAllergeni(){
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function(){
-        const domParser = new DOMParser();
-        xmlDoc = domParser.parseFromString(xhttp.responseText, 'application/xml');
-
-        let div = document.getElementById("storico_etichette_div");
-        div.innerHTML = "";
-        xmlDoc.childNodes.item(0).childNodes.forEach( row => {
-            let nome = row.childNodes.item(1).textContent;
-            let hash = row.childNodes.item(0).textContent;
-            let divInner = "" + 
-            "<div class=\"div_etichetta\">"+
-                nome+
-                "<div class=\"allergene_bt_div\">" +
-                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"eliminaAllergene(this)\">Elimina</button>" + 
-                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"caricaModificaAllergene(this)\">Modifica</button>" + 
-                "</div>" +
-            "</div>";
-            div.innerHTML += divInner;
-        });
-        div += "</div>";
-    };
-    xhttp.open('GET', '/../../../scripts/index.php/allergene/all', true);
-    xhttp.send();
-}
-
-function eliminaAllergene(input){
-    let go = confirm("Sicuro di voler eliminare l'allergene " + input.name + "?");
-    if(go){
-        let hash = input.value;
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function(){
-            if(xhttp.status !== 200){
-                const XMLParser = new DOMParser();
-                xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
-                alert(xmlDoc.childNodes.item(0).getAttribute('value'));
-            }else{
-                caricaAllergeni();
-            }
-        }
-        xhttp.open('DELETE', '/../../../scripts/index.php/allergene/allergene?hash='+hash, true);
-        xhttp.send();
-    }
-}
-
-function salvaAllergene(){
-    let nome = document.getElementById("nome_nuovo_allergene").value;
-    let xml = document.createElement("root");
-    let nomeXML = document.createElement("nome");
-    nomeXML.setAttribute("value", nome);
-    xml.appendChild(nomeXML);
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function(){
-        if(xhttp.status !== 200){
-            const XMLParser = new DOMParser();
-            xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
-            alert(xmlDoc.childNodes.item(0).getAttribute('value'));
-        }else{
-            caricaAllergeni();
-        }
-    }
-    xhttp.open('POST', '/../../../scripts/index.php/allergene/allergene', true);
-    xhttp.send(new XMLSerializer().serializeToString(xml));
-
-}
 
 function caricaIconaProfiloByRuolo(){
     let iconaIMG = document.getElementById("icona_pannello_utente");
@@ -167,6 +91,11 @@ function parseInfoProfilo(){
  * Solo tramite JS si può rimediare completamente
  */
 function allineaTabella(){
+    let theadH = document.getElementById("thead").clientHeight;
+    let h = parseInt(theadH)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    h = 'calc(100% - '+h+'px)';
+    document.getElementById("tbody").style.maxHeight = h;
+
     let tableTHeadTHs = document.getElementById("table_row_header_aggiunta").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
@@ -195,6 +124,137 @@ function allineaTabella(){
     }
 }
 
+/* Gestione modifica allergene*/
+
+var modificandoAllergene = false;
+var modificandoAllergeneHash = '';
+
+function caricaModificaAllergene(input){
+    document.getElementById("annulla_modifica_allergene_bt").style.visibility = 'visible';
+    modificandoAllergene = true;
+    modificandoAllergeneHash = input.value;
+    document.getElementById("nome_nuovo_allergene").value = input.name;
+}
+
+function annullaModificaAllergene(){
+    modificandoAllergene = false;
+    modificandoAllergeneHash = '';
+    document.getElementById("nome_nuovo_allergene").value = "";
+    document.getElementById("annulla_modifica_allergene_bt").style.visibility = 'hidden';
+}
+
+function caricaAllergeni(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        const domParser = new DOMParser();
+        xmlDoc = domParser.parseFromString(xhttp.responseText, 'application/xml');
+
+        let div = document.getElementById("storico_etichette_div");
+        div.innerHTML = "";
+        xmlDoc.childNodes.item(0).childNodes.forEach( row => {
+            let nome = row.childNodes.item(1).textContent;
+            let hash = row.childNodes.item(0).textContent;
+            let divInner = "" + 
+            "<div class=\"div_etichetta_bt\">"+
+                "<div class=\"div_etichetta\">"+
+                nome+
+                "</div>"+
+                "<div class=\"allergene_bt_div\">" +
+                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"eliminaAllergene(this)\">Elimina</button>" + 
+                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"caricaModificaAllergene(this)\">Modifica</button>" + 
+                "</div>" +
+            "</div>";
+            div.innerHTML += divInner;
+        });
+        div += "</div>";
+    };
+    xhttp.open('GET', '/../../../scripts/index.php/allergene/all', true);
+    xhttp.send();
+}
+
+function eliminaAllergene(input){
+    let go = confirm("Sicuro di voler eliminare l'allergene " + input.name + "?");
+    if(go){
+        let hash = input.value;
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function(){
+            if(xhttp.status !== 200){
+                const XMLParser = new DOMParser();
+                xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+                alert(xmlDoc.childNodes.item(0).getAttribute('value'));
+            }else{
+                caricaAllergeni();
+            }
+        }
+        xhttp.open('DELETE', '/../../../scripts/index.php/allergene/allergene?hash='+hash, true);
+        xhttp.send();
+    }
+}
+
+function salvaAllergene(){
+    let nome = document.getElementById("nome_nuovo_allergene").value;
+    let xml = document.createElement("root");
+    let nomeXML = document.createElement("nome");
+    let appendice = '';
+    let metodo = 'POST';
+    if(modificandoAllergene){
+        appendice = '?hash='+encodeURIComponent(modificandoAllergeneHash);
+        metodo = 'PUT';
+    }
+    nomeXML.setAttribute("value", nome);
+    xml.appendChild(nomeXML);
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        if(xhttp.status !== 200){
+            const XMLParser = new DOMParser();
+            xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+            alert(xmlDoc.childNodes.item(0).getAttribute('value'));
+        }else{
+            caricaAllergeni();
+            annullaModificaAllergene();
+        }
+    }
+    xhttp.open(metodo, '/../../../scripts/index.php/allergene/allergene'+appendice, true);
+    xhttp.send(new XMLSerializer().serializeToString(xml));
+
+}
+
+/**Gestione della N-N tra allergeni e aggiunte */
+
+function showPopupAllergeni(input){
+    let hash = input.value;
+
+    let div = "<div id=\"div_popup_aggiuntaallergeni\">"
+    div += retrieveAllAllergeniAsSelect(hash);
+    div += "</div>";
+
+    let body = document.getElementsByTagName("body")[0];
+    body.innerHTML += div;
+    spuntaAllergeni(hash);
+
+    document.addEventListener('click', clickClosePopup, false);
+}
+
+/** 
+ * Genera il div popup degli allergeni collegati all'aggiunta il cui bottone Visualizza è stato cliccato.
+ * Aggancia l'eventListener sul click per chiudere il popup in caso di click al di fuori di esso
+*/
+var openedPopup = false;
+function clickClosePopup(e){
+    let flag = false;
+    let popup = document.getElementById('div_popup_aggiuntaallergeni');
+    if(popup === e.target || popup.contains(e.target)){ //Sia se il click è eseguito sul div parent, sia su qualcosa di contenuto
+        flag = true;
+    }
+    if(!flag && openedPopup){
+        document.getElementById("div_popup_aggiuntaallergeni").remove();
+        document.removeEventListener('click', clickClosePopup, false);
+        openedPopup = false;
+    }else{
+        openedPopup = true;
+    }
+}
+
 /**
  * Crea una select con opzioni multiple in base a tutti gli allergeni disponibili
  * In base a checkedAllergeni, setta a true (checked) quelli attribuiti all'aggiunta 
@@ -203,39 +263,45 @@ function allineaTabella(){
 function retrieveAllAllergeniAsSelect(){
 
     const xhttp = new XMLHttpRequest();
-    let select = "";
+    let select = "<div id=\"div_allergeni_popup\">";
     xhttp.onload = function(){
         const domParser = new DOMParser();
         xmlDoc = domParser.parseFromString(xhttp.responseText, 'application/xml');
-        select = "<ul class=\"ul_select_allergeni\">"
         xmlDoc.childNodes.item(0).childNodes.forEach( row => {
             let nome = row.childNodes.item(1).textContent;
             let hash = row.childNodes.item(0).textContent;
-            let option = "<li class=\"li_select_allergeni\"><input type=\"checkbox\" value=\""+hash+"\" name=\""+hash+"\"><label for=\""+hash+"\">"+nome+"</label></li>";
+            let option = "<div class=\"div_allergene_popup\"><input type=\"checkbox\" value=\""+hash+"\" name=\""+hash+"\"><label for=\""+hash+"\">"+nome+"</label></div>";
             select += option;
         });
-        select += "</ul>";
+        
     };
     xhttp.open('GET', '/../../../scripts/index.php/allergene/all', false);
     xhttp.send();
+    select += "</div>";
+    select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" onclick=\"salvaAggiuntaAllergeni(this)\">Salva</button>";
     return select;
 }
 
-function creaSelectAllergeni(selectHTML, checkedAllergeni){
-    let select = new DOMParser().parseFromString(selectHTML, 'text/html');
-    let options = select.getElementsByTagName("option");
-
-    checkedAllergeni.childNodes.forEach( allergene => {
-        let hash = allergene.getAttribute(0);
-
-        for(let i = 0; i < options.length; i++){
-            let option = options.item(i);
-            if(option.value === hash){
-                option.checked = true;
-                break;
+function spuntaAllergeni(hash){
+    let options = document.getElementById("div_popup_aggiuntaallergeni");
+    options = options.getElementsByTagName("input");
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        const domParser = new DOMParser();
+        xmlDoc = domParser.parseFromString(xhttp.responseText, 'application/xml');
+        let checkedAllergeni = xmlDoc.childNodes.item(0);
+        checkedAllergeni.childNodes.forEach( allergene => {
+            let hash = allergene.childNodes.item(0).textContent;
+    
+            for(let i = 0; i < options.length; i++){
+                let option = options.item(i);
+                if(option.value === hash){
+                    option.checked = true;
+                    break;
+                }
             }
-        }
-    });
-    let str = select.body.innerHTML;
-    return str;
+        });
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/allergene/all?aggiunta='+encodeURIComponent(hash), true);
+    xhttp.send();
 }

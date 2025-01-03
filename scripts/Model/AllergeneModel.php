@@ -14,7 +14,7 @@ class AllergeneModel extends Connection{
     }
 
     public function getAllByAggiunta($hashAggiunta){
-        $sql = "SELECT * FROM " . DB_ALLERGENE . " WHERE ID IN (SELECT ID_ALLERGENE FROM " . DB_AGGIUNTAALLERGENE . " WHERE ID_AGGIUNTA IN (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?))";
+        $sql = "SELECT ID_HASH, " . DB_ALLERGENE_ETICHETTA . " FROM " . DB_ALLERGENE . " WHERE ID IN (SELECT ID_ALLERGENE FROM " . DB_AGGIUNTAALLERGENE . " WHERE ID_AGGIUNTA IN (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?))";
         $res = $this->select($sql, array($hashAggiunta));
         return $res;
     }
@@ -49,7 +49,7 @@ class AllergeneModel extends Connection{
         $sql = "SELECT * FROM ". DB_ALLERGENE . " WHERE ".DB_ALLERGENE_ETICHETTA." = ? ";
         $array = array($nome);
         if($hash != null){
-            $sql .= " AND ID_HASH = ?";
+            $sql .= " AND ID_HASH != ?";
             array_push($array, $hash);
         } 
         $res = $this->select($sql, $array);

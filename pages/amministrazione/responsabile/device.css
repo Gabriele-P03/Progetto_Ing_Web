@@ -11,10 +11,18 @@
     }
     main{
         flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
-
+    aside{
+        width: 100%;
+        max-width: 100%;
+    }
     div#pannello_utente{
         flex-direction: row;
+    
     }
 
     div#div_input_psw_reset > input{
@@ -26,13 +34,23 @@
         flex-direction: row;
     }
 
-    fieldset#fieldset_tipoaggiunte{
-        max-height: 30%;
+    fieldset#fieldset_allergeni{
+        width: 100%;
+        max-width: calc(100% - 4px);
+        max-height: 50%;
+        height: 50%;
+        box-sizing: border-box; /*Oltre al content, considera nella width anche bordi e padding */
+        margin-left: 2px;
+        margin-right: 2px;
     }
-
-    div#storico_etichette_div{
-        height: 30%;
-        max-height: 30%;
+    fieldset#fieldset_aggiunteallergeni{
+        width: 100%;
+        max-width: calc(100% - 4px);
+        box-sizing: border-box;
+        max-height: 50%;
+        height: 50%;
+        margin-left: 2px;
+        margin-right: 2px;
     }
 }
 
