@@ -91,3 +91,74 @@ td{
     display: inline-block;
     border: 1px solid white;
 }
+
+fieldset#fieldset_pizze{
+    display: flex;
+    flex-direction: column;
+}
+/* Nuova pizza */
+div#div_nuova_pizza{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+button#annulla_modifica_pizza{
+    visibility: hidden; /*Da abilitare solo in caso di modifica*/
+}
+
+/*Popup degli ingredienti della nuova pizza*/
+div#div_popup_ingredienti{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: fit-content;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #99999999;
+}
+
+div#div_button_ingredienti{
+    margin: auto auto 0 auto;
+    width: fit-content;
+    height: fit-content;
+}
+
+div#div_ingredienti_checkbox{
+    width: 100%;
+    max-width: 100%;
+    max-height: 80%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 2px;
+}
+
+div.div_ingrediente_popup{
+    color: white;
+}
+
+/*Div per visualizzare tutte le pizze. È posto sotto gli input per le nuove pizze*/
+div#div_pizze{
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    border: 2px solid white;
+    margin: 2px;
+    overflow: auto;
+    background-color: #99999999;
+}
+
+div.div_pizza{
+    width: 100%;
+    margin: 2px 2px 0 2px;
+    border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: row;
+}
+
+div.div_pizza_bottoni{
+    width: fit-content;
+    margin: 2px 4px 2px auto;
+}

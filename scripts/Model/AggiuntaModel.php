@@ -11,12 +11,18 @@ class AggiuntaModel extends Connection{
 
 
     public function getAllByPizza(string $idHashPizza){
-        return $this->select(" 
-        SELECT " . DB_AGGIUNTA_NOME . " FROM " . DB_AGGIUNTA ." WHERE ID IN 
+        $sql = "SELECT " . DB_AGGIUNTA_NOME . ", ID_HASH FROM " . DB_AGGIUNTA;
+        if($idHashPizza == 'true'){    //Viene mandato 'true' dal form del pizzaiolo per creare una nuova pizza
+            $sql .= " WHERE " . DB_AGGIUNTA_IDTIPOAGGIUNTA . " IN (SELECT ID FROM ". DB_TIPOAGGIUNTA ." WHERE ". DB_TIPOAGGIUNTA_ETICHETTA ." NOT IN ('Bevande'))"; 
+            return $this->select($sql, array());
+        }else{
+            $sql .= " WHERE ID IN 
             (SELECT " . DB_PIZZAAGGIUNTA_IDAGGIUNTA . " FROM " . DB_PIZZAAGGIUNTA . " WHERE " . DB_PIZZAAGGIUNTA_IDPIZZA . " IN 
                 (SELECT ID FROM " . DB_PIZZA . " WHERE ID_HASH = ?)
-            );",
-            array($idHashPizza));
+            );";
+            return $this->select($sql, array($idHashPizza));
+        }
+        
     }
 
     public function getAllByTipoAggiuntaExceptByPizzaAndAllergeni($idHashTipoAggiunta = "", $idHashPizza = "", $idHashAllergeni = array()){

@@ -12,6 +12,7 @@ var nome, cognome, ruolo = 'Pizzaiolo';
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
+    caricaPizze();
 }
 
 
@@ -124,4 +125,104 @@ function allineaTabella(){
             cell.style.width = w + 'px';
         }
     }
+}
+
+/**
+ * Funzione per mostrare il popup degli ingredienti
+ */
+function mostraPopupIngredienti(input, allowSave){
+    let hash = input.value;
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        let div = "<div id=\"div_popup_ingredienti\"><div id=\"div_ingredienti_checkbox\">";
+        
+        const XMLParser = new DOMParser();
+        let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+            let hash1 = row.childNodes.item(1).textContent;
+            let nome1 = row.childNodes.item(0).textContent;
+
+            let checkboxHTML = "<div class=\"div_ingrediente_popup\"><input type=\"checkbox\" value=\""+hash1+"\" name=\""+hash1+"\"><label for=\""+hash1+"\">"+nome1+"</label></div>"
+            div += checkboxHTML;
+        });
+
+        div += "</div>";
+        if(allowSave){
+            div += "<div id=\"div_button_ingredienti\"><button id=\"button_save_ingredienti\" type=\"button\">Salva</button></div>";
+        }
+        div += "</div>";
+
+        let body = document.getElementById("body");
+        body.innerHTML += div;
+        document.addEventListener('click', clickClosePopup, false);
+        spuntaIngredienti(hash);
+        
+        //Ora creo il listener per chiudere il popup
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza=true', true);
+    xhttp.send();
+}
+
+function spuntaIngredienti(hashPizza){
+    const xhttp = new XMLHttpRequest();
+    //tutte le checkbox del popup, il value corrisponde all'hash dell'aggiunta
+    let checkboxes = document.getElementById("div_ingredienti_checkbox").querySelectorAll("input");
+    xhttp.onload = function(){
+        const XMLParser = new DOMParser();
+        let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+        //Ora prendo gli hash delle aggiunte e le spunto
+        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+            let hash = row.childNodes.item(1).textContent;
+            for(let i = 0; i < checkboxes.length; i++){
+                let cb = checkboxes.item(i);
+                if(cb.value === hash){
+                    cb.checked = true;
+                    break;
+                }
+            }
+        });
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hashPizza), true);
+    xhttp.send();
+}
+
+/** 
+ * Genera il div popup degli allergeni collegati all'aggiunta il cui bottone Visualizza è stato cliccato.
+ * Aggancia l'eventListener sul click per chiudere il popup in caso di click al di fuori di esso
+*/
+function clickClosePopup(e){
+    let popup = document.getElementById('div_popup_ingredienti');
+    if(popup !== e.target && !popup.contains(e.target)){ //Sia se il click è eseguito sul div parent, sia su qualcosa di contenuto
+        document.getElementById("div_popup_ingredienti").remove();
+        document.removeEventListener('click', clickClosePopup, false);
+    }
+}
+
+/**
+ * Funzione richiamata da onload per caricare tutte le pizze disponibili e farle visualizzare nel relativo div
+ */
+function caricaPizze(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        const XMLParser = new DOMParser();
+        let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+        let parentDiv = document.getElementById("div_pizze");
+        parentDiv.innerHTML = "";   //Pulisco il div per sicurezza
+        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+            let hash = row.childNodes.item(0).textContent;
+            let nome = row.childNodes.item(1).textContent;
+            let div = "<div class=\"div_pizza\">"+nome+"<div class=\"div_pizza_bottoni\">";
+            //Aggiungo i tre bottoni: elimina, modifica, visualizza ingredienti
+            div += "<button type=\"button\" value=\""+hash+"\">Modifica</button>";
+            div += "<button type=\"button\" value=\""+hash+"\">Elimina</button>";
+            div += "<button type=\"button\" value=\""+hash+"\" onclick=\"mostraPopupIngredienti(this, false)\">Visualizza</button>";
+            div += "</div></div>";
+            parentDiv.innerHTML += div;
+        });
+
+        
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/pizza/all', true);
+    xhttp.send();
 }

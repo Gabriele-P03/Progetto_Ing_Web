@@ -18,7 +18,7 @@
         <link href="device.css" type="text/css" rel="stylesheet">
     </head>
 
-    <body>
+    <body id="body">
 
         <aside>
             <div id="pannello_utente">
@@ -67,8 +67,18 @@
                 </fieldset>
             </div>
             <div class="div_fieldset">
-                <fieldset>
+                <fieldset id="fieldset_pizze"> 
                     <legend>Gestisci le pizze</legend>
+                    <div id="div_nuova_pizza">
+                        <input id="input_nome_pizza" type="text" placeholder="Nome Pizza">
+                        <button id="show_ingredienti" type="button" onclick="mostraPopupIngredienti(this, true)">Ingredienti</button>
+                        <button id="salva_pizza" type="button" onclick="salvaPizza()">Salva</button>
+                        <button id="annulla_modifica_pizza" type="button" onclick="annullaModificaPizza()">Annulla</button>
+                    </div>
+
+                    <div id="div_pizze">
+
+                    </div>
                 </fieldset>
             </div>
         </main>

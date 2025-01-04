@@ -30,8 +30,18 @@ class PizzaModel extends Connection{
         }
     }
 
-    public function getAllByPrenotazione($idHashPrenotazione = ""){
-
+    /**
+     * Questa funzione serve a controllare che la pizza che il pizzaiolo sta provando a modificare (intesi i suoi ingredienti)
+     * o a eliminare, non sia presente in prenotazioni successive alla data odierna 
+     */
+    private function checkPizzaPrenotazioneSuccessive($hashPizza = ""){
+        $sql = "SELECT * FROM " . DB_PRENOTAZIONE ." WHERE DATA_AVVENIMENTO >= CURDATE() AND ID IN (SELECT ID_PRENOTAZIONE FROM ". DB_ORDINE . " WHERE ID_PIZZA = (SELECT ID FROM ". DB_PIZZA ." WHERE ID_HASH = ?))";
+        $res = $this->select($sql, array($hashPizza));
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"Ci sono delle prenotazioni che hanno ordinato questa pizza\" />";
+            exit;
+        }
     }
 }
 
