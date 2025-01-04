@@ -30,6 +30,16 @@ class PizzaModel extends Connection{
         }
     }
 
+    public function deleteByHash($pizzaHash){
+        $this->checkPizzaPrenotazioneSuccessive($pizzaHash);
+        //Ok, non ha dato errore il check sulle prenotazioni; devo però prima cancellare le N-N con le aggiunte
+        $sql = "DELETE FROM " . DB_PIZZAAGGIUNTA . " WHERE " . DB_PIZZAAGGIUNTA_IDPIZZA . " IN (SELECT ID FROM ". DB_PIZZA ." WHERE ID_HASH = ?)";
+        $this->delete($sql, 's', array($pizzaHash));
+        //Ora posso cancellare la pizza
+        $sql = "DELETE FROM " . DB_PIZZA . " WHERE ID_HASH = ?";
+        $this->delete($sql, 's', array($pizzaHash));
+    }
+
     /**
      * Questa funzione serve a controllare che la pizza che il pizzaiolo sta provando a modificare (intesi i suoi ingredienti)
      * o a eliminare, non sia presente in prenotazioni successive alla data odierna 

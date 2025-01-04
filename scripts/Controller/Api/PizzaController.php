@@ -63,6 +63,26 @@ class PizzaController extends BaseController{
             exit;
         }
     }
+
+    public function pizza(): void{
+        $this->validaMetodi(array("DELETE"));
+
+        try{
+            $this->validaParametri(array("hash"), null);
+        }catch(Exception $e){
+            header(HTTP_V." 400 Bad Request");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+        try{
+            $this->pizzaModel->deleteByHash($_GET['hash']);
+            $this->inviaRispostaOK("");   
+        }catch(Exception $e){
+            header(HTTP_V." 505 Internal Server Error");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+    }
 }
 
 ?>

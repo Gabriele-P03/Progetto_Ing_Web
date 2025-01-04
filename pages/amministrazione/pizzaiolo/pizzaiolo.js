@@ -9,6 +9,8 @@ const RUOLO_RESPONSABILE_ICONA = '../../../resources/profilazione/responsabile_i
 
 var nome, cognome, ruolo = 'Pizzaiolo';
 
+var ingredienti = Array('');
+
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
@@ -60,7 +62,6 @@ function parseInfoProfilo(){
  */
 function caricaPrenotazioni(input){
     let date = input.value;
-    let body = document.getElementById("tbody_prenotazioni");
     if(date !== null){
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
@@ -76,7 +77,8 @@ function caricaPrenotazioni(input){
                 tr += "<td class=\"td_tbody\">"+(asporto === '1' ? 'Sì' : 'No')+"</td>";
                 tr += "<td class=\"td_tbody\"><button type=\"button\" value=\""+hash+"\">Visualizza</button></td>";
                 tr += "</tr>";
-                body.innerHTML += tr;
+                let doc = XMLParser.parseFromString(tr, 'text/html');
+                document.body.appendChild(doc);
             });
             allineaTabella();
         }
@@ -149,42 +151,55 @@ function mostraPopupIngredienti(input, allowSave){
 
         div += "</div>";
         if(allowSave){
-            div += "<div id=\"div_button_ingredienti\"><button id=\"button_save_ingredienti\" type=\"button\">Salva</button></div>";
+            div += "<div id=\"div_button_ingredienti\"><button id=\"button_save_ingredienti\" type=\"button\" onclick=\"salvaIngredientiTMP(this)\">Salva</button></div>";
         }
         div += "</div>";
 
-        let body = document.getElementById("body");
-        body.innerHTML += div;
+        let doc = XMLParser.parseFromString(div, 'text/html');
+        document.body.appendChild(doc.getElementById("div_popup_ingredienti"));
         document.addEventListener('click', clickClosePopup, false);
-        spuntaIngredienti(hash);
+        spuntaIngredienti(hash, allowSave);
         
-        //Ora creo il listener per chiudere il popup
     }
     xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza=true', true);
     xhttp.send();
 }
 
-function spuntaIngredienti(hashPizza){
-    const xhttp = new XMLHttpRequest();
-    //tutte le checkbox del popup, il value corrisponde all'hash dell'aggiunta
-    let checkboxes = document.getElementById("div_ingredienti_checkbox").querySelectorAll("input");
-    xhttp.onload = function(){
-        const XMLParser = new DOMParser();
-        let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
-        //Ora prendo gli hash delle aggiunte e le spunto
-        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
-            let hash = row.childNodes.item(1).textContent;
-            for(let i = 0; i < checkboxes.length; i++){
-                let cb = checkboxes.item(i);
-                if(cb.value === hash){
-                    cb.checked = true;
-                    break;
-                }
-            }
-        });
+function spuntaIngredienti(hashPizza, allowSave){
+    //Se allowSave è abilitato, ovvero sto dando la possibilità di apportare modifiche agli ingredienti, devo
+    //spuntarli in base all'array in memoria, in quanto contiene le eventuali modifiche
+    //In caso di modifica di una pizza, l'array è già stato popolato
+    if(allowSave){
+        ingredienti.forEach(hash => {
+            spuntaIngredienteByHash(hash);
+        })
+    }else{
+        const xhttp = new XMLHttpRequest();
+        //tutte le checkbox del popup, il value corrisponde all'hash dell'aggiunta
+        
+        xhttp.onload = function(){
+            const XMLParser = new DOMParser();
+            let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+            //Ora prendo gli hash delle aggiunte e le spunto
+            xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+                let hash = row.childNodes.item(1).textContent;
+                spuntaIngredienteByHash(hash);
+            });
+        }
+        xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hashPizza), true);
+        xhttp.send();
     }
-    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hashPizza), true);
-    xhttp.send();
+}
+
+function spuntaIngredienteByHash(hashIngrediente){
+    let checkboxes = document.getElementById("div_ingredienti_checkbox").querySelectorAll("input");
+    for(let i = 0; i < checkboxes.length; i++){
+        let cb = checkboxes.item(i);
+        if(cb.value === hashIngrediente){
+            cb.checked = true;
+            break;
+        }
+    }
 }
 
 /** 
@@ -214,8 +229,8 @@ function caricaPizze(){
             let nome = row.childNodes.item(1).textContent;
             let div = "<div class=\"div_pizza\">"+nome+"<div class=\"div_pizza_bottoni\">";
             //Aggiungo i tre bottoni: elimina, modifica, visualizza ingredienti
-            div += "<button type=\"button\" value=\""+hash+"\">Modifica</button>";
-            div += "<button type=\"button\" value=\""+hash+"\">Elimina</button>";
+            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"caricaModificaPizza(this)\">Modifica</button>";
+            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"eliminaPizza(this)\">Elimina</button>";
             div += "<button type=\"button\" value=\""+hash+"\" onclick=\"mostraPopupIngredienti(this, false)\">Visualizza</button>";
             div += "</div></div>";
             parentDiv.innerHTML += div;
@@ -224,5 +239,98 @@ function caricaPizze(){
         
     }
     xhttp.open('GET', '/../../../scripts/index.php/pizza/all', true);
+    xhttp.send();
+}
+
+var modificandoPizza = false;
+var modificandoPizzaHash = '';
+function caricaModificaPizza(input){
+    let hash = input.value;
+    let nome = input.name;
+    //Mostro il pulsante di annulla modifica
+    document.getElementById("annulla_modifica_pizza").style.visibility = 'visible';
+    document.getElementById("input_nome_pizza").value = nome;
+    modificandoPizza = true;
+    modificandoPizzaHash = hash;
+    document.getElementById("show_ingredienti").value = hash;
+    //Popolo l'array degli ingredienti in quanto, poiché potrebbe modificarli, devo tenerli in memoria, e dunque uso l'array
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        const XMLParser = new DOMParser();
+        let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+        //Ora prendo gli hash delle aggiunte e le spunto
+        xmlDoc.childNodes.item(0).childNodes.forEach(row => {
+            let hash = row.childNodes.item(1).textContent;
+            ingredienti.push(hash);
+        });
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hash), true);
+    xhttp.send();
+}
+
+function annullaModificaPizza(){
+    document.getElementById("annulla_modifica_pizza").style.visibility = 'hidden';
+    document.getElementById("input_nome_pizza").value = '';
+    modificandoPizza = false;
+    modificandoPizzaHash = ''; 
+    document.getElementById("show_ingredienti").value = '';
+    ingredienti = [];   //Svuoto l'array degli ingredienti
+}
+
+/**
+ * Funzione chiamata dal tasto salva interno al div popup degli ingredienti
+ * Salva nell'array dichiarato a inizio file gli hash degli ingredienti selezionati
+ */
+function salvaIngredientiTMP(input){
+    //Devo salire di due parentElement in quanto il bottone è contenuto in un proprio div (al fine di centrarlo)
+    let inputs = input.parentElement.parentElement.getElementsByTagName("input"); //Il bottone salva non è contemplato in quanto button e non input
+    ingredienti = [];//Pulisco l'array per sicurezza
+    for(let i = 0; i < inputs.length; i++){
+        let input = inputs[i];
+        if(input.checked){
+            ingredienti.push(input.value);
+        }
+    }
+}
+
+function eliminaPizza(input){
+    if(modificandoPizza){
+        alert("Non puoi eliminare una pizza se è in corso una modifica!");
+    }else{
+        //Chiedo prima conferma
+        let go = confirm("Sicuro di voler eliminare la pizza " + input.name);
+        if(go){
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function(){
+                if(xhttp.status !== 200){
+                    const XMLParser = new DOMParser();
+                    let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+                    let res = xmlDoc.childNodes.item(0).getAttribute("value");
+                    alert(res);
+                }else{
+                    caricaPizze();
+                }
+            }
+            xhttp.open('DELETE', '/../../../scripts/index.php/pizza/pizza?hash='+encodeURIComponent(input.value), true);
+            xhttp.send();
+        }
+    }
+}
+
+/**
+ * Funzione per salvare o modificare effettivamente una pizza
+ */
+function salvaPizza(){
+    let appendice = "";
+    let metodo = 'POST';
+    if(modificandoPizza){
+        appendice = "?hash="+encodeURIComponent(modificandoPizzaHash);
+        metodo = 'PUT';
+    }
+    //Costruisco il file xml con gli hash degli ingredienti
+    let xml = document.createElement("root");
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.open(metodo, '/../../../scripts/index.php/pizza/pizza'+appendice, true);
     xhttp.send();
 }
