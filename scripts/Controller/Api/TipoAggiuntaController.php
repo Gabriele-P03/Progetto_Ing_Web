@@ -11,7 +11,7 @@ class TipoAggiuntaController extends BaseController{
     }
 
     /**
-     * End-point /tipoaggiunta/all
+     * End-point /tipoaggiunta/tipoaggiunta
      * @return void
      */
     public function all(): void{
@@ -36,12 +36,13 @@ class TipoAggiuntaController extends BaseController{
     }
 
     public function tipoaggiunta(){
-        $this->validaMetodi(array("PUT", "DELETE", "POST"));
+        $this->validaMetodi(array("PUT", "DELETE", "POST", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         try{
-            if($metodo != 'POST'){
+            if($metodo == 'PUT' || $metodo == 'DELETE'){
                 $this->validaParametri(array('hash'), null);
             }else{
+                //Post e getall non hanno bisogno di parametri
                 $this->validaParametri(null, null);
             }
         }catch(Exception $e){
@@ -51,7 +52,6 @@ class TipoAggiuntaController extends BaseController{
         }
 
         try{
-            $res = null;
             if($metodo == 'PUT'){
                 $hash = $_GET['hash'];
                 header('Content-Type: application/xml; charset=utf-8');
@@ -69,9 +69,8 @@ class TipoAggiuntaController extends BaseController{
                 $this->tipoAggiuntaModel->save($xml);
                 $res = "";
             }
-            
-            $res_xml = $this->res_to_xml($res);
-            $this->inviaRispostaOK($res_xml);   
+        
+            $this->inviaRispostaOK("");   
         }catch(Exception $e){
             header(HTTP_V." 505 Internal Server Error");
             echo "\"".$e->getMessage()."\"";

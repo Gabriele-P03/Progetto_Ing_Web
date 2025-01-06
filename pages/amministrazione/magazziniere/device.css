@@ -28,11 +28,22 @@
 
     fieldset#fieldset_tipoaggiunte{
         max-height: 30%;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     div#storico_etichette_div{
-        height: 30%;
-        max-height: 30%;
+        height: 100%;
+        max-height: 100%;
+
+    }
+
+    fieldset#fieldset_aggiunte{
+        flex: 1;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 

@@ -71,6 +71,7 @@ table{
     overflow-y: hidden;
     overflow-x: auto;
     white-space: nowrap;
+    text-align: center;
 }
 
 
@@ -80,7 +81,6 @@ thead{
 
 th{
     border: 2px solid white;
-    display: inline-block;
 }
 
 tbody{
@@ -100,6 +100,9 @@ fieldset#fieldset_pizze{
 div#div_nuova_pizza{
     width: fit-content;
     margin: 0 auto;
+    max-width: 90%;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 button#annulla_modifica_pizza{

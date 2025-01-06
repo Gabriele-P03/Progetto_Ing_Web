@@ -172,7 +172,7 @@ function carica_tipo_aggiunta(){
 
         });
     }
-    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', true);
+    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/tipoaggiunta', true);
     xhttp.send();
 }
 

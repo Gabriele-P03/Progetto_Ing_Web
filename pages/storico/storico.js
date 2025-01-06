@@ -120,7 +120,7 @@ function allineaTabella(){
 
 /**
  * Questa funzione è chiamata per ogni tasto visualizza cliccato.
- * Carichera un iframe a mo' di popup in cui verrà renderizzato il contenuto di una prenotazione in sola modalità lettura
+ * Carichera una finestra a mo' di popup in cui verrà renderizzato il contenuto di una prenotazione in sola modalità lettura
  */
 var srcPopup = "popup/popup.html";
 function apriVisualizzazioneIFRAME(input){

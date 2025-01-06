@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="author" content="Gabriele Pace">
         <meta name="description" content="Progetto Ingegneria del Web">
         <meta name="date" content="2024-11-12T16:51:12+00:00">
-        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>
             Pizzeria da Gabbo
@@ -62,10 +61,10 @@
             <fieldset id="fieldset_aggiunte" name="fieldset_prenotazioni_tavoli">
                 <legend>Gestisci le Aggiunte</legend>
                 <div id="nuova_aggiunta_div">
-                    Nome: <input type="text" id="nome_nuova_aggiunta" placeholder="Nome Aggiunta">
-                    &emsp;Quantità: <input id="quantita_nuova_aggiunta" type="number" min="0" placeholder="Quantità">
-                    &emsp;Prezzo: <input id="prezzo_nuova_aggiunta" type="number" min="0" placeholder="Prezzo">
-                    &emsp;Seleziona un tipo aggiunta: <select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
+                    <input type="text" id="nome_nuova_aggiunta" placeholder="Nome Aggiunta">
+                    &emsp;<input id="quantita_nuova_aggiunta" type="number" min="0" placeholder="Quantità">
+                    &emsp;<input id="prezzo_nuova_aggiunta" type="number" min="0" placeholder="Prezzo">
+                    &emsp;<select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
                     &emsp;<button id="salva_nuova_aggiunta" type="button" onclick="salvaAggiunta()">Salva</button>
                     <button id="annulla_modifica_aggiunta" type="button" onclick="annullaModificaAggiunta()">Annulla</button>
                     
@@ -73,11 +72,7 @@
                 <table id="table_aggiunte">
                     <thead id="thead">
                         <tr id="table_row_header_aggiunta">
-                            <th class="th_aggiunta">Tipo Aggiunta</th>
-                            <th class="th_aggiunta">Aggiunta</th>
-                            <th class="th_aggiunta">Quantità</th>
-                            <th class="th_aggiunta">Prezzo</th>
-                            <th class="th_aggiunta">Azioni</th>
+                            <th class="th_aggiunta">Tipo Aggiunta</th><th class="th_aggiunta">Aggiunta</th><th class="th_aggiunta">Quantità</th><th class="th_aggiunta">Prezzo</th><th class="th_aggiunta">Azioni</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">

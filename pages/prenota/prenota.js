@@ -179,7 +179,7 @@ function carica_tipo_aggiunta(async = true){
 
         });
     }
-    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/all', async);
+    xhttp.open('GET', '../../scripts/index.php/tipoaggiunta/tipoaggiunta', async);
     xhttp.send();
 }
 

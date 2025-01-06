@@ -65,17 +65,33 @@ class PizzaController extends BaseController{
     }
 
     public function pizza(): void{
-        $this->validaMetodi(array("DELETE"));
-
+        $this->validaMetodi(array("DELETE", "POST", "PUT"));
+        $metodo = $_SERVER['REQUEST_METHOD'];
         try{
-            $this->validaParametri(array("hash"), null);
+            if($metodo == 'DELETE' || $metodo == 'PUT')
+                $this->validaParametri(array("hash"), null);
+            else if($metodo == 'POST'){
+                $this->validaParametri(null, null);
+            }
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
             echo "\"".$e->getMessage()."\"";
             exit;
         }
         try{
-            $this->pizzaModel->deleteByHash($_GET['hash']);
+            if($metodo == 'DELETE'){
+                $this->pizzaModel->deleteByHash($_GET['hash']);
+            }else{ 
+                //Prelevo il file xml
+                header('Content-Type: application/xml; charset=utf-8');
+                $xmlString = file_get_contents('php://input');
+                $xml = new SimpleXMLElement($xmlString);
+                if($metodo == 'POST'){
+                    $this->pizzaModel->save($xml);
+                }else if($metodo == 'PUT'){
+                    $this->pizzaModel->edit($xml, $_GET['hash']);
+                }
+            }
             $this->inviaRispostaOK("");   
         }catch(Exception $e){
             header(HTTP_V." 505 Internal Server Error");

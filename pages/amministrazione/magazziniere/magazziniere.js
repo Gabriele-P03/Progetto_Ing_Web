@@ -236,7 +236,7 @@ function caricaTipoAggiunte(){
         caricaAggiunte();
         allineaTabella();
     }
-    xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/all', true);
+    xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/tipoaggiunta', true);
     xhttp.send();
 }
 
@@ -312,6 +312,10 @@ function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_aggiunta").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
+    let tbody = document.getElementsByTagName("tbody")[0];
+    let h = "calc(100% - "+(tableTHeadTHs[0].clientHeight+4) + "px)";
+    tbody.style.maxHeight = h;
+
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
@@ -327,12 +331,18 @@ function allineaTabella(){
         }
 
         //ora che ho trovato i valore giusto di w, lo setto su tutta la colonna i-esima (testata compresa)
-        tableTHeadTHs[i].style.width = w + 'px';
+        tableTHeadTHs[i].style.width = (parseInt(w)+2) + 'px';
+        if(i > 0){
+            tableTHeadTHs[i].style.marginLeft = '2px';
+        }
 
         w = (parseInt(w)+4); //Aggiungo 2px per bordo della cella di testata
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
+            if(i > 0){
+                cell.style.marginLeft = '2px'
+            }
         }
     }
 }

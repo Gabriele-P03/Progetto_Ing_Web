@@ -19,13 +19,17 @@ main{
     display: flex;
     flex-direction: row;
     color: white;
+    max-height: 100%;
+    flex: 1;
+    overflow: hidden;
 }
 
 /*Fieldset parent del form per la gestione dei tipo aggiunta*/
 fieldset#fieldset_tipoaggiunte{
-    flex-grow: 0.3;
     display: flex;
     flex-direction: column;
+    max-width: 30%;
+    width: 30%;
 }
 /*Form per la post/edit di un tipo aggiunta (il form sopra il div dello storico dei tipo aggiunta)*/
 form#aggiungi_tipoaggiunta_form{
@@ -40,7 +44,13 @@ div#div_aggiungi_tipoaggiunta{
 }
 
 fieldset#fieldset_aggiunte{
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    max-height: 100%;
+    width: 70%;
+    max-width: 70%;
 }
 
 /*Div dello storico delle etichette*/
@@ -97,6 +107,8 @@ table#table_aggiunte{
     max-width: 100%;
     border: 4px solid white;
     white-space: nowrap;
+    height: 100%;
+    max-height: 100%;
 }
 
 thead{
@@ -110,17 +122,19 @@ tr#table_row_header_aggiunta{
 
 tbody{
     overflow-x: hidden;
-    display: block;
+    display: inline-block;
     overflow-y: auto;
     max-height: 100%;
 }
 
 td.td_body{
-    border-bottom: 1px solid white;
+    border: 1px solid white;
+    display: inline-block;
 }
 
 th.th_aggiunta{
     border: 2px solid white;
+    display: inline-block;
 }
 
 button#annulla_modifica_aggiunta{

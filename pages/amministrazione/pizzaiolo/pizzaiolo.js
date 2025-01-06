@@ -63,6 +63,8 @@ function parseInfoProfilo(){
 function caricaPrenotazioni(input){
     let date = input.value;
     if(date !== null){
+        let tbody = document.getElementById("tbody_prenotazioni");
+        tbody.innerHTML = "";
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
             const XMLParser = new DOMParser();
@@ -75,10 +77,9 @@ function caricaPrenotazioni(input){
                 let tr = "<tr class=\"tr_body\">"
                 tr += "<td class=\"td_tbody\">"+nome+"</td>";
                 tr += "<td class=\"td_tbody\">"+(asporto === '1' ? 'Sì' : 'No')+"</td>";
-                tr += "<td class=\"td_tbody\"><button type=\"button\" value=\""+hash+"\">Visualizza</button></td>";
+                tr += "<td class=\"td_tbody\"><button type=\"button\" value=\""+hash+"\" onclick=\"apriPrenotazione(this)\">Visualizza</button></td>";
                 tr += "</tr>";
-                let doc = XMLParser.parseFromString(tr, 'text/html');
-                document.body.appendChild(doc);
+                tbody.innerHTML += tr;
             });
             allineaTabella();
         }
@@ -118,13 +119,16 @@ function allineaTabella(){
         //ora che ho trovato i valore giusto di w, lo setto su tutta la colonna i-esima (testata compresa)
         tableTHeadTHs[i].style.width = w + 'px';
         if(i > 0){
-            tableTHeadTHs[i].style.marginLeft = '2px';
+            //tableTHeadTHs[i].style.marginLeft = '2px';
         }
 
-        w = (parseInt(w)+4); //Aggiungo 2px per bordo della cella di testata
+        w = (parseInt(w)+2); //Aggiungo 2px per bordo della cella di testata
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
             cell.style.width = w + 'px';
+            if(i > 0){
+                cell.style.marginLeft = '2px';
+            }
         }
     }
 }
@@ -227,9 +231,10 @@ function caricaPizze(){
         xmlDoc.childNodes.item(0).childNodes.forEach(row => {
             let hash = row.childNodes.item(0).textContent;
             let nome = row.childNodes.item(1).textContent;
-            let div = "<div class=\"div_pizza\">"+nome+"<div class=\"div_pizza_bottoni\">";
+            let prezzo = row.childNodes.item(2).textContent;
+            let div = "<div class=\"div_pizza\">"+nome+" - "+prezzo+"&euro;<div class=\"div_pizza_bottoni\">";
             //Aggiungo i tre bottoni: elimina, modifica, visualizza ingredienti
-            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"caricaModificaPizza(this)\">Modifica</button>";
+            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" prezzo=\""+prezzo+"\" onclick=\"caricaModificaPizza(this)\">Modifica</button>";
             div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"eliminaPizza(this)\">Elimina</button>";
             div += "<button type=\"button\" value=\""+hash+"\" onclick=\"mostraPopupIngredienti(this, false)\">Visualizza</button>";
             div += "</div></div>";
@@ -247,9 +252,11 @@ var modificandoPizzaHash = '';
 function caricaModificaPizza(input){
     let hash = input.value;
     let nome = input.name;
+    let prezzo = input.getAttribute("prezzo");  //Di per sè un tag html non contiene l'attributo prezzo e dunque non posso accedervi direttamente
     //Mostro il pulsante di annulla modifica
     document.getElementById("annulla_modifica_pizza").style.visibility = 'visible';
     document.getElementById("input_nome_pizza").value = nome;
+    document.getElementById("input_prezzo_pizza").value = prezzo;
     modificandoPizza = true;
     modificandoPizzaHash = hash;
     document.getElementById("show_ingredienti").value = hash;
@@ -271,6 +278,7 @@ function caricaModificaPizza(input){
 function annullaModificaPizza(){
     document.getElementById("annulla_modifica_pizza").style.visibility = 'hidden';
     document.getElementById("input_nome_pizza").value = '';
+    document.getElementById("input_prezzo_pizza").value = '';
     modificandoPizza = false;
     modificandoPizzaHash = ''; 
     document.getElementById("show_ingredienti").value = '';
@@ -291,6 +299,8 @@ function salvaIngredientiTMP(input){
             ingredienti.push(input.value);
         }
     }
+    document.getElementById("div_popup_ingredienti").remove();
+    document.removeEventListener('click', clickClosePopup, false);
 }
 
 function eliminaPizza(input){
@@ -321,6 +331,8 @@ function eliminaPizza(input){
  * Funzione per salvare o modificare effettivamente una pizza
  */
 function salvaPizza(){
+    let nome = document.getElementById("input_nome_pizza").value;
+    let prezzo = document.getElementById("input_prezzo_pizza").value;
     let appendice = "";
     let metodo = 'POST';
     if(modificandoPizza){
@@ -329,8 +341,37 @@ function salvaPizza(){
     }
     //Costruisco il file xml con gli hash degli ingredienti
     let xml = document.createElement("root");
-
+    let pizzaXML = document.createElement("pizza");
+    pizzaXML.setAttribute('nome', nome);
+    pizzaXML.setAttribute('prezzo', prezzo);
+    for(let i = 0; i < ingredienti.length; i++){
+        let ingredienteXML = document.createElement("ingrediente");
+        ingredienteXML.setAttribute('value', ingredienti[i]);
+        pizzaXML.appendChild(ingredienteXML);
+    }
+    xml.appendChild(pizzaXML);
     const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        if(xhttp.status !== 200){
+            const XMLParser = new DOMParser();
+            let xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+            let res = xmlDoc.childNodes.item(0).getAttribute("value");
+            alert(res);
+        }else{
+            caricaPizze();
+            //Pulisco il form
+            annullaModificaPizza();
+        }
+    }
     xhttp.open(metodo, '/../../../scripts/index.php/pizza/pizza'+appendice, true);
-    xhttp.send();
+    xhttp.send(new XMLSerializer().serializeToString(xml));
+
+}
+
+/**
+ * Sfrutto lo storico popup già scritto per il cliente circa le sue prenotazioni
+ */
+var srcPopup = "/pages/storico/popup/popup.html";
+function apriPrenotazione(input){
+    window.open(srcPopup+'?prenotazione='+input.value, 'Ordini', 'popup');
 }

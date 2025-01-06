@@ -30,6 +30,54 @@ class PizzaModel extends Connection{
         }
     }
 
+    public function save($xml){
+        $pizzaXML = $xml->pizza[0];
+        $nome = $pizzaXML->attributes()[0];
+        $this->checkNomePizzaPresente($nome, null);
+        $prezzo = $pizzaXML->attributes()[1];
+        $sql = "INSERT INTO " . DB_PIZZA . " VALUES(NULL, NULL, ?, ?)";
+        $hashPizza = $this->insert($sql, 'ss', array($nome, $prezzo), DB_PIZZA);
+        //Reperisco l'id della nuova pizza mediante l'idHash
+        $sql = "SELECT ID FROM " . DB_PIZZA . " WHERE ID_HASH = ?";
+        $idPizza = $this->select($sql, array($hashPizza))[0]['ID'];
+        //Ora inserisco gli ingredienti
+        $ingredientiXML = $pizzaXML->ingrediente;
+        for($i = 0; $i < $ingredientiXML->count(); $i++){
+            $ingredienteXML = $ingredientiXML[$i];
+            $hash = $ingredienteXML->attributes()[0];
+
+            $sql = "INSERT INTO " . DB_PIZZAAGGIUNTA . " VALUES(NULL, (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?), ?)";
+            $this->executeStatement($sql, 'ss', array($hash, $idPizza));    //Perché la relativa tabella non ha la colonna ID_HASH
+        }
+    }
+
+    public function edit($xml, $hash){
+        $pizzaXML = $xml->pizza[0];
+        $nome = $pizzaXML->attributes()[0];
+        $this->checkNomePizzaPresente($nome, $hash);
+        $this->checkPizzaPrenotazioneSuccessive($hash);
+        //Ora modifico la pizza
+        $prezzo = $pizzaXML->attributes()[1];
+        $sql = "UPDATE ". DB_PIZZA . " SET " . DB_PIZZA_NOME . " = ?, " . DB_PIZZA_PREZZO . " = ? WHERE ID_HASH = ?";
+        $this->executeStatement($sql, 'sss', array($nome, $prezzo, $hash));
+        //Ora elimino tutti gli ingredienti della pizza; ma prima prendo l'id della pizza
+        $sql = "SELECT ID FROM " . DB_PIZZA . " WHERE ID_HASH = ?";
+        $idPizza = $this->select($sql, array($hash))[0]['ID']; 
+        
+        $sql = "DELETE FROM ". DB_PIZZAAGGIUNTA . " WHERE ". DB_PIZZAAGGIUNTA_IDPIZZA . " = ?";
+        $this->delete($sql, 's', array($idPizza));
+        //Ora inserisco i nuovi ingredienti
+        $ingredientiXML = $pizzaXML->ingrediente;
+        for($i = 0; $i < $ingredientiXML->count(); $i++){
+            $ingredienteXML = $ingredientiXML[$i];
+            $hash = $ingredienteXML->attributes()[0];
+
+            $sql = "INSERT INTO " . DB_PIZZAAGGIUNTA . " VALUES(NULL, (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?), ?)";
+            $this->executeStatement($sql, 'ss', array($hash, $idPizza));    //Perché la relativa tabella non ha la colonna ID_HASH
+        }
+    }
+
+
     public function deleteByHash($pizzaHash){
         $this->checkPizzaPrenotazioneSuccessive($pizzaHash);
         //Ok, non ha dato errore il check sulle prenotazioni; devo però prima cancellare le N-N con le aggiunte
@@ -50,6 +98,21 @@ class PizzaModel extends Connection{
         if(!empty($res)){
             header(HTTP_V." 400 Bad Request");
             echo "<results value=\"Ci sono delle prenotazioni che hanno ordinato questa pizza\" />";
+            exit;
+        }
+    }
+
+    private function checkNomePizzaPresente($nome, $hash){
+        $sql = "SELECT * FROM " . DB_PIZZA . " WHERE " . DB_PIZZA_NOME . " = ?";
+        $array = array($nome);
+        if($hash != null){
+            $sql .= " AND ID_HASH != ?"; 
+            array_push($array, $hash);
+        }
+        $res = $this->select($sql, $array);
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"Vi è già una pizza col nome ".$nome."\" />";
             exit;
         }
     }
