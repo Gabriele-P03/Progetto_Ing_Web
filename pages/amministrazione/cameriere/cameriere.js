@@ -90,7 +90,7 @@ function caricaPrenotazioniTavoli(){
         }        
     }
     let date = document.getElementById("date_prenotazioni").value;
-    xhttp.open('GET', '../../../scripts/index.php/prenotazione/all?date='+encodeURIComponent(date) + '&asporto=0', true);
+    xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=0', true);
     xhttp.send();
 }
 

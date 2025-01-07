@@ -168,7 +168,7 @@ function caricaAllergeni(){
         });
         div += "</div>";
     };
-    xhttp.open('GET', '/../../../scripts/index.php/allergene/all', true);
+    xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene', true);
     xhttp.send();
 }
 
@@ -275,7 +275,7 @@ function retrieveAllAllergeniAsSelect(){
         });
         
     };
-    xhttp.open('GET', '/../../../scripts/index.php/allergene/all', false);
+    xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene', false);
     xhttp.send();
     select += "</div>";
     select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" onclick=\"salvaAggiuntaAllergeni(this)\">Salva</button>";
@@ -302,6 +302,6 @@ function spuntaAllergeni(hash){
             }
         });
     }
-    xhttp.open('GET', '/../../../scripts/index.php/allergene/all?aggiunta='+encodeURIComponent(hash), true);
+    xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene?aggiunta='+encodeURIComponent(hash), true);
     xhttp.send();
 }

@@ -30,7 +30,7 @@ function caricaPrenotazione(idHashPrenotazione){
             caricaDati(xmlDoc);
             allineaTabella();
         };
-        xhttp.open('GET', '../../../scripts/index.php/ordine/get?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
+        xhttp.open('GET', '../../../scripts/index.php/ordine/ordine?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
         xhttp.send();
     }
 }

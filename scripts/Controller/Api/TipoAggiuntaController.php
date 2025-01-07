@@ -10,31 +10,6 @@ class TipoAggiuntaController extends BaseController{
         $this->tipoAggiuntaModel = new TipoAggiuntaModel();
     }
 
-    /**
-     * End-point /tipoaggiunta/tipoaggiunta
-     * @return void
-     */
-    public function all(): void{
-        $this->validaMetodi(array("GET"));
-
-        try{
-            $this->validaParametri(null, null);
-        }catch(Exception $e){
-            header(HTTP_V." 400 Bad Request");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-        try{
-            $res = $this->tipoAggiuntaModel->getAll();
-            $res_xml = $this->res_to_xml($res);
-            $this->inviaRispostaOK($res_xml);   
-        }catch(Exception $e){
-            header(HTTP_V." 505 Internal Server Error");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-    }
-
     public function tipoaggiunta(){
         $this->validaMetodi(array("PUT", "DELETE", "POST", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
@@ -68,6 +43,11 @@ class TipoAggiuntaController extends BaseController{
                 $xml = new SimpleXMLElement($xmlString);
                 $this->tipoAggiuntaModel->save($xml);
                 $res = "";
+            }else if($metodo == 'GET'){
+                $res = $this->tipoAggiuntaModel->getAll();
+                $res_xml = $this->res_to_xml($res);
+                $this->inviaRispostaOK($res_xml);  
+                exit;
             }
         
             $this->inviaRispostaOK("");   

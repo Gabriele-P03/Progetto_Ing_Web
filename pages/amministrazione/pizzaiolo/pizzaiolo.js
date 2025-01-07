@@ -83,7 +83,7 @@ function caricaPrenotazioni(input){
             });
             allineaTabella();
         }
-        xhttp.open('GET', '../../../scripts/index.php/prenotazione/all?date='+encodeURIComponent(date) + '&asporto=1', true);
+        xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=1', true);
         xhttp.send();
     }
 }
@@ -165,7 +165,7 @@ function mostraPopupIngredienti(input, allowSave){
         spuntaIngredienti(hash, allowSave);
         
     }
-    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza=true', true);
+    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/aggiunta?pizza=true', true);
     xhttp.send();
 }
 
@@ -190,7 +190,7 @@ function spuntaIngredienti(hashPizza, allowSave){
                 spuntaIngredienteByHash(hash);
             });
         }
-        xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hashPizza), true);
+        xhttp.open('GET', '/../../../scripts/index.php/aggiunta/aggiunta?pizza='+encodeURIComponent(hashPizza), true);
         xhttp.send();
     }
 }
@@ -243,7 +243,7 @@ function caricaPizze(){
 
         
     }
-    xhttp.open('GET', '/../../../scripts/index.php/pizza/all', true);
+    xhttp.open('GET', '/../../../scripts/index.php/pizza/pizza', true);
     xhttp.send();
 }
 
@@ -271,7 +271,7 @@ function caricaModificaPizza(input){
             ingredienti.push(hash);
         });
     }
-    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/all?pizza='+encodeURIComponent(hash), true);
+    xhttp.open('GET', '/../../../scripts/index.php/aggiunta/aggiunta?pizza='+encodeURIComponent(hash), true);
     xhttp.send();
 }
 

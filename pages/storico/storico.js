@@ -22,7 +22,7 @@ function caricaStorico(){
         allineaTabella();
     }
 
-    xhttp.open('GET', '../../scripts/index.php/prenotazione/all', true);
+    xhttp.open('GET', '../../scripts/index.php/prenotazione/prenotazione', true);
     xhttp.send();
 }
 

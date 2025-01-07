@@ -59,7 +59,7 @@ class PrenotazioneModel extends Connection{
         $telefono = $xml->telefono[0]->attributes()[0];
         $data = $xml->data[0]->attributes()[0];
         $nominativo = $xml->nome[0]->attributes()[0];
-        if($asporto){
+        if($asporto == "true"){
             $asporto = '1';
         }else{
             $asporto = '0';

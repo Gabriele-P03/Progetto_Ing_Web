@@ -10,37 +10,6 @@ class AggiuntaController extends BaseController{
         $this->aggiuntaModel = new AggiuntaModel();
     }
 
-    /**
-     * End-point /aggiunta?pizza=idhashpizza
-     * @return void
-     */
-    public function all(): void{
-        $this->validaMetodi(array("GET"));
-
-        try{
-            $this->validaParametri(array("pizza"), null);
-        }catch(Exception $e){
-            header(HTTP_V." 400 Bad Request");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-        try{
-            $idHashPizza = $_GET["pizza"];
-            if(!$idHashPizza){
-                header(HTTP_V." 400 Bad Request");
-                echo "La pizza richiesta non esiste";
-                exit;
-            }
-            $res = $this->aggiuntaModel->getAllByPizza($idHashPizza);
-            $res_xml = $this->res_to_xml($res);
-            $this->inviaRispostaOK($res_xml);   
-        }catch(Exception $e){
-            header(HTTP_V." 505 Internal Server Error");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-    }
-
     public function allfilter(): void{
         $this->validaMetodi(array("GET"));
         try{
@@ -84,13 +53,15 @@ class AggiuntaController extends BaseController{
     }
 
     public function aggiunta(){
-        $this->validaMetodi(array("POST", "PUT", "DELETE"));
+        $this->validaMetodi(array("POST", "PUT", "DELETE", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         try{
             if($metodo == 'POST'){
                 $this->validaParametri(null, null);
             }else if($metodo == 'PUT' || $metodo == 'DELETE'){
                 $this->validaParametri(array("hash"), null);
+            }else if($metodo == 'GET'){
+                $this->validaParametri(array("pizza"), null);
             }
         }catch(Exception $e){
             header(HTTP_V." 400 Bad Request");
@@ -103,6 +74,12 @@ class AggiuntaController extends BaseController{
             if($metodo == 'DELETE'){
                 $idHashAggiunta = $_GET["hash"];
                 $this->aggiuntaModel->remove($idHashAggiunta);
+            }else if($metodo == 'GET'){
+                $idHashPizza = $_GET["pizza"];
+                $res = $this->aggiuntaModel->getAllByPizza($idHashPizza);
+                $res_xml = $this->res_to_xml($res);
+                $this->inviaRispostaOK($res_xml);  
+                exit;
             }else{
                 //Prelevo il file xml
                 header('Content-Type: application/xml; charset=utf-8');

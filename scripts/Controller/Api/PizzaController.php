@@ -10,30 +10,6 @@ class PizzaController extends BaseController{
         $this->pizzaModel = new PizzaModel();
     }
 
-        /**
-     * End-point /pizza/all
-     * @return void
-     */
-    public function all(): void{
-        $this->validaMetodi(array("GET"));
-
-        try{
-            $this->validaParametri(null, null);
-        }catch(Exception $e){
-            header(HTTP_V." 400 Bad Request");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-        try{
-            $res = $this->pizzaModel->getAll();
-            $res_xml = $this->res_to_xml($res);
-            $this->inviaRispostaOK($res_xml);   
-        }catch(Exception $e){
-            header(HTTP_V." 505 Internal Server Error");
-            echo "\"".$e->getMessage()."\"";
-            exit;
-        }
-    }
 
     /**
      * End-poin /pizza/allergene
@@ -65,12 +41,12 @@ class PizzaController extends BaseController{
     }
 
     public function pizza(): void{
-        $this->validaMetodi(array("DELETE", "POST", "PUT"));
+        $this->validaMetodi(array("DELETE", "POST", "PUT", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         try{
             if($metodo == 'DELETE' || $metodo == 'PUT')
                 $this->validaParametri(array("hash"), null);
-            else if($metodo == 'POST'){
+            else if($metodo == 'POST' || $metodo == 'GET'){
                 $this->validaParametri(null, null);
             }
         }catch(Exception $e){
@@ -78,9 +54,15 @@ class PizzaController extends BaseController{
             echo "\"".$e->getMessage()."\"";
             exit;
         }
+        
         try{
             if($metodo == 'DELETE'){
                 $this->pizzaModel->deleteByHash($_GET['hash']);
+            }else if($metodo == 'GET'){
+                $res = $this->pizzaModel->getAll();
+                $res_xml = $this->res_to_xml($res);
+                $this->inviaRispostaOK($res_xml); 
+                exit;
             }else{ 
                 //Prelevo il file xml
                 header('Content-Type: application/xml; charset=utf-8');

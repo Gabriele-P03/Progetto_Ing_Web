@@ -44,7 +44,7 @@ function carica_allergeni(){
         });
         carica_pizze();
     }
-    xhttp.open('GET', '../../scripts/index.php/allergene/all', true);
+    xhttp.open('GET', '../../scripts/index.php/allergene/allergene', true);
     xhttp.send();
 }
 
@@ -53,7 +53,7 @@ function carica_pizze(){
     xhttp.onload = function(){
         impostaSelettoreBasePizza(xhttp);
     }
-    xhttp.open('GET', '../../scripts/index.php/pizza/all', true);
+    xhttp.open('GET', '../../scripts/index.php/pizza/pizza', true);
     xhttp.send();
 }
 
@@ -72,7 +72,7 @@ function carica_ingredienti(pizzaSelezionata, async = true){
             });
             
         }
-        xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, async);
+        xhttp.open('GET', '../../scripts/index.php/aggiunta/aggiunta?pizza='+pizzaSelezionata, async);
         xhttp.send();
     }else{
         svuotaListaIngredienti();
@@ -212,7 +212,7 @@ function salvaNuovaPizza(){
         caricaOrdiniPrenotazione();
         resetForm();
     }
-    putHTTP.open('POST', '../../scripts/index.php/ordine/save?prenotazione=' + idHashPrenotazione, true);
+    putHTTP.open('POST', '../../scripts/index.php/ordine/ordine?prenotazione=' + idHashPrenotazione, true);
     putHTTP.setRequestHeader("Content-Type", "text/xml");
     putHTTP.send(new XMLSerializer().serializeToString(xml));
     return false;
@@ -286,7 +286,7 @@ function salvaPrenotazione(){
     }
 
 
-    let path = '../../scripts/index.php/prenotazione/save';
+    let path = '../../scripts/index.php/prenotazione/prenotazione';
     if(method === 'PUT'){
         path += "?prenotazione="+encodeURIComponent(idHashPrenotazione);
     }
@@ -428,7 +428,7 @@ function caricaOrdiniPrenotazione(){
             caricaDati(xmlDoc);
             allineaTabella();
         };
-        xhttp.open('GET', '../../scripts/index.php/ordine/get?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
+        xhttp.open('GET', '../../scripts/index.php/ordine/ordine?prenotazione='+encodeURIComponent(idHashPrenotazione), true);
         xhttp.send();
     }else{
 
@@ -684,7 +684,7 @@ function eliminaPrenotazione(){
             xhttp.onload = function(){
                 location.reload(true);
             }
-            xhttp.open('DELETE', '../../scripts/index.php/prenotazione/delete?prenotazione='+idHashPrenotazione, true);
+            xhttp.open('DELETE', '../../scripts/index.php/prenotazione/prenotazione?prenotazione='+idHashPrenotazione, true);
             xhttp.send();
         }
     }
@@ -704,7 +704,7 @@ function cancellaOrdine(ordine){
         xhttp.onload = function(){
             caricaOrdiniPrenotazione();
         }
-        xhttp.open('DELETE', '../../scripts/index.php/ordine/delete?ordine='+idHashOrdine, true);
+        xhttp.open('DELETE', '../../scripts/index.php/ordine/ordine?ordine='+idHashOrdine, true);
         xhttp.send();
     }
 }
@@ -732,7 +732,7 @@ function confermaOrdine(){
             resetForm();
             caricaOrdiniPrenotazione();
         }
-        xhttp.open('PUT', '../../scripts/index.php/ordine/save?ordine=' + encodeURIComponent(idHashOrdineModificando), true);
+        xhttp.open('PUT', '../../scripts/index.php/ordine/ordine?ordine=' + encodeURIComponent(idHashOrdineModificando), true);
         xhttp.setRequestHeader("Content-Type", 'application/xml; charset=utf-8');
         xhttp.send(new XMLSerializer().serializeToString(xml));
         document.getElementById("salva_button").style.visibility = "visible";

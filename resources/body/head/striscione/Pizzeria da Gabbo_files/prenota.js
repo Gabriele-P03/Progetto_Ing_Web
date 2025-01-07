@@ -15,7 +15,7 @@ function carica_allergeni(){
         });
         
     }
-    xhttp.open('GET', '../../scripts/index.php/allergene/all', true);
+    xhttp.open('GET', '../../scripts/index.php/allergene/allergene', true);
     xhttp.send();
 }
 
@@ -24,7 +24,7 @@ function carica_pizze(){
     xhttp.onload = function(){
         impostaSelettoreBasePizza(xhttp);
     }
-    xhttp.open('GET', '../../scripts/index.php/pizza/all', true);
+    xhttp.open('GET', '../../scripts/index.php/pizza/pizza', true);
     xhttp.send();
 }
 
@@ -42,7 +42,7 @@ function carica_ingredienti(pizzaSelezionata){
         });
         
     }
-    xhttp.open('GET', '../../scripts/index.php/aggiunta/all?pizza='+pizzaSelezionata, true);
+    xhttp.open('GET', '../../scripts/index.php/aggiunta/aggiunta?pizza='+pizzaSelezionata, true);
     xhttp.send();
     carica_tipo_aggiunta();
 }
