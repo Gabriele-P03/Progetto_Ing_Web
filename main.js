@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-    let frasi_c = document.getElementsByTagName("li").length
+    let frasi_c = document.getElementsByTagName("li").length;
 
     for(let i = 0; i < frasi_c; i++){
         let nomeLI = "li_aside_frasi_" + (i+1)
