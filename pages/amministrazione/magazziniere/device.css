@@ -13,19 +13,6 @@
         flex-direction: column;
     }
 
-    div#pannello_utente{
-        flex-direction: row;
-    }
-
-    div#div_input_psw_reset > input{
-        margin-right: 0.5em;
-    }
-
-    div#div_input_psw_reset{
-        overflow-x: auto;
-        flex-direction: row;
-    }
-
     fieldset#fieldset_tipoaggiunte{
         max-height: 30%;
         width: 100%;

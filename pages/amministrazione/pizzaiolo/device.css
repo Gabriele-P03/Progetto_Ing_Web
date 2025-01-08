@@ -14,19 +14,6 @@
         width: 100%;
         max-width: 100%;
     }
-    div#pannello_utente{
-        flex-direction: row;
-    }
-
-    div#div_input_psw_reset > input{
-        margin-right: 0.5em;
-    }
-
-    div#div_input_psw_reset{
-        overflow-x: auto;
-        flex-direction: row;
-    }
-
 
     div.div_fieldset{
         float: none;
