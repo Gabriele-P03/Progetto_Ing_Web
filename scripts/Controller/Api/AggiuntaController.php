@@ -52,9 +52,38 @@ class AggiuntaController extends BaseController{
         }
     }
 
+    public function allergeni(){
+        $this->validaMetodi(array("PUT"));
+        controllaSessione();
+        try{
+            $this->validaParametri(array("hash"), null);
+        }catch(Exception $e){
+            header(HTTP_V." 400 Bad Request");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+
+        try{
+
+            header('Content-Type: application/xml; charset=utf-8');
+            $xmlString = file_get_contents('php://input');
+            $xml = new SimpleXMLElement($xmlString);
+            $idHashAggiunta = $_GET["hash"];
+            $this->aggiuntaModel->impostaAllergeni($idHashAggiunta, $xml);
+            $this->inviaRispostaOK("");   
+        }catch(Exception $e){
+            header(HTTP_V." 505 Internal Server Error");
+            echo "\"".$e->getMessage()."\"";
+            exit;
+        }
+    }
+
     public function aggiunta(){
         $this->validaMetodi(array("POST", "PUT", "DELETE", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
+        if($metodo != 'GET'){
+            controllaSessione();
+        }
         try{
             if($metodo == 'POST'){
                 $this->validaParametri(null, null);

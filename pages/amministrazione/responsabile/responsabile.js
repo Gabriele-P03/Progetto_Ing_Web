@@ -186,7 +186,9 @@ function eliminaAllergene(input){
                 caricaAllergeni();
             }
         }
+        
         xhttp.open('DELETE', '/../../../scripts/index.php/allergene/allergene?hash='+hash, true);
+        xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
         xhttp.send();
     }
 }
@@ -215,6 +217,7 @@ function salvaAllergene(){
         }
     }
     xhttp.open(metodo, '/../../../scripts/index.php/allergene/allergene'+appendice, true);
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
     xhttp.send(new XMLSerializer().serializeToString(xml));
 
 }
@@ -260,7 +263,7 @@ function clickClosePopup(e){
  * In base a checkedAllergeni, setta a true (checked) quelli attribuiti all'aggiunta 
  */
 
-function retrieveAllAllergeniAsSelect(){
+function retrieveAllAllergeniAsSelect(hashAggiunta){
 
     const xhttp = new XMLHttpRequest();
     let select = "<div id=\"div_allergeni_popup\">";
@@ -278,8 +281,36 @@ function retrieveAllAllergeniAsSelect(){
     xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene', false);
     xhttp.send();
     select += "</div>";
-    select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" onclick=\"salvaAggiuntaAllergeni(this)\">Salva</button>";
+    select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" onclick=\"salvaAggiuntaAllergeni(this)\" value=\""+hashAggiunta+"\">Salva</button>";
     return select;
+}
+
+//manda la richiesta per salvare gli allergeni di un'aggiunta
+function salvaAggiuntaAllergeni(input){
+    let inputs = input.parentElement.querySelectorAll("input");
+    let xml = document.createElement("root");
+    for(let i = 0; i < inputs.length; i++){
+        let input = inputs[i];
+        if(input.checked){
+            let allergeneXML = document.createElement("allergene");
+            allergeneXML.setAttribute('hash', input.value);
+            xml.appendChild(allergeneXML);
+        }
+    }
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        if(xhttp.status !== 200){
+            const XMLParser = new DOMParser();
+            xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
+            alert(xmlDoc.childNodes.item(0).getAttribute('value'));
+        }else{
+            caricaAggiunteAllergeni();
+        }
+    }
+    xhttp.open('PUT', '/../../../scripts/index.php/aggiunta/allergeni?hash='+encodeURIComponent(input.value));
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
+    xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 
 function spuntaAllergeni(hash){

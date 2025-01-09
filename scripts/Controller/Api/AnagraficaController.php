@@ -4,6 +4,8 @@ require_once PROJECT_ROOT_PATH . "/Controller/Api/BaseController.php";
 require_once PROJECT_ROOT_PATH . "/Model/AnagraficaModel.php";
 require_once PROJECT_ROOT_PATH . "/Model/RuoloModel.php";
 
+require_once PROJECT_ROOT_PATH . "/utils/SessionUtils.php";
+
 class AnagraficaController extends BaseController{
     private AnagraficaModel $anagraficaModel;
     private RuoloModel $ruoloModel;
@@ -19,7 +21,9 @@ class AnagraficaController extends BaseController{
      */
     public function login(): void{
         $this->validaMetodi(array("POST", "PUT"));
-
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            controllaSessione();
+        }
         try{
             $this->validaParametri(null, null);
         }catch(Exception $e){
@@ -46,13 +50,20 @@ class AnagraficaController extends BaseController{
                 //Adesso al res_xml aggiungo anche un child col ruolo
                 $resRuolo = $this->ruoloModel->getByIdentificativoRuolo($idRuolo);
                 if($res_xml != null){
+                    $username = $xml->username[0]->attributes()[0]->__toString();
                     $xml = new SimpleXMLElement($res_xml);
                     $ruoloChild = $xml->row[0]->addChild('RUOLO');
-                    $ruoloChild->addChild('NOME', $resRuolo[0][DB_RUOLO_NOME]);
+                    $ruolo = $resRuolo[0][DB_RUOLO_NOME];                
+                    $ruoloChild->addChild('NOME', $ruolo);
+                    //Ora aggiungo l'identificativo della sessione
+                    $idSession = generaSessionID($ruolo, $username);
+                    $xml->row[0]->addChild("ID", $idSession);
                     $res_xml = $xml->asXML();
+                }else{
+                    header(HTTP_V." 505 Internal Server Error");
+                    echo "<results value=\"Nessun ruolo associato\" />";
+                    exit;
                 }
-                //session_id($res[0][DB_ANAGRAFICA_USERNAME]);
-                //session_start();
             }else if($_SERVER["REQUEST_METHOD"] == 'PUT'){
                 //Reset della password
                 //Prima controllo che username e oldpassword siano corretti

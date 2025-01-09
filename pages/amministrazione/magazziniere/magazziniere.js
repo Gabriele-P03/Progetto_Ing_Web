@@ -94,6 +94,7 @@ function eliminaAggiunta(input){
             }
         }
         xhttp.open('DELETE', '/../../../scripts/index.php/aggiunta/aggiunta?hash='+hash, true);
+        xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
         xhttp.send();
     }
 }
@@ -166,6 +167,7 @@ function salvaAggiunta(){
         }
     }
     xhttp.open(metodo, '/../../../scripts/index.php/aggiunta/aggiunta'+appendiceParametro, true);
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
     xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 
@@ -255,6 +257,7 @@ function eliminaTipoAggiunta(input){
             }
         };
         xhttp.open('DELETE', '/../../../scripts/index.php/tipoaggiunta/tipoaggiunta?hash='+etichetta, true);
+        xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
         xhttp.send();
     }
 }
@@ -293,6 +296,7 @@ function salvaTipoAggiunta(){
         appendiceParametro = '?hash=' + modificandoTipoAggiuntaHash;
     }
     xhttp.open(metodo, '/../../../scripts/index.php/tipoaggiunta/tipoaggiunta'+appendiceParametro, true);
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
     xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 

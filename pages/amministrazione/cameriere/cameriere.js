@@ -7,13 +7,14 @@ const RUOLO_PIZZAIOLO_ICONA = '../../../resources/profilazione/pizzaiolo_icona.p
 const RUOLO_MAGAZZINIERE_ICONA = '../../../resources/profilazione/magazziniere_icona.png';
 const RUOLO_RESPONSABILE_ICONA = '../../../resources/profilazione/responsabile_icona.png';
 
-var nome, cognome, ruolo = 'Cameriere';
+var nome, cognome, ruolo = 'Cameriere', id;
 
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
     impostaMinDataAvvenimento();
 }
+
 
 function caricaIconaProfiloByRuolo(){
     let iconaIMG = document.getElementById("icona_pannello_utente");

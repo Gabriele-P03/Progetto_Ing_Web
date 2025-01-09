@@ -13,6 +13,9 @@ class TipoAggiuntaController extends BaseController{
     public function tipoaggiunta(){
         $this->validaMetodi(array("PUT", "DELETE", "POST", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
+        if($metodo != 'GET'){
+            controllaSessione();
+        }
         try{
             if($metodo == 'PUT' || $metodo == 'DELETE'){
                 $this->validaParametri(array('hash'), null);

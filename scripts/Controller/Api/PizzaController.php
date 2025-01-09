@@ -43,6 +43,9 @@ class PizzaController extends BaseController{
     public function pizza(): void{
         $this->validaMetodi(array("DELETE", "POST", "PUT", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
+        if($metodo != 'GET'){
+            controllaSessione();
+        }
         try{
             if($metodo == 'DELETE' || $metodo == 'PUT')
                 $this->validaParametri(array("hash"), null);

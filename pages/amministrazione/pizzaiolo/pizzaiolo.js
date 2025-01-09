@@ -322,6 +322,7 @@ function eliminaPizza(input){
                 }
             }
             xhttp.open('DELETE', '/../../../scripts/index.php/pizza/pizza?hash='+encodeURIComponent(input.value), true);
+            xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
             xhttp.send();
         }
     }
@@ -364,6 +365,7 @@ function salvaPizza(){
         }
     }
     xhttp.open(metodo, '/../../../scripts/index.php/pizza/pizza'+appendice, true);
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
     xhttp.send(new XMLSerializer().serializeToString(xml));
 
 }

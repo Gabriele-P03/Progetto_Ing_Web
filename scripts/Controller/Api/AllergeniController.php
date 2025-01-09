@@ -5,6 +5,8 @@ require_once PROJECT_ROOT_PATH . "/Controller/Api/BaseController.php";
 // include the base controller file
 require_once PROJECT_ROOT_PATH . "/Model/AllergeneModel.php";
 
+require_once PROJECT_ROOT_PATH . "/utils/SessionUtils.php";
+
 class AllergeniController extends BaseController{
 
     private AllergeneModel $allergeneModel;
@@ -18,6 +20,10 @@ class AllergeniController extends BaseController{
         $this->validaMetodi(array("POST", "PUT", "DELETE", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         try{
+            if($metodo != 'GET'){
+                controllaSessione();
+            }
+
             if($metodo == 'POST'){
                 $this->validaParametri(null, null);
             }else if($metodo == 'PUT' || $metodo == 'DELETE'){

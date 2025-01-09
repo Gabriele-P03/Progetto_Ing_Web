@@ -38,8 +38,9 @@ function login(){
                 let nome = row.getElementsByTagName("NOME")[0].textContent;
                 let cognome = row.getElementsByTagName("COGNOME")[0].textContent;
                 let ruolo = row.getElementsByTagName("RUOLO")[0].childNodes.item(0).textContent;
+                let id = row.getElementsByTagName("ID")[0].textContent;
                 let parameters = "nome="+encodeURIComponent(nome)+"&cognome="+encodeURIComponent(cognome)+"&ruolo="+encodeURIComponent(ruolo);
-                caricaPaginaByRuolo(ruolo, parameters);
+                caricaPaginaByRuolo(ruolo, parameters, id);
             }
         }
         
@@ -48,7 +49,8 @@ function login(){
     }
 }
 
-function caricaPaginaByRuolo(ruolo, parameters){
+function caricaPaginaByRuolo(ruolo, parameters, id){
+    sessionStorage.setItem("id", id);
     switch (ruolo){
         case RUOLO_CAMERIERE:
             window.location.href = '..'+RUOLO_CAMERIERE_PAGE + '?'+parameters;
@@ -63,4 +65,5 @@ function caricaPaginaByRuolo(ruolo, parameters){
             window.location.href = '..'+RUOLO_RESPONSABILE_PAGE + '?'+parameters;
         break;
     }
+    
 }

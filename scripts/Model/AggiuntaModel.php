@@ -9,6 +9,18 @@ class AggiuntaModel extends Connection{
         parent::__construct();
     }
 
+    public function impostaAllergeni($idHashAggiunta, $xml){
+        //Prima elimino tutte le relazioni precedenti con gli allergeni
+        $sql = "DELETE FROM ". DB_AGGIUNTAALLERGENE . " WHERE " . DB_AGGIUNTAALLERGENE_IDAGGIUNTA . " = (SELECT ID FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?)";
+        $this->delete($sql, 's', array($idHashAggiunta));
+        //Ora posso creare le relazioni nuove
+        $allergeni = $xml->allergene;
+        foreach($allergeni as $key){
+            $hash = $key->attributes()[0];
+            $sql = "INSERT INTO " . DB_AGGIUNTAALLERGENE . " VALUES(NULL, (SELECT ID FROM ".DB_AGGIUNTA." WHERE ID_HASH = ?), (SELECT ID FROM ".DB_ALLERGENE." WHERE ID_HASH = ?))";
+            $this->executeStatement($sql, 'ss', array($idHashAggiunta, $hash));
+        }
+    }
 
     public function getAllByPizza(string $idHashPizza){
         $sql = "SELECT " . DB_AGGIUNTA_NOME . ", ID_HASH FROM " . DB_AGGIUNTA;
