@@ -59,4 +59,16 @@ function validaRuolo($ruolo){
     }
 }
 
+function eliminaSessione(){
+    $headers = apache_request_headers();
+    $id = $headers['Authorization'];
+    //Prima ottengo il ruolo (Primo underscore)
+    $firstUnderscoreIndex = strpos($id, "_");
+    //Non posso sapere se lo username contenga un underscore, ma so il ruolo e anche che id generato da uniqueid è lungo 
+    //13 caratteri https://www.php.net/manual/en/function.uniqid.php
+    $username = substr($id, $firstUnderscoreIndex+1, strlen($id)-$firstUnderscoreIndex-13-1);
+    //Confronto idValue con quello in $_SESSION
+    unset($_SESSION[$username]);
+}
+
 ?>

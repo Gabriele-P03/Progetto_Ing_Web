@@ -67,3 +67,20 @@ function confermaModificaPSW(){
     xhttp.open('PUT', '../../../scripts/index.php/anagrafica/login', true);
     xhttp.send(new XMLSerializer().serializeToString(xml));
 }
+
+function logout(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function(){
+        if(xhttp.status === 200){
+            sessionStorage.removeItem("id");
+            window.location.href = "/pages/amministrazione/login/login.html";
+        }else{
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            alert(xmlDoc.childNodes.item(0).getAttribute("value"));
+        }
+    }
+    xhttp.open('GET', '/../../../scripts/index.php/anagrafica/logout', true);
+    xhttp.setRequestHeader("Authorization", sessionStorage.getItem("id"));
+    xhttp.send();
+}

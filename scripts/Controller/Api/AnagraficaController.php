@@ -15,6 +15,13 @@ class AnagraficaController extends BaseController{
         $this->ruoloModel = new RuoloModel();
     }
 
+    public function logout(): void{
+        $this->validaMetodi(array("GET"));
+        controllaSessione();
+        eliminaSessione();
+        $this->inviaRispostaOK("");
+    }
+
     /**
      * End-point /aggiunta?pizza=idhashpizza
      * @return void
