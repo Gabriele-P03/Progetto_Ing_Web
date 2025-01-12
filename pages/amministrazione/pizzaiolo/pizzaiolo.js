@@ -15,6 +15,12 @@ window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
     caricaPizze();
+
+    document.getElementById("date_input").addEventListener('change', caricaPrenotazioni, false);
+
+    document.getElementById("show_ingredienti").addEventListener('click', mostraPopupIngredienti, false);
+    document.getElementById("salva_pizza").addEventListener('click', salvaPizza, false);
+    document.getElementById("annulla_modifica_pizza").addEventListener('click', annullaModificaPizza, false);
 }
 
 
@@ -60,7 +66,8 @@ function parseInfoProfilo(){
  * Richiamta quando si cambia la data al date-picker
  * Esegue la get delle prenotazioni per quella data e inserisce i dati nella tabella
  */
-function caricaPrenotazioni(input){
+function caricaPrenotazioni(e){
+    let input = e.target;
     let date = input.value;
     if(date !== null){
         let tbody = document.getElementById("tbody_prenotazioni");
@@ -77,10 +84,11 @@ function caricaPrenotazioni(input){
                 let tr = "<tr class=\"tr_body\">"
                 tr += "<td class=\"td_tbody\">"+nome+"</td>";
                 tr += "<td class=\"td_tbody\">"+(asporto === '1' ? 'Sì' : 'No')+"</td>";
-                tr += "<td class=\"td_tbody\"><button type=\"button\" value=\""+hash+"\" onclick=\"apriPrenotazione(this)\">Visualizza</button></td>";
+                tr += "<td class=\"td_tbody\"><button class=\"apri_prenotazione_bt\" type=\"button\" value=\""+hash+"\">Visualizza</button></td>";
                 tr += "</tr>";
-                tbody.innerHTML += tr;
+                tbody.insertAdjacentHTML('beforeend', tr);
             });
+            document.querySelectorAll(".apri_prenotazione_bt").forEach(i => i.addEventListener('click', apriPrenotazione, false));
             allineaTabella();
         }
         xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=1', true);
@@ -136,7 +144,8 @@ function allineaTabella(){
 /**
  * Funzione per mostrare il popup degli ingredienti
  */
-function mostraPopupIngredienti(input, allowSave){
+function mostraPopupIngredienti(e, allowSave = true){
+    let input = e.target;
     let hash = input.value;
 
     const xhttp = new XMLHttpRequest();
@@ -155,13 +164,16 @@ function mostraPopupIngredienti(input, allowSave){
 
         div += "</div>";
         if(allowSave){
-            div += "<div id=\"div_button_ingredienti\"><button id=\"button_save_ingredienti\" type=\"button\" onclick=\"salvaIngredientiTMP(this)\">Salva</button></div>";
+            div += "<div id=\"div_button_ingredienti\"><button id=\"button_save_ingredienti\" type=\"button\">Salva</button></div>";
         }
         div += "</div>";
 
         let doc = XMLParser.parseFromString(div, 'text/html');
         document.body.appendChild(doc.getElementById("div_popup_ingredienti"));
         document.addEventListener('click', clickClosePopup, false);
+        if(allowSave){
+            document.getElementById("button_save_ingredienti").addEventListener('click', salvaIngredientiTMP, false);
+        }
         spuntaIngredienti(hash, allowSave);
         
     }
@@ -234,13 +246,15 @@ function caricaPizze(){
             let prezzo = row.childNodes.item(2).textContent;
             let div = "<div class=\"div_pizza\">"+nome+" - "+prezzo+"&euro;<div class=\"div_pizza_bottoni\">";
             //Aggiungo i tre bottoni: elimina, modifica, visualizza ingredienti
-            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" prezzo=\""+prezzo+"\" onclick=\"caricaModificaPizza(this)\">Modifica</button>";
-            div += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"eliminaPizza(this)\">Elimina</button>";
-            div += "<button type=\"button\" value=\""+hash+"\" onclick=\"mostraPopupIngredienti(this, false)\">Visualizza</button>";
+            div += "<button class=\"modifica_pizza_bt\" type=\"button\" name=\""+nome+"\" value=\""+hash+"\" prezzo=\""+prezzo+"\">Modifica</button>";
+            div += "<button class=\"elimina_pizza_bt\" type=\"button\" name=\""+nome+"\" value=\""+hash+"\">Elimina</button>";
+            div += "<button class=\"mostra_ingredienti_pizza_bt\" type=\"button\" value=\""+hash+"\">Visualizza</button>";
             div += "</div></div>";
-            parentDiv.innerHTML += div;
+            parentDiv.insertAdjacentHTML('beforeend', div);
         });
-
+        document.querySelectorAll(".modifica_pizza_bt").forEach(i => i.addEventListener('click', caricaModificaPizza, false));
+        document.querySelectorAll(".elimina_pizza_bt").forEach(i => i.addEventListener('click', eliminaPizza, false));
+        document.querySelectorAll(".mostra_ingredienti_pizza_bt").forEach(i => i.addEventListener('click', function(e){mostraPopupIngredienti(e, false)}, false));
         
     }
     xhttp.open('GET', '/../../../scripts/index.php/pizza/pizza', true);
@@ -249,7 +263,8 @@ function caricaPizze(){
 
 var modificandoPizza = false;
 var modificandoPizzaHash = '';
-function caricaModificaPizza(input){
+function caricaModificaPizza(e){
+    let input = e.target;
     let hash = input.value;
     let nome = input.name;
     let prezzo = input.getAttribute("prezzo");  //Di per sè un tag html non contiene l'attributo prezzo e dunque non posso accedervi direttamente
@@ -289,7 +304,8 @@ function annullaModificaPizza(){
  * Funzione chiamata dal tasto salva interno al div popup degli ingredienti
  * Salva nell'array dichiarato a inizio file gli hash degli ingredienti selezionati
  */
-function salvaIngredientiTMP(input){
+function salvaIngredientiTMP(e){
+    let input = e.target;
     //Devo salire di due parentElement in quanto il bottone è contenuto in un proprio div (al fine di centrarlo)
     let inputs = input.parentElement.parentElement.getElementsByTagName("input"); //Il bottone salva non è contemplato in quanto button e non input
     ingredienti = [];//Pulisco l'array per sicurezza
@@ -303,7 +319,8 @@ function salvaIngredientiTMP(input){
     document.removeEventListener('click', clickClosePopup, false);
 }
 
-function eliminaPizza(input){
+function eliminaPizza(e){
+    let input = e.target;
     if(modificandoPizza){
         alert("Non puoi eliminare una pizza se è in corso una modifica!");
     }else{
@@ -374,6 +391,6 @@ function salvaPizza(){
  * Sfrutto lo storico popup già scritto per il cliente circa le sue prenotazioni
  */
 var srcPopup = "/pages/storico/popup/popup.html";
-function apriPrenotazione(input){
-    window.open(srcPopup+'?prenotazione='+input.value, 'Ordini', 'popup');
+function apriPrenotazione(e){
+    window.open(srcPopup+'?prenotazione='+e.target.value, 'Ordini', 'popup');
 }

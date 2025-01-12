@@ -19,6 +19,8 @@ function caricaStorico(){
                 caricaPrenotazione(row);
             });
         }
+        document.querySelectorAll(".visualizza_bt").forEach(i => i.addEventListener('click', apriVisualizzazioneIFRAME, false));
+        document.querySelectorAll(".modifica_bt").forEach(i => i.addEventListener('click', modificaPrenotazione, false));
         allineaTabella();
     }
 
@@ -56,8 +58,8 @@ function caricaPrenotazione(row){
             idHash = col.textContent;
         }
     }
-    tdAzioni += "<input type=button value=\"Visualizza\" onclick=\"apriVisualizzazioneIFRAME(this)\" name=\"" + idHash + "\">";
-    tdAzioni += "<input type=button value=\"Modifica\" onclick=\"modificaPrenotazione(this)\" name=\"" + idHash + "\">";
+    tdAzioni += "<input class=\"visualizza_bt\" type=button value=\"Visualizza\" name=\"" + idHash + "\">";
+    tdAzioni += "<input class=\"modifica_bt\" type=button value=\"Modifica\" name=\"" + idHash + "\">";
     tdAzioni += "</td>";
     tbody.innerHTML += newTR + tdAzioni + trBuffer + "</tr>";
 }
@@ -123,7 +125,8 @@ function allineaTabella(){
  * Carichera una finestra a mo' di popup in cui verrà renderizzato il contenuto di una prenotazione in sola modalità lettura
  */
 var srcPopup = "popup/popup.html";
-function apriVisualizzazioneIFRAME(input){
+function apriVisualizzazioneIFRAME(e){
+    let input = e.target;
     window.open(srcPopup+'?prenotazione='+input.name, 'Ordini', 'popup');
 }
 
@@ -150,6 +153,7 @@ function tryParseContent(content, colName){
     return content;
 }
 
-function modificaPrenotazione(input){
+function modificaPrenotazione(e){
+    let input = e.target;
     window.location.href += "/../../prenota/prenota.html?prenotazione="+encodeURIComponent(input.name);
 }

@@ -40,8 +40,8 @@
                     <div id="div_campi_psw_reset">
                         
                     </div>
-                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>            
-                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="logout()">Logout</button>  
+                    <button class="bt_pannello_utente" id="bt_show_cambio_psw" type="button" >Cambio Password</button>            
+                    <button class="bt_pannello_utente" id="bt_logout" type="button" >Logout</button>  
                 </div>
             </div>
         </aside>
@@ -51,7 +51,7 @@
                 <fieldset>
                     <legend>Le prenotazioni per la data selezionata:</legend>
                     <div id="div_date_input">
-                        <input type="date" id="date_input" onchange="caricaPrenotazioni(this)">
+                        <input type="date" id="date_input" >
                     </div>
                     <table id="table_prenotazioni">
                         <thead id="thead_prenotazioni">
@@ -73,9 +73,9 @@
                     <div id="div_nuova_pizza">
                         <input id="input_nome_pizza" type="text" placeholder="Nome Pizza">
                         <input id="input_prezzo_pizza" type="number" placeholder="Prezzo">
-                        <button id="show_ingredienti" type="button" onclick="mostraPopupIngredienti(this, true)">Ingredienti</button>
-                        <button id="salva_pizza" type="button" onclick="salvaPizza()">Salva</button>
-                        <button id="annulla_modifica_pizza" type="button" onclick="annullaModificaPizza()">Annulla</button>
+                        <button id="show_ingredienti" type="button">Ingredienti</button>
+                        <button id="salva_pizza" type="button">Salva</button>
+                        <button id="annulla_modifica_pizza" type="button">Annulla</button>
                     </div>
 
                     <div id="div_pizze">

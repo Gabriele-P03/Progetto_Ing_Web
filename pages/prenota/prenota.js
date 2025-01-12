@@ -7,6 +7,18 @@ window.onload = function(){
     bloccaNumeroPersone();
     impostaMinDataAvvenimento();
     caricaPrenotazioneBozza();
+
+    document.getElementById("bt_invia_allergeni").addEventListener('click', filtraPizzeByAllergeni, false);
+    document.getElementById("select_base_pizza").addEventListener('change', carica_ingredienti, false);
+    document.getElementById("salva_button").addEventListener('click', salvaNuovaPizza, false);
+    document.getElementById("conferma_modifica_ordine_bt").addEventListener('click', confermaOrdine, false);
+    document.getElementById("annulla_modifica_ordine_bt").addEventListener('click', annullaOrdine, false);
+
+    document.getElementById("nuova_info_prenotazione_bt").addEventListener('click', nuovaPrenotazione, false);
+    document.getElementById("elimina_info_prenotazione_bt").addEventListener('click', eliminaPrenotazione, false);
+    document.getElementById("salva_info_prenotazione_bt").addEventListener('click', salvaPrenotazione, false);
+
+    document.getElementById("cb_asporto").addEventListener('click', bloccaNumeroPersone, false);
 }
 
 /**
@@ -57,7 +69,12 @@ function carica_pizze(){
     xhttp.send();
 }
 
-function carica_ingredienti(pizzaSelezionata, async = true){
+function carica_ingredienti(e = null, value = null, async = true){
+    let pizzaSelezionata = null;
+    if(value == null)
+        pizzaSelezionata = e.target.value;
+    else
+        pizzaSelezionata = value;
     if(pizzaSelezionata != ""){ //Controllo dovuto al selected value della lista delle pizze
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
@@ -456,8 +473,8 @@ function caricaDati(xmlDoc){
             let newTR = "<tr class=\"tr_prenotazione\">"
             //Aggiungo i due tasti per le azioni
             newTR += "<td class=\"td_prenotazione\">"
-            newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Modifica\" name=\"" + idHashOrdine + "\" onclick=popolaFormPerModifica(this)>";
-            newTR += "<input class=\"azione_prenotazione_button\" type=\"button\" value=\"Elimina\" name=\"" + idHashOrdine + "\" onclick=cancellaOrdine(this)>";
+            newTR += "<input class=\"azione_prenotazione_button azione_prenotazione_button_modifica\" type=\"button\" value=\"Modifica\" name=\"" + idHashOrdine + "\">";
+            newTR += "<input class=\"azione_prenotazione_button azione_prenotazione_button_elimina\" type=\"button\" value=\"Elimina\" name=\"" + idHashOrdine + "\">";
             newTR += "</td>";
             
             //Salto la prima colonna essendo quella delle azioni e la seconda essendo quella del prezzo
@@ -484,6 +501,9 @@ function caricaDati(xmlDoc){
 
             newTR += "</tr>";
             tbody.innerHTML += newTR;
+
+            document.querySelectorAll(".azione_prenotazione_button_modifica").forEach(i => i.addEventListener('click', popolaFormPerModifica, false));
+            document.querySelectorAll(".azione_prenotazione_button_elimina").forEach(i => i.addEventListener('click', cancellaOrdine, false));
         });
     }else{
         //Nessun ordine da visualizzare, nascondo la tabella
@@ -584,7 +604,8 @@ function allineaTabella(){
 
 
 var idHashOrdineModificando = "";
-function popolaFormPerModifica(ordine){
+function popolaFormPerModifica(e){
+    let ordine = e.target;
     idHashOrdineModificando = ordine.name;
     let row = ordine.parentElement.parentElement;
 
@@ -608,7 +629,7 @@ function popolaFormPerModifica(ordine){
     let pizza = row.childNodes[2];
     let value = (pizza.hasAttribute("name")) ? pizza.getAttribute("name") : "";
     document.getElementById("select_base_pizza").value = value;
-    carica_ingredienti(value, false);
+    carica_ingredienti(null, value, false);
 
     let divTipoaggiunte = document.getElementById("fsprenota_tipoaggiunta_slidex_wrap_div");
     divTipoaggiunte = divTipoaggiunte.getElementsByClassName("fs_tipoaggiunta_div_outer");
@@ -690,7 +711,8 @@ function eliminaPrenotazione(){
     }
 }
 
-function cancellaOrdine(ordine){
+function cancellaOrdine(e){
+    let ordine = e.target;
     if(idHashOrdineModificando !== ""){
         if(idHashOrdineModificando === ordine.name){
             alert("Non puoi cancellare quest'ordine siccome è in fase di modifica");

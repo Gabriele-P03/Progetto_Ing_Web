@@ -14,11 +14,15 @@ window.onload = function(){
     caricaIconaProfiloByRuolo();
     caricaAllergeni();
     caricaAggiunteAllergeni();
+
+    document.getElementById("annulla_modifica_allergene_bt").addEventListener('click', annullaModificaAllergene, false);
+    document.getElementById("salva_nuovo_allergene").addEventListener('click', salvaAllergene, false);
 }
 
 function caricaAggiunteAllergeni(){
     const xhttp = new XMLHttpRequest();
     let tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
     xhttp.onload = function(){
         const XMLParser = new DOMParser();
         xmlDoc = XMLParser.parseFromString(xhttp.responseText, 'application/xml');
@@ -33,7 +37,7 @@ function caricaAggiunteAllergeni(){
                 xmlDoc1.childNodes.item(0).childNodes.forEach(aggiunta => {
                     let hashAggiunta = aggiunta.childNodes.item(0).textContent;
                     let nomeAggiunta = aggiunta.childNodes.item(1).textContent;
-                    let tr = "<tr class=\"tr_body\"><td class=\"td_body\">"+nomeTipo+"</td><td class=\"td_body\">"+nomeAggiunta+"</td><td class=\"td_body\"><button value=\""+hashAggiunta+"\" class=\"show_popup_allergeni_bt\" onclick=\"showPopupAllergeni(this)\">Visualizza</button></td></tr>";
+                    let tr = "<tr class=\"tr_body\"><td class=\"td_body\">"+nomeTipo+"</td><td class=\"td_body\">"+nomeAggiunta+"</td><td class=\"td_body\"><button value=\""+hashAggiunta+"\" class=\"show_popup_allergeni_bt\">Visualizza</button></td></tr>";
                     tbody.innerHTML += tr; 
                 })
             };
@@ -41,6 +45,7 @@ function caricaAggiunteAllergeni(){
             xhttp1.send();
 
         });
+        document.querySelectorAll(".show_popup_allergeni_bt").forEach(i => i.addEventListener('click', showPopupAllergeni, false));
         allineaTabella();
     };
     xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/tipoaggiunta', true);
@@ -94,7 +99,8 @@ function allineaTabella(){
     let theadH = document.getElementById("thead").clientHeight;
     let h = parseInt(theadH)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
     h = 'calc(100% - '+h+'px)';
-    document.getElementById("tbody").style.maxHeight = h;
+    //document.getElementById("tbody").setAttribute("style", "max-height: "+h+"px;");
+    document.getElementById("tbody").style.maxHeight = h+'px';
 
     let tableTHeadTHs = document.getElementById("table_row_header_aggiunta").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
@@ -114,12 +120,11 @@ function allineaTabella(){
         }
 
         //ora che ho trovato i valore giusto di w, lo setto su tutta la colonna i-esima (testata compresa)
-        tableTHeadTHs[i].style.width = w + 'px';
-
+        tableTHeadTHs[i].style.width=w+'px';
         w = (parseInt(w)+4); //Aggiungo 2px per bordo della cella di testata
         for(let j = 0; j < tableTBodyTDs.length; j++){
             let cell = tableTBodyTDs[j].childNodes.item(i);
-            cell.style.width = w + 'px';
+            cell.style.width= w+"px";
         }
     }
 }
@@ -129,7 +134,8 @@ function allineaTabella(){
 var modificandoAllergene = false;
 var modificandoAllergeneHash = '';
 
-function caricaModificaAllergene(input){
+function caricaModificaAllergene(e){
+    let input = e.target;
     document.getElementById("annulla_modifica_allergene_bt").style.visibility = 'visible';
     modificandoAllergene = true;
     modificandoAllergeneHash = input.value;
@@ -160,19 +166,22 @@ function caricaAllergeni(){
                 nome+
                 "</div>"+
                 "<div class=\"allergene_bt_div\">" +
-                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"eliminaAllergene(this)\">Elimina</button>" + 
-                    "<button class=\"allergene_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"caricaModificaAllergene(this)\">Modifica</button>" + 
+                    "<button class=\"allergene_bt allergene_bt_elimina\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\">Elimina</button>" + 
+                    "<button class=\"allergene_bt allergene_bt_modifica\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\">Modifica</button>" + 
                 "</div>" +
             "</div>";
             div.innerHTML += divInner;
         });
-        div += "</div>";
+        div.innerHTML += "</div>";
+        document.querySelectorAll(".allergene_bt_elimina").forEach(i => i.addEventListener('click', eliminaAllergene, false));
+        document.querySelectorAll(".allergene_bt_modifica").forEach(i => i.addEventListener('click', caricaModificaAllergene, true));
     };
     xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene', true);
     xhttp.send();
 }
 
-function eliminaAllergene(input){
+function eliminaAllergene(e){
+    let input = e.target;
     let go = confirm("Sicuro di voler eliminare l'allergene " + input.name + "?");
     if(go){
         let hash = input.value;
@@ -195,6 +204,9 @@ function eliminaAllergene(input){
 
 function salvaAllergene(){
     let nome = document.getElementById("nome_nuovo_allergene").value;
+    if(nome.length <= 0){
+        return;
+    }
     let xml = document.createElement("root");
     let nomeXML = document.createElement("nome");
     let appendice = '';
@@ -224,7 +236,8 @@ function salvaAllergene(){
 
 /**Gestione della N-N tra allergeni e aggiunte */
 
-function showPopupAllergeni(input){
+function showPopupAllergeni(e){
+    let input = e.target;
     let hash = input.value;
 
     let div = "<div id=\"div_popup_aggiuntaallergeni\">"
@@ -232,10 +245,18 @@ function showPopupAllergeni(input){
     div += "</div>";
 
     let body = document.getElementsByTagName("body")[0];
-    body.innerHTML += div;
+    /*
+        Modificando direttamente tramite body.innerHTML, data la gestione del DOM, tutti gli elementi HTMl vengono ricreati
+        e dunque i listeners eliminati; opto in questo caso dunque per usare insertAdjacentHTML (ottimo per la compatibilità)
+        'beforeend' in modo da aggiungere div dopo l'ultimo child element
+        https://stackoverflow.com/questions/7327056/appending-html-string-to-the-dom
+    */
+    body.insertAdjacentHTML('beforeend', div);
     spuntaAllergeni(hash);
 
-    document.addEventListener('click', clickClosePopup, false);
+    document.getElementById("save_aggiunta_allergeni_bt").addEventListener('click', salvaAggiuntaAllergeni, false);
+
+    document.getElementsByTagName("body")[0].addEventListener('click', clickClosePopup, false);
 }
 
 /** 
@@ -250,8 +271,9 @@ function clickClosePopup(e){
         flag = true;
     }
     if(!flag && openedPopup){
+        document.getElementById("save_aggiunta_allergeni_bt").removeEventListener('click', salvaAggiuntaAllergeni, false);
         document.getElementById("div_popup_aggiuntaallergeni").remove();
-        document.removeEventListener('click', clickClosePopup, false);
+        document.getElementsByTagName("body")[0].removeEventListener('click', clickClosePopup, false);
         openedPopup = false;
     }else{
         openedPopup = true;
@@ -281,12 +303,13 @@ function retrieveAllAllergeniAsSelect(hashAggiunta){
     xhttp.open('GET', '/../../../scripts/index.php/allergene/allergene', false);
     xhttp.send();
     select += "</div>";
-    select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" onclick=\"salvaAggiuntaAllergeni(this)\" value=\""+hashAggiunta+"\">Salva</button>";
+    select += "<button id=\"save_aggiunta_allergeni_bt\" type=\"button\" value=\""+hashAggiunta+"\">Salva</button>";
     return select;
 }
 
 //manda la richiesta per salvare gli allergeni di un'aggiunta
-function salvaAggiuntaAllergeni(input){
+function salvaAggiuntaAllergeni(e){
+    let input = e.target;
     let inputs = input.parentElement.querySelectorAll("input");
     let xml = document.createElement("root");
     for(let i = 0; i < inputs.length; i++){

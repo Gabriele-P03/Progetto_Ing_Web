@@ -60,6 +60,10 @@ fieldset#fieldset_allergeni{
     flex-direction: column;
 }
 
+button#annulla_modifica_allergene_bt{
+    visibility: hidden;
+}
+
 div#storico_etichette_div{
     margin-top: 0.25em;
     overflow: auto;

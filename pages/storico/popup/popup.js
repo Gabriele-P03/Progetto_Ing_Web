@@ -16,7 +16,6 @@ function retrieveIdHashPrenotazione(){
     let indexQuestionMark = url.indexOf('?');
     url = url.substring(indexQuestionMark+1);
     let idHash = url.substring('prenotazione='.length);
-    console.log(url + "\n" + idHash);
     return idHash;
 }
 

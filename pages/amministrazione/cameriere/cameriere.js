@@ -13,6 +13,8 @@ window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
     impostaMinDataAvvenimento();
+
+    document.getElementById("date_prenotazioni").addEventListener("change", caricaPrenotazioniTavoli, false);
 }
 
 

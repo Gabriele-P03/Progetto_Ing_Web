@@ -1,6 +1,8 @@
-/**
- * Questa funzione viene richiamata dal pulsante di login
- */
+window.onload = function(){
+    let bt = document.getElementById("login_button");
+    bt.addEventListener('click', login, false);
+}
+
 
 const RUOLO_CAMERIERE = 'Cameriere';
 const RUOLO_PIZZAIOLO = 'Pizzaiolo';
@@ -11,6 +13,9 @@ const RUOLO_PIZZAIOLO_PAGE = '/pizzaiolo/pizzaiolo.html';
 const RUOLO_MAGAZZINIERE_PAGE = '/magazziniere/magazziniere.html';
 const RUOLO_RESPONSABILE_PAGE = '/responsabile/responsabile.html';
 
+/**
+ * Questa funzione viene richiamata dal pulsante di login
+ */
 function login(){
     let nomeUtente = document.getElementById("login_username").value;
     let password = document.getElementById("login_password").value;

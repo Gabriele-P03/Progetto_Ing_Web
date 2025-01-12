@@ -40,8 +40,8 @@
                     <div id="div_campi_psw_reset">
                         
                     </div>
-                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="showCambioPassword()">Cambio Password</button>            
-                    <button id="show_psw_reset_fields_bt_pannello_utente" type="button" onclick="logout()">Logout</button>  
+                    <button class="bt_pannello_utente" id="bt_show_cambio_psw" type="button" >Cambio Password</button>            
+                    <button class="bt_pannello_utente" id="bt_logout" type="button" >Logout</button>  
                 </div>
             </div>
         </aside>
@@ -51,8 +51,8 @@
                 <form id="aggiungi_tipoaggiunta_form">
                     <div id="div_aggiungi_tipoaggiunta">                 
                         Etichetta: <input type="text" id="nome_nuovo_tipoaggiunta" placeholder="Nome Tipo">
-                        <button type="button" id="salva_nuovo_tipoaggiunta" onclick="salvaTipoAggiunta()">Salva</button>
-                        <button type="button" id="annulla_modifica_tipoaggiunta_bt" onclick="annullaModificaTipoAggiunta()">Annulla</button>
+                        <button type="button" id="salva_nuovo_tipoaggiunta">Salva</button>
+                        <button type="button" id="annulla_modifica_tipoaggiunta_bt">Annulla</button>
                     </div>
                 </form>
                 <div id="storico_etichette_div">
@@ -66,8 +66,8 @@
                     &emsp;<input id="quantita_nuova_aggiunta" type="number" min="0" placeholder="Quantità">
                     &emsp;<input id="prezzo_nuova_aggiunta" type="number" min="0" placeholder="Prezzo">
                     &emsp;<select id="tipoaggiunta_input_list" placeholder="Seleziona un tipo"></select>
-                    &emsp;<button id="salva_nuova_aggiunta" type="button" onclick="salvaAggiunta()">Salva</button>
-                    <button id="annulla_modifica_aggiunta" type="button" onclick="annullaModificaAggiunta()">Annulla</button>
+                    &emsp;<button id="salva_nuova_aggiunta" type="button">Salva</button>
+                    <button id="annulla_modifica_aggiunta" type="button">Annulla</button>
                     
                 </div>
                 <table id="table_aggiunte">

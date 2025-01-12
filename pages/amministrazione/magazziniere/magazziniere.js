@@ -14,6 +14,10 @@ window.onload = function(){
     caricaIconaProfiloByRuolo();
     caricaTipoAggiunte();
     
+    document.getElementById("salva_nuovo_tipoaggiunta").addEventListener('click', salvaTipoAggiunta, false);
+    document.getElementById("annulla_modifica_tipoaggiunta_bt").addEventListener('click', annullaModificaTipoAggiunta, false);
+    document.getElementById("salva_nuova_aggiunta").addEventListener('click', salvaAggiunta, false);
+    document.getElementById("annulla_modifica_aggiunta").addEventListener('click', annullaModificaAggiunta, false);
 }
 
 function caricaAggiunte(){
@@ -44,13 +48,15 @@ function caricaAggiunte(){
                     //Aggiungo il prezzo
                     row += "<td class=\"td_body\">"+aggiunta.childNodes.item(2).textContent+"&euro;</td>";
                     //Aggiungo i tasti di elimina e modifica
-                    row += "<td class=\"td_body\"><button type=\"button\" value=\""+hash+"\" name=\""+nome+"\" onclick=\"caricaModificaAggiunta(this)\">Modifica</button>"
-                    row += "<button type=\"button\" name=\""+nome+"\" value=\""+hash+"\" onclick=\"eliminaAggiunta(this)\">Elimina</button>";
+                    row += "<td class=\"td_body\"><button class=\"bt_modifica_aggiunta\" type=\"button\" value=\""+hash+"\" name=\""+nome+"\">Modifica</button>"
+                    row += "<button class=\"bt_elimina_aggiunta\" type=\"button\" name=\""+nome+"\" value=\""+hash+"\">Elimina</button>";
                     row += "</td>";
                     body.innerHTML += row;
                 });
 
-
+                //Adesso aggiungo i listeners
+                document.querySelectorAll(".bt_modifica_aggiunta").forEach(bt => bt.addEventListener('click', caricaModificaAggiunta, false));
+                document.querySelectorAll(".bt_elimina_aggiunta").forEach(bt => bt.addEventListener('click', eliminaAggiunta, false));
             }; 
             xhttp.open('GET', '/../../../scripts/index.php/aggiunta/allfilter?tipoaggiunta='+encodeURIComponent(option.value), false);
             xhttp.send();
@@ -60,7 +66,8 @@ function caricaAggiunte(){
 
 var modificandoAggiuntaHash = '';
 var modificandoAggiunta = false;
-function caricaModificaAggiunta(input){
+function caricaModificaAggiunta(e){
+    let input = e.target;
     modificandoAggiuntaHash = input.value;
     let nome = input.name;
     modificandoAggiunta = true;
@@ -78,7 +85,8 @@ function caricaModificaAggiunta(input){
     document.getElementById("annulla_modifica_aggiunta").style.visibility = "visible";
 }
 
-function eliminaAggiunta(input){
+function eliminaAggiunta(e){
+    let input = e.target;
     let go = confirm("Sicuro di voler eliminare l'aggiunta " + input.name + "?");
     if(go){
         const xhttp = new XMLHttpRequest();
@@ -224,8 +232,8 @@ function caricaTipoAggiunte(){
             "<div class=\"div_etichetta\">"+
                 nome+
                 "<div class=\"tipoaggiunta_bt_div\">" +
-                    "<button class=\"tipoaggiunta_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"eliminaTipoAggiunta(this)\">Elimina</button>" + 
-                    "<button class=\"tipoaggiunta_bt\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\" onclick=\"caricaModificaTipoAggiunta(this)\">Modifica</button>" + 
+                    "<button class=\"tipoaggiunta_bt tipoaggiunta_bt_elimina\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\">Elimina</button>" + 
+                    "<button class=\"tipoaggiunta_bt tipoaggiunta_bt_modifica\" type=\"button\" name=\""+nome+"\" value=\"" + hash + "\">Modifica</button>" + 
                 "</div>" +
             "</div>";
             div.innerHTML += divInner;
@@ -233,8 +241,13 @@ function caricaTipoAggiunte(){
             //Devo inoltre aggiungerli al selettore per le aggiunte
             let option = "<option value=\""+hash+"\">" + nome + "</option>";
             divSelettoreTipoAggiunte.innerHTML += option;
+
+
         });
         div += "</div>";
+        //Adesso aggiungo i listeners
+        document.querySelectorAll(".tipoaggiunta_bt_elimina").forEach(bt => bt.addEventListener('click', eliminaTipoAggiunta, false));
+        document.querySelectorAll(".tipoaggiunta_bt_modifica").forEach(bt => bt.addEventListener('click', caricaModificaTipoAggiunta, false));
         caricaAggiunte();
         allineaTabella();
     }
@@ -242,7 +255,8 @@ function caricaTipoAggiunte(){
     xhttp.send();
 }
 
-function eliminaTipoAggiunta(input){
+function eliminaTipoAggiunta(e){
+    let input = e.target;
     let ok = confirm("Vuoi veramente cancellare il tipo aggiunta " + input.name + "?");    
     if(ok){
         let etichetta = input.value;
@@ -264,7 +278,8 @@ function eliminaTipoAggiunta(input){
 
 var modificandoTipoAggiuntaHash='';
 var modificandoTipoAggiunta = false;
-function caricaModificaTipoAggiunta(input){
+function caricaModificaTipoAggiunta(e){
+    let input = e.target;
     document.getElementById("annulla_modifica_tipoaggiunta_bt").style.visibility = 'visible';
     let inputText = document.getElementById("nome_nuovo_tipoaggiunta");
     inputText.value = input.name;

@@ -49,7 +49,7 @@ function validaRuolo($ruolo){
     switch($ruolo){
         case "Cameriere":
         case "Magazziniere":
-        case "Pizaiolo":
+        case "Pizzaiolo":
         case "Responsabile":
         break;
         default:

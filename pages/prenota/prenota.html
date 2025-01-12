@@ -28,7 +28,7 @@
         </header>
 
         <main>
-            <form id="form_prenotazione" onsubmit="return salvaNuovaPizza()">
+            <form id="form_prenotazione">
 
                 <!--Fieldset per gli allergeni-->
                 <fieldset class="fs_prenota" id="fs_prenota_allergeni">
@@ -36,12 +36,12 @@
                     <div id="fs_prenota_allergeni_div">
                     <!-- Automaticamente riempito di checkbox dalla getAll degli allergeni -->
                     </div>
-                    <button id="bt_invia_allergeni" type="button" onclick="filtraPizzeByAllergeni()">Invia Allergeni</button>
+                    <button id="bt_invia_allergeni" type="button">Invia Allergeni</button>
                 </fieldset>
 
                 <fieldset class="fs_prenota" id="fs_prenota_base_pizza">
                     <legend class="lg_fs_prenota">Scegli la base della tua pizza</legend>
-                    <select id="select_base_pizza" onchange='carica_ingredienti(this.value)'>
+                    <select id="select_base_pizza">
 
                         <!-- Automaticamente riempito dalla getAll delle pizze già disponibili -->
                     </select>
@@ -62,9 +62,9 @@
                 </fieldset>
                 
                 <div id="bottoni_form_div">
-                    <input id="salva_button" type="submit" name="salva" value="Aggiungi all'ordine">
-                    <input type="button" class="modifica_bottoni" value="Conferma Modifica" onclick="confermaOrdine()">
-                    <input type="button" class="modifica_bottoni" value="Annulla Modifica" onclick="annullaOrdine()"> 
+                    <input id="salva_button" type="button" name="salva" value="Aggiungi all'ordine">
+                    <input type="button" id="conferma_modifica_ordine_bt" class="modifica_bottoni" value="Conferma Modifica">
+                    <input type="button" id="annulla_modifica_ordine_bt" class="modifica_bottoni" value="Annulla Modifica"> 
                 </div>
             </form>
 
@@ -77,7 +77,7 @@
                 <div id="info_ordine">
                     <div class="info_ordine_div" id="info_ordine_tipo">
                         <div class="ordine_tipo">
-                            Asporto: <input class="cb_info_ordine_tipo" id="cb_asporto" type="checkbox" onclick="bloccaNumeroPersone()">
+                            Asporto: <input class="cb_info_ordine_tipo" id="cb_asporto" type="checkbox">
                         </div>
                         <div class="ordine_tipo">
                             Persone: <input class="cb_info_ordine_tipo" id="tf_persone" name="numero_persone" type="number" min="0" step="1">
@@ -103,9 +103,9 @@
                 </div>
 
                 <div id="info_ordine_bottone_div">
-                    <input type="button" id="salva_info_prenotazione_bt" value="Salva Prenotazione" onclick="salvaPrenotazione()">
-                    <input type="button" id="elimina_info_prenotazione_bt" value="Elimina Prenotazione" onclick="eliminaPrenotazione()">
-                    <input type="button" id="nuova_info_prenotazione_bt" value="Nuova Prenotazione" onclick="nuovaPrenotazione()">
+                    <input type="button" id="salva_info_prenotazione_bt" value="Salva Prenotazione">
+                    <input type="button" id="elimina_info_prenotazione_bt" value="Elimina Prenotazione">
+                    <input type="button" id="nuova_info_prenotazione_bt" value="Nuova Prenotazione">
                 </div>
 
                 <table id="tabella_prenotazione">

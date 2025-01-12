@@ -65,7 +65,8 @@ div#div_psw_reset_bt{
     margin: 1em auto 1em auto;
 }
 
-button#show_psw_reset_fields_bt_pannello_utente{
+button.bt_pannello_utente{
+    width: fit-content;
     margin: auto auto 5px auto;
 }
 

@@ -77,6 +77,10 @@ class AggiuntaModel extends Connection{
             echo "<results value=\"Quest'aggiunta è ancora in uso su delle pizza\" />";
             exit;
         }
+        //Devo prima eliminare gli allergeni a esso collegati
+        $sql = "DELETE FROM " . DB_AGGIUNTAALLERGENE . " WHERE " . DB_AGGIUNTAALLERGENE_IDAGGIUNTA . " = (SELECT ID FROM ". DB_AGGIUNTA ." WHERE ID_HASH = ?)";
+        $this->delete($sql, 's', array($hash)); 
+        //Ora posso eliminare l'aggiunta
         $sql = "DELETE FROM " . DB_AGGIUNTA . " WHERE ID_HASH = ?";
         $this->delete($sql, "s", array($hash));
     }

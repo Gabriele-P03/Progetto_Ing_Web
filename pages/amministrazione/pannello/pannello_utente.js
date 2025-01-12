@@ -1,3 +1,9 @@
+window.addEventListener('load', function(){
+        document.getElementById("bt_show_cambio_psw").addEventListener("click", showCambioPassword, false);
+        document.getElementById("bt_logout").addEventListener("click", logout, false);
+    }, false);
+
+
 //Usato per salvare lo stato di show dei campi per il reset della password
 var flagCambiandoPsw = false;
 
@@ -10,8 +16,8 @@ const HTML_MODIFICA_PSW = "" +
         "<input class=\"input_psw_reset\" id=\"newpsw2_reset_input\" type=\"password\" placeholder=\"Ripeti Password Nuova\">" +
     "</div>" +
     "<div id=\"div_psw_reset_bt\">" +
-        "<button class=\"psw_reset_bt\" type=\"button\" onclick=\"confermaModificaPSW()\">Conferma</button>" +
-        "<button class=\"psw_reset_bt\" type=\"button\" onclick=\"annullaModificaPSW()\">Annulla</button>" +
+        "<button id=\"bt_conferma_cambio_psw\" class=\"psw_reset_bt\" type=\"button\">Conferma</button>" +
+        "<button id=\"bt_annulla_cambio_psw\" class=\"psw_reset_bt\" type=\"button\">Annulla</button>" +
     "</div>";
 
 /**
@@ -25,6 +31,9 @@ function showCambioPassword(){
         let div = document.getElementById("div_campi_psw_reset");
         div.innerHTML = HTML_MODIFICA_PSW;
         flagCambiandoPsw = true;
+
+        document.getElementById("bt_conferma_cambio_psw").addEventListener('click', confermaModificaPSW, false);
+        document.getElementById("bt_annulla_cambio_psw").addEventListener('click', annullaModificaPSW, false);
     }
 }
 
@@ -33,10 +42,13 @@ function showCambioPassword(){
  * Semplicemente rimuove il div contenente i campi e i due pulsanti di conferma e annulla
  */
 function annullaModificaPSW(){
+    document.getElementById("bt_conferma_cambio_psw").removeEventListener('click', confermaModificaPSW, false);
+    document.getElementById("bt_annulla_cambio_psw").removeEventListener('click', annullaModificaPSW, false);
     let div = document.getElementById("div_campi_psw_reset");
     if(div !== undefined)
         div.innerHTML = "";
     flagCambiandoPsw = false;
+
 }
 
 function confermaModificaPSW(){
@@ -65,6 +77,7 @@ function confermaModificaPSW(){
     xml.appendChild(newpsw2XML);
 
     xhttp.open('PUT', '../../../scripts/index.php/anagrafica/login', true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
     xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 
