@@ -334,6 +334,8 @@ function annullaModificaTipoAggiunta(){
  */
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_aggiunta").querySelectorAll("th");
+    //Resetto la w delle celle di testata
+    tableTHeadTHs.forEach(i => i.style.width = ''); 
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
     let tbody = document.getElementsByTagName("tbody")[0];

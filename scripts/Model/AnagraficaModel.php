@@ -38,6 +38,7 @@ class AnagraficaModel extends Connection{
         if($newpassword1 !== $newpassword2){
             header(HTTP_V. " 400 Bad Request");
             echo "<result value=\"La nuova password non corrisponde con quella ripetuta\" />";
+            exit;
         }
         
         $sql = "UPDATE " . DB_ANAGRAFICA . " SET " . DB_ANAGRAFICA_PASSWORD . " = ? WHERE " . DB_ANAGRAFICA_USERNAME . " = ? AND " . DB_ANAGRAFICA_PASSWORD . " = ?";

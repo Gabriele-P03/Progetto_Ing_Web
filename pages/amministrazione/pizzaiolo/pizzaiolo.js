@@ -110,6 +110,8 @@ function allineaTabella(){
     document.getElementById("tbody_prenotazioni").style.maxHeight = h;
 
     let tableTHeadTHs = document.getElementById("tr_thead_prenotazioni").querySelectorAll("th");
+    //Resetto la w delle celle di testata
+    tableTHeadTHs.forEach(i => i.style.width = ''); 
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
 
     //Essendo la table inline-block prima calcolo h e w per ogni colonna

@@ -59,6 +59,26 @@ function confermaModificaPSW(){
     let oldPSW = document.getElementById("oldpsw_reset_input").value;
     let newPSW1 = document.getElementById("newpsw1_reset_input").value;
     let newPSW2 = document.getElementById("newpsw2_reset_input").value;
+    if(username.length <= 0){
+        alert("Il campo Username è vuoto");
+        return;
+    }
+    if(oldPSW.length <= 0){
+        alert("Il campo Vecchia Password è vuoto");
+        return;
+    }
+    if(newPSW1.length <= 0){
+        alert("Il campo Nuova Password è vuoto");
+        return;
+    }
+    if(newPSW2.length <= 0){
+        alert("Il campo Ripeti Nuova Password è vuoto");
+        return;
+    }
+    if(newPSW1 != newPSW2){
+        alert("Le due nuove password non corrispondono");
+        return;
+    }
 
     let usernameXML = document.createElement('username');
     usernameXML.setAttribute('value', username);
@@ -76,9 +96,18 @@ function confermaModificaPSW(){
     newpsw2XML.setAttribute('value', newPSW2);
     xml.appendChild(newpsw2XML);
 
+    xhttp.onload = function(){
+        if(xhttp.status !== 200){
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            alert(xmlDoc.childNodes.item(0).getAttribute("value"));
+        }
+    }
+
     xhttp.open('PUT', '../../../scripts/index.php/anagrafica/login', true);
     xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
     xhttp.send(new XMLSerializer().serializeToString(xml));
+    logout();
 }
 
 function logout(){
