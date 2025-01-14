@@ -33,7 +33,18 @@ class OrdineController extends BaseController{
         }
 
         try{
-            $userid = controllaCookie(COOKIE_NAME);
+            $userid = null;
+            if(!isAuth())
+                controllaCookie(COOKIE_NAME);
+            else{
+                //È un dipendente, dunque può essere solo il pizzaiolo. Inoltre può solo fare una get
+                controllaSessione(array(RUOLO_PIZZAIOLO));
+                if($metodo != 'GET'){
+                    header(HTTP_V. " 403 Forbidden");
+                    echo "<results value=\"Non ti è permessa questa funzione\"/>";
+                    exit;
+                }
+            }
             if($metodo == 'DELETE'){
                 $hash = $_GET['ordine'];
                 $this->ordineModel->remove($hash);

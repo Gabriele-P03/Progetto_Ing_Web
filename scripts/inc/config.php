@@ -111,5 +111,10 @@ define("DESCRIZIONE_PRENOTAZIONE_STATO_CONFERMATO", "'Il tuo ordine è stato con
 define("DESCRIZIONE_PRENOTAZIONE_STATO_RIFIUTATO", "'Il tuo ordine è stato rifiutato'");
 define("DESCRIZIONE_PRENOTAZIONE_STATO_ELIMINATO", "'Ordine cancellato'");
 
+/* DEFINIZIONE DEI RUOLI */
+define("RUOLO_RESPONSABILE", "Responsabile");
+define("RUOLO_PIZZAIOLO", "Pizzaiolo");
+define("RUOLO_CAMERIERE", "Cameriere");
+define("RUOLO_MAGAZZINIERE", "Magazziniere");
 
 define("COOKIE_NAME" , "usrcok");

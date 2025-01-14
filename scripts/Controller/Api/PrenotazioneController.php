@@ -74,7 +74,7 @@ class PrenotazioneController extends BaseController{
                 $res = "";
                 if(filter_has_var(INPUT_GET, "date") && filter_has_var(INPUT_GET, 'asporto')){
                     //Vuol dire che è un cameriere o un pizzaiolo, devo controllare la sessione
-    
+                    controllaSessione(array(RUOLO_CAMERIERE, RUOLO_PIZZAIOLO));
                     $res = $this->prenotazioneModel->getAllByDataAvvenimento($_GET['date'], $_GET['asporto']);
                 }else{
                     //È un cliente

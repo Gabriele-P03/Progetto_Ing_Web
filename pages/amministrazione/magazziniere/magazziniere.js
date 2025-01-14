@@ -138,7 +138,7 @@ function salvaAggiunta(){
     //Allego il prezzo
     let prezzo = document.getElementById("prezzo_nuova_aggiunta").value;
     if(prezzo === ''){
-        alert("Il prezzp dell'aggiunta è vuoto");
+        alert("Il prezzo dell'aggiunta è vuoto");
         return;
     }
     prezzoXML = document.createElement("prezzo");
@@ -168,6 +168,7 @@ function salvaAggiunta(){
         if(xhttp.status === 200){
             caricaAggiunte();
             allineaTabella();
+            annullaModificaAggiunta();
         }else{
             var XMLParser = new DOMParser();
             var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
@@ -289,6 +290,10 @@ function caricaModificaTipoAggiunta(e){
 
 function salvaTipoAggiunta(){
     let nuovaEtichetta = document.getElementById("nome_nuovo_tipoaggiunta").value;
+    if(nuovaEtichetta.length <= 0){
+        alert("Il nome del tipo aggiunta è vuoto");
+        return;
+    }
     const xhttp = new XMLHttpRequest();
     let xml = document.createElement("root");
     let etichettaXML = document.createElement("etichetta");

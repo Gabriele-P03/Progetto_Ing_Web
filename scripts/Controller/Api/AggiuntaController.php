@@ -54,7 +54,7 @@ class AggiuntaController extends BaseController{
 
     public function allergeni(){
         $this->validaMetodi(array("PUT"));
-        controllaSessione();
+        controllaSessione(array(RUOLO_RESPONSABILE));
         try{
             $this->validaParametri(array("hash"), null);
         }catch(Exception $e){
@@ -82,7 +82,7 @@ class AggiuntaController extends BaseController{
         $this->validaMetodi(array("POST", "PUT", "DELETE", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         if($metodo != 'GET'){
-            controllaSessione();
+            controllaSessione(array(RUOLO_MAGAZZINIERE));
         }
         try{
             if($metodo == 'POST'){

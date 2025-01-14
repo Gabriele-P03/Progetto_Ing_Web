@@ -239,12 +239,21 @@ function salvaAllergene(){
 function showPopupAllergeni(e){
     let input = e.target;
     let hash = input.value;
+    let body = document.getElementsByTagName("body")[0];
+    //Rimuovo eventuali popup già aperti
+    let old = document.getElementById("div_popup_aggiuntaallergeni");
+    if(old !== null){
+        document.getElementById("save_aggiunta_allergeni_bt").removeEventListener('click', salvaAggiuntaAllergeni, false);
+        old.remove();
+        body.removeEventListener('click', clickClosePopup, false);
+        openedPopup = false;
+    }
 
     let div = "<div id=\"div_popup_aggiuntaallergeni\">"
     div += retrieveAllAllergeniAsSelect(hash);
     div += "</div>";
 
-    let body = document.getElementsByTagName("body")[0];
+    
     /*
         Modificando direttamente tramite body.innerHTML, data la gestione del DOM, tutti gli elementi HTMl vengono ricreati
         e dunque i listeners eliminati; opto in questo caso dunque per usare insertAdjacentHTML (ottimo per la compatibilità)

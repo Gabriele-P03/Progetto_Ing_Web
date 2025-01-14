@@ -17,7 +17,11 @@ function salvaUniqueIDSessione($username = "", $id = ""){
     $_SESSION[$username] = $id;
 }
 
-function controllaSessione(){
+function isAuth(){
+    return isset(apache_request_headers()['Authorization']);
+}
+
+function controllaSessione($ruoli = array()){
     $headers = apache_request_headers();
     if(!isset($headers['Authorization'])){
         header(HTTP_V." 401 Unauthorized");
@@ -30,6 +34,14 @@ function controllaSessione(){
     $firstUnderscoreIndex = strpos($id, "_");
     $ruolo = substr($id, 0, $firstUnderscoreIndex);
     validaRuolo($ruolo);
+    //Controllo che il ruolo sia quello abilitato
+
+    if(!permessoRuolo($ruoli, $ruolo)){
+        header(HTTP_V. " 403 Forbidden");
+        echo "<results value=\"Essendo " . $ruolo . " non ti è permessa questa funzione (". implode(',', $ruoli ) . ")\" />";
+        exit;
+    }
+
     //Non posso sapere se lo username contenga un underscore, ma so il ruolo e anche che id generato da uniqueid è lungo 
     //13 caratteri https://www.php.net/manual/en/function.uniqid.php
     $username = substr($id, $firstUnderscoreIndex+1, strlen($id)-$firstUnderscoreIndex-13-1);
@@ -45,12 +57,21 @@ function controllaSessione(){
     }
 }
 
+function permessoRuolo($ruoli, $ruolo){
+    foreach($ruoli as $r){
+        if(strcmp($r, $ruolo) == 0){
+            return true;
+        }
+    }
+    return false;
+}
+
 function validaRuolo($ruolo){
     switch($ruolo){
-        case "Cameriere":
-        case "Magazziniere":
-        case "Pizzaiolo":
-        case "Responsabile":
+        case RUOLO_CAMERIERE:
+        case RUOLO_MAGAZZINIERE:
+        case RUOLO_PIZZAIOLO:
+        case RUOLO_RESPONSABILE:
         break;
         default:
             header(HTTP_V." 401 Unauthorized");

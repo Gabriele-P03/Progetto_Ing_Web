@@ -219,6 +219,10 @@ function getAllergeniIdHashAsParameters(){
 
 function salvaNuovaPizza(){
     xml = creaXMLFormOrdine();
+    if(xml === null){
+        //creaXMLFormOrdine ritorna null quando nè un pizza nè un'aggiunta sono state selezionate
+        return;
+    }
     //var cookie = getCookie();
     const putHTTP = new XMLHttpRequest();
     if(idHashPrenotazione.length == 0){
@@ -251,10 +255,12 @@ function creaXMLFormOrdine(){
     let pizzaSelected = document.getElementById("select_base_pizza");
     let pizzaSelectedIdHash = pizzaSelected.value;
     //Creo l'elemento pizza e ne aggiungo l'idHash
+    let flag = false;
     if(pizzaSelectedIdHash !== ""){
         let pizza = document.createElement("pizza");
         pizza.setAttribute("hash", pizzaSelectedIdHash);
         xml.appendChild(pizza);
+        flag = true;
     }
 
     //Prendo tutti i fieldset delle aggiunte
@@ -270,11 +276,17 @@ function creaXMLFormOrdine(){
                 aggiunta = document.createElement("aggiunta");
                 aggiunta.setAttribute("hash", input.value);
                 fsXML.appendChild(aggiunta);
+                if(!flag){
+                    flag = true;
+                }
             }
         });
         aggiunteXML.appendChild(fsXML);
     }
     xml.appendChild(aggiunteXML);
+    if(!flag){
+        return null;
+    }
     return xml;
 }
 
@@ -749,6 +761,10 @@ function resetForm(){
 function confermaOrdine(){
     if(idHashOrdineModificando !== ""){
         xml = creaXMLFormOrdine();
+        if(xml === null){
+            //creaXMLFormOrdine ritorna null quando nè un pizza nè un'aggiunta sono state selezionate
+            return;
+        }
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
             resetForm();

@@ -21,7 +21,7 @@ class AllergeniController extends BaseController{
         $metodo = $_SERVER['REQUEST_METHOD'];
         try{
             if($metodo != 'GET'){
-                controllaSessione();
+                controllaSessione(array(RUOLO_RESPONSABILE));
             }
 
             if($metodo == 'POST'){

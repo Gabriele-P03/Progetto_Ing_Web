@@ -14,7 +14,7 @@ class TipoAggiuntaController extends BaseController{
         $this->validaMetodi(array("PUT", "DELETE", "POST", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         if($metodo != 'GET'){
-            controllaSessione();
+            controllaSessione(array(RUOLO_MAGAZZINIERE));
         }
         try{
             if($metodo == 'PUT' || $metodo == 'DELETE'){

@@ -44,7 +44,7 @@ class PizzaController extends BaseController{
         $this->validaMetodi(array("DELETE", "POST", "PUT", "GET"));
         $metodo = $_SERVER['REQUEST_METHOD'];
         if($metodo != 'GET'){
-            controllaSessione();
+            controllaSessione(array(RUOLO_PIZZAIOLO));
         }
         try{
             if($metodo == 'DELETE' || $metodo == 'PUT')

@@ -86,14 +86,17 @@ function caricaPrenotazioniTavoli(){
         });    //Prendo il child row
         if(xmlDoc.childNodes.item(0).childNodes.length > 0){
             document.getElementById("prenotazioni_cameriere").style.visibility = 'visible';
+            document.getElementById("thead").style.visibility = 'visible';
             caricaTHs();
             allineaTabella();
         }else{
             document.getElementById("prenotazioni_cameriere").style.visibility = 'hidden'; 
+            document.getElementById("thead").style.visibility = 'hidden'; 
         }        
     }
     let date = document.getElementById("date_prenotazioni").value;
     xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=0', true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
     xhttp.send();
 }
 

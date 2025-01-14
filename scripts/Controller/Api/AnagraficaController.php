@@ -17,7 +17,7 @@ class AnagraficaController extends BaseController{
 
     public function logout(): void{
         $this->validaMetodi(array("GET"));
-        controllaSessione();
+        controllaSessione(array(RUOLO_CAMERIERE, RUOLO_MAGAZZINIERE, RUOLO_PIZZAIOLO, RUOLO_RESPONSABILE));
         eliminaSessione();
         $this->inviaRispostaOK("");
     }
@@ -29,7 +29,7 @@ class AnagraficaController extends BaseController{
     public function login(): void{
         $this->validaMetodi(array("POST", "PUT"));
         if($_SERVER['REQUEST_METHOD'] != 'POST'){
-            controllaSessione();
+            controllaSessione(array(RUOLO_CAMERIERE, RUOLO_MAGAZZINIERE, RUOLO_PIZZAIOLO, RUOLO_RESPONSABILE));
         }
         try{
             $this->validaParametri(null, null);

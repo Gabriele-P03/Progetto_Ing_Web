@@ -9,11 +9,12 @@ const RUOLO_RESPONSABILE_ICONA = '../../../resources/profilazione/responsabile_i
 
 var nome, cognome, ruolo = 'Pizzaiolo';
 
-var ingredienti = Array('');
+var ingredienti = Array();
 
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
+    impostaMinDataAvvenimento();
     caricaPizze();
 
     document.getElementById("date_input").addEventListener('change', caricaPrenotazioni, false);
@@ -79,7 +80,7 @@ function caricaPrenotazioni(e){
             xmlDoc.childNodes.item(0).childNodes.forEach(row => {
                 let hash = row.childNodes.item(0).textContent;
                 let nome = row.childNodes.item(1).textContent;
-                let asporto = row.childNodes.item(7).textContent;
+                let asporto = row.childNodes.item(6).textContent;
 
                 let tr = "<tr class=\"tr_body\">"
                 tr += "<td class=\"td_tbody\">"+nome+"</td>";
@@ -92,6 +93,7 @@ function caricaPrenotazioni(e){
             allineaTabella();
         }
         xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=1', true);
+        xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
         xhttp.send();
     }
 }
@@ -350,7 +352,15 @@ function eliminaPizza(e){
  */
 function salvaPizza(){
     let nome = document.getElementById("input_nome_pizza").value;
+    if(nome.length <= 0){
+        alert("Nessun nome inserito per questa pizza");
+        return;
+    }
     let prezzo = document.getElementById("input_prezzo_pizza").value;
+    if(prezzo.length <= 0){
+        alert("Nessun prezzo inserito per questa pizza");
+        return;
+    }
     let appendice = "";
     let metodo = 'POST';
     if(modificandoPizza){
@@ -362,6 +372,10 @@ function salvaPizza(){
     let pizzaXML = document.createElement("pizza");
     pizzaXML.setAttribute('nome', nome);
     pizzaXML.setAttribute('prezzo', prezzo);
+    if(ingredienti.length <= 0){
+        alert("Nessun ingrediente inserito per questa pizza");
+        return;
+    }
     for(let i = 0; i < ingredienti.length; i++){
         let ingredienteXML = document.createElement("ingrediente");
         ingredienteXML.setAttribute('value', ingredienti[i]);
@@ -393,4 +407,9 @@ function salvaPizza(){
 var srcPopup = "/pages/storico/popup/popup.html";
 function apriPrenotazione(e){
     window.open(srcPopup+'?prenotazione='+e.target.value, 'Ordini', 'popup');
+}
+
+function impostaMinDataAvvenimento(){
+    let datePicker = document.getElementById("date_input");
+    datePicker.min = new Date().toISOString().split("T")[0];
 }
