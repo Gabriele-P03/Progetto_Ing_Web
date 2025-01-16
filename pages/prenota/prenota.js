@@ -393,6 +393,11 @@ function infoPrenotazioneToXML(){
             alert("Se la prenotazione non è da asporto, devi mettere il quantitativo di persone");
             return "";
         }
+        let i = parseInt(numeroPers);
+        if(i === NaN || i <= 0){
+            alert("Quantitativo persone non valido");
+            return "";
+        }
     }
 
     //Adesso prendo telefono e data avvenimento
@@ -404,6 +409,11 @@ function infoPrenotazioneToXML(){
     if(telefono === ""){
         alert("Nessun numero di telefono inserito");
         return ""; 
+    }
+    let flag = new RegExp(/^\d{10}$/i).test(telefono); 
+    if(!flag){
+        alert("Telefono non valido");
+        return "";
     }
     if(data === ""){
         alert("Nessuna data inserita");
