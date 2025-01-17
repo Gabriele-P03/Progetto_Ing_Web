@@ -59,7 +59,8 @@ function caricaPrenotazione(row){
         }
     }
     tdAzioni += "<input class=\"visualizza_bt\" type=button value=\"Visualizza\" name=\"" + idHash + "\">";
-    tdAzioni += "<input class=\"modifica_bt\" type=button value=\"Modifica\" name=\"" + idHash + "\">";
+    if(flagBozza)
+        tdAzioni += "<input class=\"modifica_bt\" type=button value=\"Modifica\" name=\"" + idHash + "\">";
     tdAzioni += "</td>";
     tbody.innerHTML += newTR + tdAzioni + trBuffer + "</tr>";
 }
