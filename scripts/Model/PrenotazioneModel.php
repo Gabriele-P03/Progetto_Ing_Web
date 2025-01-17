@@ -40,14 +40,14 @@ class PrenotazioneModel extends Connection{
         $sql = "SELECT ID_HASH, " . DB_PRENOTAZIONE_NOME . ", " . DB_PRENOTAZIONE_DATAPRENOTAZIONE . ", " .
                         DB_PRENOTAZIONE_DATAAVVENIMENTO . ", " . DB_PRENOTAZIONE_STATO . ", " . 
                         DB_PRENOTAZIONE_NUMEROPERSONE . ", " . DB_PRENOTAZIONE_TIPO . ", " . DB_PRENOTAZIONE_DESCRIZIONESTATO . ", ". 
-                        DB_PRENOTAZIONE_TELEFONO . " FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_USERID . " = ? AND " . 
-                        DB_PRENOTAZIONE_STATO . " = " . PRENOTAZIONE_STATO_BOZZA . " AND ";
+                        DB_PRENOTAZIONE_TELEFONO . " FROM " . DB_PRENOTAZIONE . " WHERE " . DB_PRENOTAZIONE_USERID . " = ? AND "; 
+                        
         $arr = array($userid);
         if(!empty( $idHashPrenotazione )){
             $sql .= "ID_HASH = ? LIMIT 1";
             $arr[] = $idHashPrenotazione;   //Aggiungo l'hash della prenotazione
         }else{
-            $sql .= DB_PRENOTAZIONE_DATAAVVENIMENTO . " >= (SELECT CURDATE())" . " ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " LIMIT 1";
+            $sql .= DB_PRENOTAZIONE_STATO . " = " . PRENOTAZIONE_STATO_BOZZA . " AND ". DB_PRENOTAZIONE_DATAAVVENIMENTO . " >= (SELECT CURDATE())" . " ORDER BY " . DB_PRENOTAZIONE_DATAAVVENIMENTO . " LIMIT 1";
         }
         return $this->select($sql, $arr);
     }
@@ -75,6 +75,7 @@ class PrenotazioneModel extends Connection{
     }
 
     public function update($xml, $hash, $userid){
+        $this->checkPrenotazioneModficabile($hash);
         $asporto = $xml->asporto[0]->attributes()[0];
         if($asporto == "true" || $asporto == "1"){
             $asporto = '1';
@@ -102,6 +103,7 @@ class PrenotazioneModel extends Connection{
     }
 
     public function removeByIdHash($idHash = ""){
+        $this->checkPrenotazioneModficabile($idHash);
         $this->ordineModel->removeAllByIdHashPrenotazione($idHash);
         $sql = "DELETE FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ? ";
         $this->delete($sql, 's', array($idHash)); 
@@ -120,12 +122,28 @@ class PrenotazioneModel extends Connection{
     //Gestione dei tavoli
     private function getTavoloDisponibile($numero_persone, $data){
         $sql = "SELECT * FROM " . DB_TAVOLO . " WHERE " . DB_TAVOLO_POSTI . " >= ? AND ID NOT IN (SELECT ID_TAVOLO FROM " . DB_PRENOTAZIONE ." WHERE " 
-        . DB_PRENOTAZIONE_DATAAVVENIMENTO .  " = ? AND " . DB_PRENOTAZIONE_STATO . " != " . PRENOTAZIONE_STATO_ELIMINATO . " AND " . DB_PRENOTAZIONE_IDTAVOLO . " != NULL) ORDER BY " . DB_TAVOLO_POSTI . " LIMIT 1";
+        . DB_PRENOTAZIONE_DATAAVVENIMENTO .  " = ? AND " . DB_PRENOTAZIONE_IDTAVOLO . " != NULL) ORDER BY " . DB_TAVOLO_POSTI . " LIMIT 1";
 
         $res = $this->select($sql, array($numero_persone, $data));  
         if(empty($res))
             return null;
         return $res[0]["ID"];
+    }
+
+    /**
+     * Questa funzione prende in esame la prenotazione relativa ad idHash e controlla che essa sia modificabile/eliminabile
+     * Si ricorda che da documentazione, tali azioni non sono disponibili per prenotazioni antecedenti alla data corrente
+     * 
+     */
+    private function checkPrenotazioneModficabile($idHash){
+        //Ritornerà al più la prenotazione con idhash corrisposto, se res è vuoto vuol dire che o la sua data avvenimento è successiva a oggi, e dunque può essere modificata
+        $sql = "SELECT * FROM ". DB_PRENOTAZIONE . " WHERE ID_HASH = ? AND DATA_AVVENIMENTO < CURRENT_DATE()";
+        $res = $this->select($sql, array($idHash));
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"La prenotazione non è più modificabile\"/>";
+            exit;
+        }
     }
 
 

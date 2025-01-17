@@ -17,6 +17,7 @@ class OrdineModel extends Connection{
     }
 
     public function save($xml, $hashPrenotazione, $userid):string{
+        $this->checkPrenotazioneModficabile($hashPrenotazione);
         $pizza = $xml->pizza[0];
         if($pizza !== null){
             $pizza = $pizza->attributes()[0];
@@ -51,6 +52,7 @@ class OrdineModel extends Connection{
         $sqlGetHashPrenotazionePreDelete = "SELECT ID_HASH FROM " . DB_PRENOTAZIONE . " WHERE ID IN (SELECT " . DB_ORDINE_IDPRENOTAZIONE . " FROM " . DB_ORDINE . " WHERE ID_HASH = ?)";
         $res = $this->select($sqlGetHashPrenotazionePreDelete, array($hash));
         $hashPrenotazione = $res[0]['ID_HASH'];
+        $this->checkPrenotazioneModficabile($hashPrenotazione);
 
         //Cancello i vecchi allergeni e le aggiunte
         $this->ordineAllergenModel->deleteByIdHashOrdine($hash);
@@ -139,6 +141,12 @@ class OrdineModel extends Connection{
     }
 
     public function remove($idHashOrdine = ""){
+        //Controllo prima che la prenotazione sia modificabile circa la data avvenimento
+        $sqlGetHashPrenotazionePreDelete = "SELECT ID_HASH FROM " . DB_PRENOTAZIONE . " WHERE ID IN (SELECT " . DB_ORDINE_IDPRENOTAZIONE . " FROM " . DB_ORDINE . " WHERE ID_HASH = ?)";
+        $res = $this->select($sqlGetHashPrenotazionePreDelete, array($idHashOrdine));
+        $hashPrenotazione = $res[0]['ID_HASH'];
+        $this->checkPrenotazioneModficabile($hashPrenotazione);
+
         $this->ordineAllergenModel->deleteByIdHashOrdine($idHashOrdine);
         $this->ordineAggiuntaModel->deleteByIdHashOrdine($idHashOrdine);
         
@@ -159,6 +167,22 @@ class OrdineModel extends Connection{
         //Adesso posso cancellare tutti gli ordini
         $sql = "DELETE FROM " . DB_ORDINE . " WHERE " . DB_ORDINE_IDPRENOTAZIONE . " IN (SELECT ID FROM " . DB_PRENOTAZIONE . " WHERE ID_HASH = ?)"; 
         $this->delete($sql, "s", array($idHashPrenotazione));
+    }
+
+    /**
+     * Questa funzione prende in esame la prenotazione relativa ad idHash e controlla che essa sia modificabile/eliminabile
+     * Si ricorda che da documentazione, tali azioni non sono disponibili per prenotazioni antecedenti alla data corrente
+     * 
+     */
+    private function checkPrenotazioneModficabile($idHash){
+        //Ritornerà al più la prenotazione con idhash corrisposto, se res è vuoto vuol dire che o la sua data avvenimento è successiva a oggi, e dunque può essere modificata
+        $sql = "SELECT * FROM ". DB_PRENOTAZIONE . " WHERE ID_HASH = ? AND DATA_AVVENIMENTO < CURRENT_DATE()";
+        $res = $this->select($sql, array($idHash));
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"La prenotazione non è più modificabile\"/>";
+            exit;
+        }
     }
 }
 

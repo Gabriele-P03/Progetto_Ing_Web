@@ -223,20 +223,24 @@ function salvaNuovaPizza(){
         //creaXMLFormOrdine ritorna null quando nè un pizza nè un'aggiunta sono state selezionate
         return;
     }
-    //var cookie = getCookie();
-    const putHTTP = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
     if(idHashPrenotazione.length == 0){
         alert("Per poter salvare gli ordini devi prima inserire le informazioni della prenotazione");
         return;
     }
-    putHTTP.onload = function(){
-        caricaOrdiniPrenotazione();
-        resetForm();
+    xhttp.onload = function(){
+        if(xhttp.status !== 200){
+            var XMLParser = new DOMParser();
+            var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+            alert(xmlDoc.childNodes.item(0).attributes[0].textContent);
+        }else{
+            caricaOrdiniPrenotazione();
+            resetForm();
+        }
     }
-    putHTTP.open('POST', '../../scripts/index.php/ordine/ordine?prenotazione=' + idHashPrenotazione, true);
-    putHTTP.setRequestHeader("Content-Type", "text/xml");
-    putHTTP.send(new XMLSerializer().serializeToString(xml));
-    return false;
+    xhttp.open('POST', '../../scripts/index.php/ordine/ordine?prenotazione=' + idHashPrenotazione, true);
+    xhttp.setRequestHeader("Content-Type", "text/xml");
+    xhttp.send(new XMLSerializer().serializeToString(xml));
 }
 
 function creaXMLFormOrdine(){
@@ -307,7 +311,7 @@ function salvaPrenotazione(){
         }
         var XMLParser = new DOMParser();
         var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
-        if(xhttp.status === 400){
+        if(xhttp.status !== 200){
             alert(xmlDoc.childNodes.item(0).attributes[0].value)
         }else if(method === 'POST'){  //Solo se post avrò il digest della prenotazione
             idHashPrenotazione = xmlDoc.childNodes.item(0).childNodes.item(0).attributes[0].value;
@@ -725,7 +729,13 @@ function eliminaPrenotazione(){
         if(go){
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function(){
-                location.reload(true);
+                if(xhttp.status !== 200){
+                    var XMLParser = new DOMParser();
+                    var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+                    alert(xmlDoc.childNodes.item(0).attributes[0].textContent);
+                }else{
+                    location.reload(true);
+                }
             }
             xhttp.open('DELETE', '../../scripts/index.php/prenotazione/prenotazione?prenotazione='+idHashPrenotazione, true);
             xhttp.send();
@@ -746,7 +756,13 @@ function cancellaOrdine(e){
         let idHashOrdine = ordine.name;
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
-            caricaOrdiniPrenotazione();
+            if(xhttp.status !== 200){
+                var XMLParser = new DOMParser();
+                var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+                alert(xmlDoc.childNodes.item(0).attributes[0].textContent);
+            }else{ 
+                caricaOrdiniPrenotazione();
+            }
         }
         xhttp.open('DELETE', '../../scripts/index.php/ordine/ordine?ordine='+idHashOrdine, true);
         xhttp.send();
@@ -777,8 +793,14 @@ function confermaOrdine(){
         }
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
-            resetForm();
-            caricaOrdiniPrenotazione();
+            if(xhttp.status !== 200){
+                var XMLParser = new DOMParser();
+                var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
+                alert(xmlDoc.childNodes.item(0).attributes[0].textContent);
+            }else{
+                resetForm();
+                caricaOrdiniPrenotazione();
+            }
         }
         xhttp.open('PUT', '../../scripts/index.php/ordine/ordine?ordine=' + encodeURIComponent(idHashOrdineModificando), true);
         xhttp.setRequestHeader("Content-Type", 'application/xml; charset=utf-8');

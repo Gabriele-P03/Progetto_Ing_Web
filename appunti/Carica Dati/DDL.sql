@@ -136,3 +136,18 @@ INSERT INTO ANAGRAFICA VALUES
 (NULL, "Maria", "Vitale", "maria_vitale", SHA2("password", 512), 2),
 (NULL, "Mario", "Rossi", "mario_rossi", SHA2("password", 512), 3),
 (NULL, "Luigi", "Verdi", "luigi_verdi", SHA2("password", 512), 4);
+
+-- Questa è la parte inerente lo scheduler delle prenotazioni
+-- Si ricorda che per ovviare all'errore 'Event Scheduler: An error occurred when initializing system tables. Disabling the Event Scheduler.'
+-- si dovrebbe eseguire il comando mysql_upgrade() https://stackoverflow.com/questions/59250604/debugging-error-when-enabling-event-scheduler
+
+SET GLOBAL event_scheduler = 1;-- Abilita la schedulazione di eventi
+
+CREATE EVENT IF NOT EXISTS invalidaModificaPrenotazione
+ON SCHEDULE 
+	EVERY 12 HOUR
+    STARTS CURRENT_TIMESTAMP()
+ENABLE
+COMMENT 'Evento demone che si occupa di invalidare la modifica di prenotazioni aventi data avvenimento antecedente alla data odierna'
+DO
+	UPDATE PRENOTAZIONE SET STATO = '1', DESCRIZIONE_STATO = 'Il tuo ordine è stato confermato' WHERE DATA_AVVENIMENTO < CURRENT_DATE();
