@@ -60,6 +60,9 @@ div#info_ordine_bottone_div{
     padding: 0.5%;
     display: flex;
     flex-direction: row;
+    overflow-x: auto;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 div#info_ordine_bottone_div>input{
     flex-grow: 1;
