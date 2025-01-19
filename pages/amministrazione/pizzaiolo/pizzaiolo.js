@@ -14,7 +14,6 @@ var ingredienti = Array();
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
-    impostaMinDataAvvenimento();
     caricaPizze();
 
     document.getElementById("date_input").addEventListener('change', caricaPrenotazioni, false);
@@ -105,7 +104,7 @@ function caricaPrenotazioni(e){
  */
 function allineaTabella(){
     let theadH = document.getElementById("thead_prenotazioni").clientHeight;
-    let h = parseInt(theadH)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    let h = parseInt(theadH);
     h = 'calc(100% - '+h+'px)';
     document.getElementById("tbody_prenotazioni").style.maxHeight = h;
 
@@ -409,9 +408,4 @@ function salvaPizza(){
 var srcPopup = "/pages/storico/popup/popup.html";
 function apriPrenotazione(e){
     window.open(srcPopup+'?prenotazione='+e.target.value, 'Ordini', 'popup');
-}
-
-function impostaMinDataAvvenimento(){
-    let datePicker = document.getElementById("date_input");
-    datePicker.min = new Date().toISOString().split("T")[0];
 }

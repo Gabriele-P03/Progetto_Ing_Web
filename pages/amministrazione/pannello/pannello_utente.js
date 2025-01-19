@@ -101,13 +101,14 @@ function confermaModificaPSW(){
             var XMLParser = new DOMParser();
             var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
             alert(xmlDoc.childNodes.item(0).getAttribute("value"));
+        }else{
+            logout();
         }
     }
 
     xhttp.open('PUT', '../../../scripts/index.php/anagrafica/login', true);
     xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
     xhttp.send(new XMLSerializer().serializeToString(xml));
-    logout();
 }
 
 function logout(){

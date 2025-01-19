@@ -12,8 +12,6 @@ var nome, cognome, ruolo = 'Cameriere', id;
 window.onload = function(){
     parseInfoProfilo();
     caricaIconaProfiloByRuolo();
-    impostaMinDataAvvenimento();
-
     document.getElementById("date_prenotazioni").addEventListener("change", caricaPrenotazioniTavoli, false);
 }
 
@@ -54,11 +52,6 @@ function parseInfoProfilo(){
     document.getElementById("ruolo_div_pannello_utente").innerHTML += ruolo;
 }
 
-function impostaMinDataAvvenimento(){
-    let datePicker = document.getElementById("date_prenotazioni");
-    datePicker.min = new Date().toISOString().split("T")[0];
-}
-
 /**
  * Funzione richiamata quando il cameriere cambia la data dal picker
  * Carica le prenotazioni per la data richiesta e visualizza i tutti i tavoli 
@@ -79,6 +72,11 @@ function caricaPrenotazioniTavoli(){
                 let tavolo = row.childNodes.item(9).textContent;
                 tr += "<td class=\"td_prenotazione\">" + (parseInt(tavolo)+1) + "</td>";
                 let stato = row.childNodes.item(4).textContent;
+                if(stato === '0'){
+                    stato = 'Bozza'
+                }else{
+                    stato = 'Confermato';
+                }
                 tr += "<td class=\"td_prenotazione\">" + stato + "</td>";
                 let telefono = row.childNodes.item(8).textContent;
                 tr += "<td class=\"td_prenotazione\">" + telefono + "</td>";
