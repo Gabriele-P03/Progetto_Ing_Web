@@ -141,7 +141,10 @@ function aggiungiTH(nomeColonna){
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
-
+    //L'istruzione a seguire scatena un TypeError Undefined non valido
+    let h = parseInt(tableTHeadTHs[0].clientHeight)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    h = 'calc(100% - '+h+'px)';
+    document.getElementById("tbody").style.maxHeight = h;
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 

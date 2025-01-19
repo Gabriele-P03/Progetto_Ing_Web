@@ -32,7 +32,6 @@ function retrieveIdHashPrenotazione(){
     }
     url = url.substring(indexQuestionMark+1);
     let idHash = url.substring('prenotazione='.length);
-    console.log(url + "\n" + idHash);
     return idHash;
 }
 
@@ -54,21 +53,29 @@ function carica_allergeni(){
                 let html = "<input type=\"checkbox\" name=\""+idHash+"\" value=\"" + idHash + "\"><label for=\""+idHash+"\">"+name+"</label><br>";
                 allergeni.innerHTML += html;
         });
-        carica_pizze();
+        carica_pizze(false);
+        carica_tipo_aggiunta();
     }
     xhttp.open('GET', '../../scripts/index.php/allergene/allergene', true);
     xhttp.send();
 }
 
-function carica_pizze(){
+function carica_pizze(async = true){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function(){
         impostaSelettoreBasePizza(xhttp);
     }
-    xhttp.open('GET', '../../scripts/index.php/pizza/pizza', true);
+    xhttp.open('GET', '../../scripts/index.php/pizza/pizza', async);
     xhttp.send();
 }
 
+/**
+ * Questa funzione carica gli ingredienti della pizza selezionata e ponendoli
+ * nel div posto di fianco al selettore
+ * @param e è valido se questa funzione è chiamata in base all'evento onchange del selettore
+ * @param value è valido se questa funzione è chiamata tramite la modifica di un ordine
+ * event/e sono mutuamente esclusi dall'essere diversi da null
+ */
 function carica_ingredienti(e = null, value = null, async = true){
     let pizzaSelezionata = null;
     if(value == null)
@@ -92,8 +99,11 @@ function carica_ingredienti(e = null, value = null, async = true){
         xhttp.open('GET', '../../scripts/index.php/aggiunta/aggiunta?pizza='+pizzaSelezionata, async);
         xhttp.send();
     }else{
+        //Se non vi è nessuna pizza, svuoto il div degli ingredienti
         svuotaListaIngredienti();
     }
+    //Ricarico i tipo aggiunta (e dunque anche le aggiunte) in quanto tali liste non devono contenere gli ingredienti già presenti nella pizza
+    //La chiamata a  questa funzione non può andare nel ramo dell'if in quanto potrebbe comunque essere richiesta per "resettare" i div
     carica_tipo_aggiunta(async);
 }
 
@@ -106,18 +116,24 @@ function svuotaListaIngredienti(){
  * Funzione chiamata quando l'utente preme sul tasto Invia Allergeni
  * Essa esegue la GET per prendere le pizze che non contengono allergeni tra quelli indicati
  */
-function filtraPizzeByAllergeni(){
+function filtraPizzeByAllergeni(async = true, caricaTipoAggiunta = true){
     let allergeniParams = getAllergeniIdHashAsParameters();
     
     if(allergeniParams !== ""){
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function(){
             impostaSelettoreBasePizza(xhttp);
+            if(caricaTipoAggiunta){
+                carica_tipo_aggiunta();
+            }
         }
-        xhttp.open('GET', '../../scripts/index.php/pizza/allergeni?'+allergeniParams, true);
+        xhttp.open('GET', '../../scripts/index.php/pizza/allergeni?'+allergeniParams, async);
         xhttp.send();
     }else{
-        carica_pizze(); //Nessun allergene selezionato, allora eseguo la getAll delle pizze
+        carica_pizze(async); //Nessun allergene selezionato, allora eseguo la getAll delle pizze
+        if(caricaTipoAggiunta){
+            carica_tipo_aggiunta();
+        }
     }
 }
 
@@ -136,8 +152,6 @@ function impostaSelettoreBasePizza(pizzeInfoXHTTP){
     });
     //Svuota la lista degli ingredienti siccome vi è l'opzione di default
     svuotaListaIngredienti();
-    carica_tipo_aggiunta();
-    //carica_ingredienti(xmlDoc.childNodes.item(0).childNodes.item(0).childNodes.item(0).textContent);
 }
 
 function carica_tipo_aggiunta(async = true){
@@ -593,7 +607,9 @@ function aggiungiTH(nomeColonna){
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
-
+    let h = parseInt(tableTHeadTHs[0].clientHeight)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    h = 'calc(100% - '+h+'px)';
+    document.getElementById("body_prenotazione").style.maxHeight = h;
     //Essendo la table inline-block prima calcolo h e w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato h o w maggiore del valore in uso
     //sarebbe stato troppo dispendioso; si preferisce dunque trovare prima i due valori adatti 
@@ -650,6 +666,8 @@ function popolaFormPerModifica(e){
             }
         }
     }
+    //Filtro il selettore delle pizze in base agli allergeni
+    filtraPizzeByAllergeni(false, false);
 
     //prendo la pizza
     let pizza = row.childNodes[2];

@@ -15,6 +15,7 @@ body{
     background-image: url("resources/body/pizza_bkg.png");
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: right 0px;
     height: 100%;
     width: 100%;
     bottom: 0;
@@ -62,15 +63,14 @@ nav#header_nav>a{
  ********************************************/
 aside#aside_frasi{
     color: white;
-    width: fit-content;
-    width: 40%; /*Sfrutto questa proprietà nel main.js (1) */
+    max-width: 40%;
 }
 aside>ul#ul_aside_frasi{
     list-style-type: none;  /*Rimuove qualsiasi decorazione dei li*/
 }
 ul>li.li_aside_frasi{
     margin-top: 10%;
-    font-size: xx-large;
+    font-size:200%;
     font-style: italic;
     font-family: Geneva, Verdana, sans-serif;
 }

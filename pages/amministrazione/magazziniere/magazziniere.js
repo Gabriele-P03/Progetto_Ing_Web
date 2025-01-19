@@ -20,6 +20,12 @@ window.onload = function(){
     document.getElementById("annulla_modifica_aggiunta").addEventListener('click', annullaModificaAggiunta, false);
 }
 
+/** 
+ * La scelta di rendere la richiesta http di questa chiamata sincrona ricade sull'abbattimento delle performance
+ * dovute alle N chiamate da dover fare ad allineaTabella() in quanto essa dovrebbe essere chiamata alla fine della onload,
+ * ma N volte tante quanto i tipo aggiunta.
+ * Si deve comunque notare che questa funzione è chiamata sempre da richieste asincrone!
+*/
 function caricaAggiunte(){
     let optionsTipoAggiunte = document.getElementById("tipoaggiunta_input_list").querySelectorAll("option");
     let body = document.getElementById("tbody");
@@ -62,6 +68,7 @@ function caricaAggiunte(){
             xhttp.send();
         }
     });
+    allineaTabella();
 }
 
 var modificandoAggiuntaHash = '';
@@ -94,7 +101,6 @@ function eliminaAggiunta(e){
         xhttp.onload = function(){
             if(xhttp.status === 200){
                 caricaAggiunte();
-                allineaTabella();
             }else{
                 var XMLParser = new DOMParser();
                 var xmlDoc = XMLParser.parseFromString(xhttp.responseText, "application/xml");
@@ -167,7 +173,6 @@ function salvaAggiunta(){
     xhttp.onload = function(){
         if(xhttp.status === 200){
             caricaAggiunte();
-            allineaTabella();
             annullaModificaAggiunta();
         }else{
             var XMLParser = new DOMParser();
@@ -250,7 +255,6 @@ function caricaTipoAggiunte(){
         document.querySelectorAll(".tipoaggiunta_bt_elimina").forEach(bt => bt.addEventListener('click', eliminaTipoAggiunta, false));
         document.querySelectorAll(".tipoaggiunta_bt_modifica").forEach(bt => bt.addEventListener('click', caricaModificaTipoAggiunta, false));
         caricaAggiunte();
-        allineaTabella();
     }
     xhttp.open('GET', '/../../../scripts/index.php/tipoaggiunta/tipoaggiunta', true);
     xhttp.send();

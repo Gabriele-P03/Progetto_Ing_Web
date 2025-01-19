@@ -87,6 +87,9 @@ function caricaTHs(row){
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("tr_header").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_body");
+    let h = parseInt(tableTHeadTHs[0].clientHeight)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
+    h = 'calc(100% - '+h+'px)';
+    document.getElementById("tbody").style.maxHeight = h;
 
     //Essendo la table inline-block prima calcolo w per ogni colonna
     //Scorrere in modo ricorsivo tutte le celle di una colonna ogni volta che viene trovato w maggiore del valore in uso
