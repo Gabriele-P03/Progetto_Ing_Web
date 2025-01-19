@@ -28,6 +28,10 @@ div.info_pannello_utente{
     text-align: center;
 }
 
+div#info_pannello_utente_div{
+    white-space: normal;
+}
+
 
 /*DA QUI INIZIA LA PARTE INERENTE AI CAMPI/PULSANTI PER IL RESET DELLA PSW*/
 
@@ -41,7 +45,6 @@ div#div_psw_reset{
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow: auto;
     margin: auto auto 0 auto;
 }
 
@@ -75,10 +78,7 @@ button.bt_pannello_utente{
 
     div#pannello_utente{
         flex-direction: row;
-    }
-
-    div#div_input_psw_reset > input{
-        margin-right: 0.5em;
+        overflow: hidden;
     }
 
     div#div_input_psw_reset{
@@ -90,5 +90,10 @@ button.bt_pannello_utente{
 
     div#div_psw_reset{
         max-height: 100%;
+        overflow-y: auto;
+    }
+
+    div#info_pannello_utente_div{
+        white-space: nowrap;
     }
 }

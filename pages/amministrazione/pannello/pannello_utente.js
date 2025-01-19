@@ -1,7 +1,23 @@
 window.addEventListener('load', function(){
         document.getElementById("bt_show_cambio_psw").addEventListener("click", showCambioPassword, false);
         document.getElementById("bt_logout").addEventListener("click", logout, false);
+
+        document.getElementById("icona_pannello_utente").addEventListener('load', setMaxSizeByIMGAndDevice, false);
     }, false);
+
+window.addEventListener('resize', setMaxSizeByIMGAndDevice, false);
+
+function setMaxSizeByIMGAndDevice(){
+    let aside = document.getElementsByTagName("aside")[0];
+    let img = document.getElementById("icona_pannello_utente");
+    if(window.outerWidth > 600){
+        aside.style.maxWidth = (img.clientWidth+8)+'px';
+        aside.style.maxHeight = '';
+    }else{
+        aside.style.maxWidth = '';
+        aside.style.maxHeight = (img.clientHeight+8)+'px';
+    }
+}
 
 
 //Usato per salvare lo stato di show dei campi per il reset della password
