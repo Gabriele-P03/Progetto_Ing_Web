@@ -77,6 +77,14 @@ class AggiuntaModel extends Connection{
             echo "<results value=\"Quest'aggiunta è ancora in uso su delle pizza\" />";
             exit;
         }
+        //Non posso eliminare un'aggiunta se questa è usata come INGREDIENTE AGGIUNTO in un ordine
+        $sql = "SELECT * FROM " . DB_ORDINE . " WHERE ID IN (SELECT ".DB_ORDINEAGGIUNTA_IDORDINE." FROM ".DB_ORDINEAGGIUNTA." WHERE ".DB_ORDINEAGGIUNTA_IDAGGIUNTA." = (SELECT ID FROM ".DB_AGGIUNTA." WHERE ID_HASH = ?))";
+        $res = $this->select($sql, array($hash));
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"Quest'aggiunta è usata per un ordine\" />";
+            exit;
+        }
         //Devo prima eliminare gli allergeni a esso collegati
         $sql = "DELETE FROM " . DB_AGGIUNTAALLERGENE . " WHERE " . DB_AGGIUNTAALLERGENE_IDAGGIUNTA . " = (SELECT ID FROM ". DB_AGGIUNTA ." WHERE ID_HASH = ?)";
         $this->delete($sql, 's', array($hash)); 
