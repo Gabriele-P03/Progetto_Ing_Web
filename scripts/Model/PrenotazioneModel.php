@@ -58,6 +58,7 @@ class PrenotazioneModel extends Connection{
         $numero_persone = $xml->numero_persone[0]->attributes()[0];
         $telefono = $xml->telefono[0]->attributes()[0];
         $data = $xml->data[0]->attributes()[0];
+        $this->checkPrenotazioneEsistente($data, null, $userid);
         $nominativo = $xml->nome[0]->attributes()[0];
         if($asporto == "true"){
             $asporto = '1';
@@ -76,6 +77,7 @@ class PrenotazioneModel extends Connection{
 
     public function update($xml, $hash, $userid){
         $this->checkPrenotazioneModficabile($hash);
+        
         $asporto = $xml->asporto[0]->attributes()[0];
         if($asporto == "true" || $asporto == "1"){
             $asporto = '1';
@@ -85,6 +87,7 @@ class PrenotazioneModel extends Connection{
         $numero_persone = $xml->numero_persone[0]->attributes()[0];
         $telefono = $xml->telefono[0]->attributes()[0];
         $data = $xml->data[0]->attributes()[0];
+        $this->checkPrenotazioneEsistente($data, $hash, $userid);
         $nominativo = $xml->nome[0]->attributes()[0];
         $idTavolo = null;
         if($asporto == '0'){
@@ -150,6 +153,25 @@ class PrenotazioneModel extends Connection{
     private function setTavolo($idTavolo, $hashPrenotazione){
         $sql = "UPDATE " . DB_PRENOTAZIONE . " SET " . DB_PRENOTAZIONE_IDTAVOLO . " = ? WHERE ID_HASH = ?";
         $this->executeStatement($sql, "ss", array($idTavolo, $hashPrenotazione));
+    }
+
+    /**
+     * Questa funzione controlla che per la data $data non sia già presente una prenotazione
+     * per l'utente identificato da $id
+     */
+    private function checkPrenotazioneEsistente($data, $hash, $id){
+        $sql = "SELECT * FROM ".DB_PRENOTAZIONE. " WHERE ".DB_PRENOTAZIONE_DATAAVVENIMENTO. " = ? AND ".DB_PRENOTAZIONE_USERID . " = ?";
+        $params = array($data, $id);
+        if($hash != null){
+            $sql .= " AND ID_HASH != ?";
+            array_push($params, $hash);
+        }
+        $res = $this->select($sql, $params);
+        if(!empty($res)){
+            header(HTTP_V." 400 Bad Request");
+            echo "<results value=\"Hai già una prenotazione per questa data\" />";
+            exit;
+        }
     }
 }
 

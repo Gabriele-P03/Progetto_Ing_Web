@@ -419,9 +419,8 @@ function infoPrenotazioneToXML(){
     }
 
     //Adesso prendo telefono e data avvenimento
-    let divTipo = document.getElementById('ordine_telefono_data_div');
-    let telefono = divTipo.querySelectorAll("input")[0].value;
-    let data = divTipo.querySelectorAll("input")[1].value;
+    let telefono = document.getElementById("telefono_input").value;
+    let data = document.getElementById("date_dataavvenimento").value;
     let nominativo = document.getElementById("info_ordine_nome_div").querySelector("input").value;
 
     if(telefono === ""){

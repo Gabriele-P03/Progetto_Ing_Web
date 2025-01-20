@@ -71,7 +71,7 @@ CREATE TABLE PRENOTAZIONE(
     NOME VARCHAR(64) NOT NULL,
     DATA_PRENOTAZIONE DATE NOT NULL,
     DATA_AVVENIMENTO DATE NOT NULL, 
-    STATO ENUM('0','1','2'), -- (0: ELABORAZIONE, 1: CONFERMATO, 2: RIFIUTATO)
+    STATO ENUM('0','1'), -- (0: ELABORAZIONE, 1: CONFERMATO)
     ID_TAVOLO BIGINT UNSIGNED,
     NUMERO_PERSONE INTEGER UNSIGNED NOT NULL,
     TIPO ENUM('0','1') NOT NULL, -- Asporto o tavolo, se tavolo ID_TAVOLO non può essere null
@@ -150,4 +150,4 @@ ON SCHEDULE
 ENABLE
 COMMENT 'Evento demone che si occupa di invalidare la modifica di prenotazioni aventi data avvenimento antecedente alla data odierna'
 DO
-	UPDATE PRENOTAZIONE SET STATO = '1', DESCRIZIONE_STATO = 'Il tuo ordine è stato confermato' WHERE DATA_AVVENIMENTO < CURRENT_DATE();
+	UPDATE PRENOTAZIONE SET STATO = '1', DESCRIZIONE_STATO = 'Il tuo ordine è stato confermato' WHERE DATA_AVVENIMENTO < CURRENT_DATE() AND STATO = '0';
