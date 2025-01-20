@@ -169,7 +169,7 @@ class PrenotazioneModel extends Connection{
         $res = $this->select($sql, $params);
         if(!empty($res)){
             header(HTTP_V." 400 Bad Request");
-            echo "<results value=\"Hai già una prenotazione per questa data\" />";
+            echo "<results value=\"Hai già una prenotazione per questa data a nome ".$res[0][DB_PRENOTAZIONE_NOME]."\" />";
             exit;
         }
     }
