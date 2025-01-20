@@ -435,6 +435,12 @@ function infoPrenotazioneToXML(){
     if(data === ""){
         alert("Nessuna data inserita");
         return ""; 
+    }else{
+        var date = new Date(data);
+        if(isNaN(date)){
+            alert("La data non è valida");
+            return "";
+        }
     }
     if(nominativo === ""){
         alert("Nessun nominativo inserito");
@@ -606,6 +612,9 @@ function aggiungiTH(nomeColonna){
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
     let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
+    if(tableTHeadTHs.length === 0){
+        return;
+    }
     let h = parseInt(tableTHeadTHs[0].clientHeight)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella
     h = 'calc(100% - '+h+'px)';
     document.getElementById("body_prenotazione").style.maxHeight = h;

@@ -57,6 +57,18 @@ function parseInfoProfilo(){
  * Carica le prenotazioni per la data richiesta e visualizza i tutti i tavoli 
  */
 function caricaPrenotazioniTavoli(){
+    let date = document.getElementById("date_prenotazioni").value;
+    if(date === ""){    //reset
+        document.getElementById("prenotazioni_cameriere").style.visibility = 'hidden'; 
+        document.getElementById("thead").style.visibility = 'hidden'; 
+        document.getElementById("tbody").innerHTML = ""; 
+        return;
+    }
+    if(isNaN(new Date(date))){
+        alert("La data non è valida");
+        return;
+    }
+
     const xhttp = new XMLHttpRequest();
 
     xhttp.onload = function(){
@@ -92,7 +104,7 @@ function caricaPrenotazioniTavoli(){
             document.getElementById("thead").style.visibility = 'hidden'; 
         }        
     }
-    let date = document.getElementById("date_prenotazioni").value;
+    
     xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=0', true);
     xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
     xhttp.send();

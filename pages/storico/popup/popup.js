@@ -140,6 +140,9 @@ function aggiungiTH(nomeColonna){
  */
 function allineaTabella(){
     let tableTHeadTHs = document.getElementById("table_row_header_prenotazione").querySelectorAll("th");
+    if(tableTHeadTHs.length === 0){
+        return;
+    }
     let tableTBodyTDs = document.getElementsByClassName("tr_prenotazione");
     //L'istruzione a seguire scatena un TypeError Undefined non valido
     let h = parseInt(tableTHeadTHs[0].clientHeight)+8; //Aggiungo i 4px superiori e inferiori del bordo della tabella

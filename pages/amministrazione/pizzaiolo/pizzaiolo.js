@@ -70,6 +70,19 @@ function caricaPrenotazioni(e){
     let input = e.target;
     let date = input.value;
     if(date !== null){
+
+        if(date === ""){
+            document.getElementById("table_prenotazioni").style.visibility = 'hidden';
+            document.getElementById("tbody_prenotazioni").style.visibility = 'hidden';
+            document.getElementById("thead_prenotazioni").style.visibility = 'hidden';
+            document.getElementById("tbody_prenotazioni").innerHTML = "";
+            return;
+        }
+        if(isNaN(new Date(date))){
+            alert("La data non è valida");
+            return;
+        }
+
         let tbody = document.getElementById("tbody_prenotazioni");
         tbody.innerHTML = "";
         const xhttp = new XMLHttpRequest();
@@ -89,7 +102,17 @@ function caricaPrenotazioni(e){
                 tbody.insertAdjacentHTML('beforeend', tr);
             });
             document.querySelectorAll(".apri_prenotazione_bt").forEach(i => i.addEventListener('click', apriPrenotazione, false));
-            allineaTabella();
+            if(xmlDoc.childNodes.item(0).childNodes.length > 0){
+                document.getElementById("table_prenotazioni").style.visibility = 'visible';
+                document.getElementById("tbody_prenotazioni").style.visibility = 'visible';
+                document.getElementById("thead_prenotazioni").style.visibility = 'visible';
+                allineaTabella();
+            }else{
+                document.getElementById("table_prenotazioni").style.visibility = 'hidden';
+                document.getElementById("tbody_prenotazioni").style.visibility = 'hidden';
+                document.getElementById("thead_prenotazioni").style.visibility = 'hidden';
+                document.getElementById("tbody_prenotazioni").innerHTML = "";
+            }
         }
         xhttp.open('GET', '../../../scripts/index.php/prenotazione/prenotazione?date='+encodeURIComponent(date) + '&asporto=1', true);
         xhttp.setRequestHeader('Authorization', sessionStorage.getItem('id'));
